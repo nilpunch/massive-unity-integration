@@ -1,5 +1,4 @@
-﻿using Massive;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Massive.Unity
 {

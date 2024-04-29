@@ -1,10 +1,9 @@
-﻿using Massive;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Massive.Unity
 {
-	public class FileSceneRegistry : MonoBehaviour
+	public class FileRegistry : MonoBehaviour
 	{
 		[SerializeField] private RegistryParserConfig _parserConfig;
 

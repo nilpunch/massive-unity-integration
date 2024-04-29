@@ -1,6 +1,4 @@
-﻿using Massive;
-
-namespace Massive.Unity
+﻿namespace Massive.Unity
 {
 	public class TransformComponent : UnmanagedComponentBase<Transform, TransformComponent>
 	{

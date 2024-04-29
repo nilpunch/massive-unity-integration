@@ -1,5 +1,4 @@
-﻿using Massive;
-using Massive.Serialization;
+﻿using Massive.Serialization;
 
 namespace Massive.Unity
 {

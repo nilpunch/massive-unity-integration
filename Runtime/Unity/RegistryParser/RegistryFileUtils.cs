@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using Massive;
 using Massive.Serialization;
 
 namespace Massive.Unity
