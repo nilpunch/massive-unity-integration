@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[AddComponentMenu("")]
 	internal class UnmanagedSampleComponent : UnmanagedComponent<UnmanagedSample, UnmanagedSampleComponent>

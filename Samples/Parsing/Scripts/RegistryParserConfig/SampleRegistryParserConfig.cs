@@ -1,7 +1,7 @@
 using Massive.Serialization;
 using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[CreateAssetMenu]
 	public class SampleRegistryParserConfig : RegistryParserConfig

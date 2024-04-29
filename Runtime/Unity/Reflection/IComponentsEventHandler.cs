@@ -1,4 +1,4 @@
-﻿namespace UPR
+﻿namespace Massive.Unity
 {
 	public interface IComponentsEventHandler
 	{

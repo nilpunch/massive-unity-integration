@@ -1,0 +1,17 @@
+{
+    "name": "Massive.Unity.Samples",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cf2e24c64a0d02f4690b9be74f35390f",
+        "GUID:6dcb242060ae407418b561364f73792e"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

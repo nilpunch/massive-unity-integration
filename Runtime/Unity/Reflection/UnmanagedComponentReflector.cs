@@ -1,7 +1,7 @@
 ﻿using Massive;
 using Massive.Serialization;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public class UnmanagedComponentReflector<TComponent, TMonoComponent> : IComponentReflector
 		where TComponent : unmanaged

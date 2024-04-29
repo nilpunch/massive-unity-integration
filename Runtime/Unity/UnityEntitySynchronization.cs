@@ -4,7 +4,7 @@ using Massive;
 using UnityEngine;
 using Object = UnityEngine.Object;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public class UnityEntitySynchronization : IComponentsEventHandler, IDisposable
 	{

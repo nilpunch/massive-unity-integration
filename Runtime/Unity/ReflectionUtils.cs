@@ -1,7 +1,7 @@
 using System;
 using System.Linq;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public static class ReflectionUtils
 	{

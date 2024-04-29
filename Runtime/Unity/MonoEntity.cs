@@ -1,7 +1,7 @@
 ﻿using Massive;
 using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[DisallowMultipleComponent]
 	public class MonoEntity : MonoBehaviour

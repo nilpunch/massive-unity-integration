@@ -3,7 +3,7 @@ using Massive;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public class SceneRegistry : MonoBehaviour
 	{

@@ -1,7 +1,7 @@
 ﻿using Massive.Serialization;
 using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[CreateAssetMenu(fileName = "AutoRegistryParserConfig", menuName = "Massive ECS/Auto Registry Parser Config")]
 	public class AutoRegistryParserConfig : RegistryParserConfig

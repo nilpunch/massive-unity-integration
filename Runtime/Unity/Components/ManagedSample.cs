@@ -1,7 +1,7 @@
 ﻿using System;
 using Massive;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[Serializable]
 	internal struct ManagedSample : IManaged<ManagedSample>

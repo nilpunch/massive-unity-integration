@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public class FileSceneRegistry : MonoBehaviour
 	{

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[RequireComponent(typeof(MonoEntity))]
 	[DisallowMultipleComponent]

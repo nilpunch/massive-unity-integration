@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Massive;
 
-namespace UPR
+namespace Massive.Unity
 {
 	[Serializable]
 	public struct Inventory : IManaged<Inventory>

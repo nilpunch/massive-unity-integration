@@ -2,7 +2,7 @@
 using Massive;
 using UnityEngine;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public struct Hierarchy
 	{

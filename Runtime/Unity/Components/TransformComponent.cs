@@ -1,6 +1,6 @@
 ﻿using Massive;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public class TransformComponent : UnmanagedComponentBase<Transform, TransformComponent>
 	{

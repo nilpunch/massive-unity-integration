@@ -2,7 +2,7 @@
 using Massive;
 using Massive.Serialization;
 
-namespace UPR
+namespace Massive.Unity
 {
 	public static class RegistryFileUtils
 	{
