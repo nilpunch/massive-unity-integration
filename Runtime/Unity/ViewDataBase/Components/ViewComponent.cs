@@ -8,16 +8,16 @@ namespace Massive.Unity
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 
 		private IRegistry _registry;
-		private int _entityId;
+		private Entity _entity;
 
 		public override void ApplyToEntity(IRegistry registry, Entity entity)
 		{
 			registry.Assign(entity, _viewConfig.GetAssetId(_viewPrefab));
 		}
 
-		public override void Synchronize(IRegistry registry, int entityId)
+		public override void Synchronize(IRegistry registry, Entity entity)
 		{
-			_entityId = entityId;
+			_entity = entity;
 			_registry = registry;
 		}
 
@@ -25,7 +25,7 @@ namespace Massive.Unity
 		{
 			if (_registry != null)
 			{
-				_registry.Unassign<ViewAsset>(_entityId);
+				_registry.Unassign<ViewAsset>(_entity);
 			}
 		}
 	}

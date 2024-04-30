@@ -15,7 +15,7 @@ namespace Massive.Unity
 		{
 			_registry = registry;
 			_viewDataBase = viewDataBase;
-			_monoEntities = new MonoEntitiesDataBase();
+			_monoEntities = new MonoEntitiesDataBase(registry);
 
 			for (var i = 0; i < _registry.Entities.Alive.Length; i++)
 			{
@@ -56,7 +56,7 @@ namespace Massive.Unity
 
 		public void OnAfterAssigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent
 		{
-			_monoEntities.MonoEntities.Get(entityId).gameObject.AddComponent<TMonoComponent>().Synchronize(_registry, entityId);
+			_monoEntities.MonoEntities.Get(entityId).gameObject.AddComponent<TMonoComponent>().Synchronize(_registry, _registry.GetEntity(entityId));
 		}
 
 		public void OnBeforeUnassigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent
@@ -77,8 +77,13 @@ namespace Massive.Unity
 
 		private void OnBeforeViewUnassigned(int entityId)
 		{
-			var view = _monoEntities.MonoEntities.Get(entityId).transform.GetChild(0).gameObject;
-			_viewDataBase.ReturnView(view);
+			var transform = _monoEntities.MonoEntities.Get(entityId).transform;
+
+			if (transform.childCount != 0)
+			{
+				var view = transform.GetChild(0).gameObject;
+				_viewDataBase.ReturnView(view);
+			}
 		}
 
 		public void Dispose()

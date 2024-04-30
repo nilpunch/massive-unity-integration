@@ -11,25 +11,25 @@ namespace Massive.Unity
 		[SerializeField] private TComponent _data;
 
 		private IRegistry _registry;
-		private int _entityId;
+		private Entity _entity;
 
 		public override void ApplyToEntity(IRegistry registry, Entity entity)
 		{
 			registry.Assign(entity, _data);
 		}
 
-		public override void Synchronize(IRegistry registry, int entityId)
+		public override void Synchronize(IRegistry registry, Entity entity)
 		{
 			_registry = registry;
-			_entityId = entityId;
-			_data = registry.Get<TComponent>(entityId);
+			_entity = entity;
+			_data = registry.Get<TComponent>(entity);
 		}
 
 		private void OnDestroy()
 		{
 			if (_registry != null)
 			{
-				_registry.Unassign<TComponent>(_entityId);
+				_registry.Unassign<TComponent>(_entity);
 			}
 		}
 
@@ -37,7 +37,7 @@ namespace Massive.Unity
 		{
 			if (_registry != null)
 			{
-				_registry.Get<TComponent>(_entityId) = _data;
+				_registry.Get<TComponent>(_entity) = _data;
 			}
 		}
 
@@ -45,7 +45,7 @@ namespace Massive.Unity
 		{
 			if (_registry != null)
 			{
-				_data = _registry.Get<TComponent>(_entityId);
+				_data = _registry.Get<TComponent>(_entity);
 			}
 		}
 	}

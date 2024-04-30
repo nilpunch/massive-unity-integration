@@ -5,6 +5,8 @@ namespace Massive.Unity
 	[DisallowMultipleComponent]
 	public class MonoEntity : MonoBehaviour
 	{
+		private IRegistry _registry;
+
 		public Entity Entity { get; private set; }
 
 		public void ApplyToRegistry(IRegistry registry)
@@ -17,9 +19,19 @@ namespace Massive.Unity
 			}
 		}
 
-		public void Synchronize(Entity entity)
+		public void Synchronize(IRegistry registry, Entity entity)
 		{
+			_registry = registry;
 			Entity = entity;
+		}
+
+		[ContextMenu("Destroy Entity")]
+		private void DestroyEntity()
+		{
+			if (_registry != null)
+			{
+				_registry.Destroy(Entity);
+			}
 		}
 	}
 }

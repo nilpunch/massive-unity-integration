@@ -6,26 +6,26 @@
 		private LocalTransform _lastGoLocalTransform;
 
 		private IRegistry _registry;
-		private int _entityId;
+		private Entity _entity;
 
 		public override void ApplyToEntity(IRegistry registry, Entity entity)
 		{
 			registry.Assign(entity, GetTransformData());
 		}
 
-		public override void Synchronize(IRegistry registry, int entityId)
+		public override void Synchronize(IRegistry registry, Entity entity)
 		{
 			_registry = registry;
-			_entityId = entityId;
+			_entity = entity;
 
-			ApplyTransformData(_registry.Get<LocalTransform>(entityId));
+			ApplyTransformData(_registry.Get<LocalTransform>(entity));
 		}
 
 		private void OnDestroy()
 		{
 			if (_registry != null)
 			{
-				_registry.Unassign<LocalTransform>(_entityId);
+				_registry.Unassign<LocalTransform>(_entity);
 			}
 		}
 
@@ -37,7 +37,7 @@
 			}
 
 			var goTransformData = GetTransformData();
-			ref var registryTransformData = ref _registry.Get<LocalTransform>(_entityId);
+			ref var registryTransformData = ref _registry.Get<LocalTransform>(_entity);
 			if (_lastRegistryLocalTransform != registryTransformData)
 			{
 				_lastRegistryLocalTransform = registryTransformData;
