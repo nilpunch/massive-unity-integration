@@ -6,6 +6,8 @@ namespace Massive.Unity
 {
 	public class SceneRegistry : MonoBehaviour
 	{
+		[SerializeField] private ViewDataBaseConfig _viewConfig;
+
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
 
@@ -20,7 +22,7 @@ namespace Massive.Unity
 				Destroy(monoEntity.gameObject);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry);
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewDataBase(_viewConfig));
 		}
 
 		private void OnDestroy()

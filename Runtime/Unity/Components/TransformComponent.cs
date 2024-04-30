@@ -1,35 +1,31 @@
 ﻿namespace Massive.Unity
 {
-	public class TransformComponent : UnmanagedComponentBase<Transform, TransformComponent>
+	public class TransformComponent : UnmanagedComponentBase<LocalTransform, TransformComponent>
 	{
-		private Transform _lastRegistryTransform;
-		private Transform _lastGOTransform;
+		private LocalTransform _lastRegistryLocalTransform;
+		private LocalTransform _lastGoLocalTransform;
 
 		private IRegistry _registry;
-		private Entity _entity;
+		private int _entityId;
 
 		public override void ApplyToEntity(IRegistry registry, Entity entity)
 		{
 			registry.Assign(entity, GetTransformData());
 		}
 
-		public override void Synchronize(IRegistry registry, Entity entity)
+		public override void Synchronize(IRegistry registry, int entityId)
 		{
 			_registry = registry;
-			_entity = entity;
+			_entityId = entityId;
 
-			var transformData = _registry.Get<Transform>(entity);
-
-			transform.localPosition = transformData.LocalPosition;
-			transform.localRotation = transformData.LocalRotation;
-			transform.localScale = transformData.LocalScale;
+			ApplyTransformData(_registry.Get<LocalTransform>(entityId));
 		}
 
 		private void OnDestroy()
 		{
 			if (_registry != null)
 			{
-				_registry.Unassign<Transform>(_entity);
+				_registry.Unassign<LocalTransform>(_entityId);
 			}
 		}
 
@@ -41,36 +37,36 @@
 			}
 
 			var goTransformData = GetTransformData();
-			ref var registryTransformData = ref _registry.Get<Transform>(_entity);
-			if (_lastRegistryTransform != registryTransformData)
+			ref var registryTransformData = ref _registry.Get<LocalTransform>(_entityId);
+			if (_lastRegistryLocalTransform != registryTransformData)
 			{
-				_lastRegistryTransform = registryTransformData;
-				_lastGOTransform = registryTransformData;
+				_lastRegistryLocalTransform = registryTransformData;
 				ApplyTransformData(registryTransformData);
 			}
-			else if (_lastGOTransform != goTransformData)
+			else if (_lastGoLocalTransform != goTransformData)
 			{
-				_lastRegistryTransform = goTransformData;
-				_lastGOTransform = goTransformData;
+				_lastRegistryLocalTransform = goTransformData;
+				_lastGoLocalTransform = goTransformData;
 				registryTransformData = goTransformData;
 			}
 		}
 
-		private Transform GetTransformData()
+		private LocalTransform GetTransformData()
 		{
-			return new Transform()
+			return new LocalTransform()
 			{
-				LocalPosition = transform.localPosition,
-				LocalRotation = transform.localRotation,
-				LocalScale = transform.localScale,
+				Position = transform.localPosition,
+				Rotation = transform.localRotation,
+				Scale = transform.localScale,
 			};
 		}
 
-		private void ApplyTransformData(Transform transformData)
+		private void ApplyTransformData(LocalTransform localTransformData)
 		{
-			transform.localPosition = transformData.LocalPosition;
-			transform.localRotation = transformData.LocalRotation;
-			transform.localScale = transformData.LocalScale;
+			transform.localPosition = localTransformData.Position;
+			transform.localRotation = localTransformData.Rotation;
+			transform.localScale = localTransformData.Scale;
+			_lastGoLocalTransform = localTransformData;
 		}
 	}
 }

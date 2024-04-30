@@ -9,16 +9,16 @@ namespace Massive.Unity
 		where TMonoComponent : TagComponent<TComponent, TMonoComponent>
 	{
 		private IRegistry _registry;
-		private Entity _entity;
+		private int _entityId;
 
 		public override void ApplyToEntity(IRegistry registry, Entity entity)
 		{
 			registry.Assign<TComponent>(entity);
 		}
 
-		public override void Synchronize(IRegistry registry, Entity entity)
+		public override void Synchronize(IRegistry registry, int entityId)
 		{
-			_entity = entity;
+			_entityId = entityId;
 			_registry = registry;
 		}
 
@@ -26,7 +26,7 @@ namespace Massive.Unity
 		{
 			if (_registry != null)
 			{
-				_registry.Unassign<TComponent>(_entity);
+				_registry.Unassign<TComponent>(_entityId);
 			}
 		}
 	}

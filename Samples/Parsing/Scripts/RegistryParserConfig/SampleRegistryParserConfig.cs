@@ -9,7 +9,7 @@ namespace Massive.Unity
 		public override IRegistryParser CreateParser()
 		{
 			var registryParser = new RegistryParser();
-			registryParser.AddComponent<Transform>();
+			registryParser.AddComponent<LocalTransform>();
 			registryParser.AddComponent<int>();
 			registryParser.AddComponent<Vector3>();
 			registryParser.AddComponent<float>();
