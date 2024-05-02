@@ -17,11 +17,6 @@ namespace Massive.Unity
 			_viewDataBase = viewDataBase;
 			_monoEntities = new MonoEntitiesDataBase(registry);
 
-			for (var i = 0; i < _registry.Entities.Alive.Length; i++)
-			{
-				OnAfterEntityCreated(_registry.Entities.Alive[i]);
-			}
-
 			_registry.Entities.AfterCreated += OnAfterEntityCreated;
 			_registry.Entities.BeforeDestroyed += OnBeforeEntityDestroyed;
 
@@ -30,10 +25,8 @@ namespace Massive.Unity
 				reflector.SubscribeAssignCallbacks(_registry, this);
 			}
 
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.SynchronizeGameObjects(_registry, this);
-			}
+			SyncronizeEntities();
+			SynchronizeComponents();
 
 			_registry.Any<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
 			_registry.Any<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
@@ -44,6 +37,34 @@ namespace Massive.Unity
 			}
 		}
 
+		public void SyncronizeEntities()
+		{
+			var monoEntities = _monoEntities.Set;
+			foreach (var entityId in monoEntities.Ids)
+			{
+				if (!_registry.IsAlive(entityId))
+				{
+					_monoEntities.DestroyMonoEntity(entityId);
+				}
+			}
+
+			foreach (var entity in _registry.Entities.Alive)
+			{
+				if (!monoEntities.IsAssigned(entity.Id))
+				{
+					_monoEntities.CreateMonoEntity(entity);
+				}
+			}
+		}
+
+		public void SynchronizeComponents()
+		{
+			foreach (var reflector in ComponentReflectors.All)
+			{
+				reflector.SynchronizeComponents(_registry, this);
+			}
+		}
+		
 		private void OnAfterEntityCreated(Entity entity)
 		{
 			_monoEntities.CreateMonoEntity(entity);
@@ -56,12 +77,36 @@ namespace Massive.Unity
 
 		public void OnAfterAssigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent
 		{
-			_monoEntities.MonoEntities.Get(entityId).gameObject.AddComponent<TMonoComponent>().Synchronize(_registry, _registry.GetEntity(entityId));
+			var monoEntities = _monoEntities.Set;
+			if (!monoEntities.IsAssigned(entityId))
+			{
+				return;
+			}
+			
+			var go = monoEntities.Get(entityId).gameObject;
+
+			if (!go.TryGetComponent<TMonoComponent>(out var component))
+			{
+				component = go.AddComponent<TMonoComponent>();
+			}
+
+			component.Synchronize(_registry, _registry.GetEntity(entityId));
 		}
 
 		public void OnBeforeUnassigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent
 		{
-			Object.Destroy(_monoEntities.MonoEntities.Get(entityId).gameObject.GetComponent<TMonoComponent>());
+			var monoEntities = _monoEntities.Set;
+			if (!monoEntities.IsAssigned(entityId))
+			{
+				return;
+			}
+			
+			var go = monoEntities.Get(entityId).gameObject;
+
+			if (go.TryGetComponent<TMonoComponent>(out var component))
+			{
+				Object.Destroy(component);
+			}
 		}
 
 		private void OnAfterViewAssigned(int entityId)
@@ -69,7 +114,7 @@ namespace Massive.Unity
 			var viewId = _registry.Get<ViewAsset>(entityId);
 			var view = _viewDataBase.GetView(viewId);
 
-			view.transform.SetParent(_monoEntities.MonoEntities.Get(entityId).transform);
+			view.transform.SetParent(_monoEntities.Set.Get(entityId).transform);
 			view.transform.localPosition = Vector3.zero;
 			view.transform.localRotation = Quaternion.identity;
 			view.transform.localScale = Vector3.one;
@@ -77,7 +122,7 @@ namespace Massive.Unity
 
 		private void OnBeforeViewUnassigned(int entityId)
 		{
-			var transform = _monoEntities.MonoEntities.Get(entityId).transform;
+			var transform = _monoEntities.Set.Get(entityId).transform;
 
 			if (transform.childCount != 0)
 			{

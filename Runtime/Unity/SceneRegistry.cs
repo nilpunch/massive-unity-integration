@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -28,6 +29,12 @@ namespace Massive.Unity
 		private void OnDestroy()
 		{
 			_unityEntitySynchronization.Dispose();
+		}
+
+		private void LateUpdate()
+		{
+			_unityEntitySynchronization.SyncronizeEntities();
+			_unityEntitySynchronization.SynchronizeComponents();
 		}
 	}
 }

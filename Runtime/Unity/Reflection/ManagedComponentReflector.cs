@@ -6,11 +6,19 @@ namespace Massive.Unity
 		where TComponent : IManaged<TComponent>
 		where TMonoComponent : ManagedComponentBase<TComponent, TMonoComponent>
 	{
-		public void SynchronizeGameObjects(IRegistry registry, IComponentsEventHandler componentsEventHandler)
+		public void SynchronizeComponents(IRegistry registry, IComponentsEventHandler componentsEventHandler)
 		{
-			foreach (var id in registry.Any<TComponent>().Ids)
+			var components = registry.Any<TComponent>();
+			foreach (var entity in registry.Entities.Alive)
 			{
-				componentsEventHandler.OnAfterAssigned<TMonoComponent>(id);
+				if (components.IsAssigned(entity.Id))
+				{
+					componentsEventHandler.OnAfterAssigned<TMonoComponent>(entity.Id);
+				}
+				else
+				{
+					componentsEventHandler.OnBeforeUnassigned<TMonoComponent>(entity.Id);
+				}
 			}
 		}
 

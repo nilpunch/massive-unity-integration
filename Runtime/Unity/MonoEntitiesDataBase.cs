@@ -6,8 +6,9 @@ namespace Massive.Unity
 	{
 		private readonly IRegistry _registry;
 		private readonly Pool<MonoEntity> _monoEntityPool = new Pool<MonoEntity>(new MonoEntityFactory());
+		private readonly DataSet<MonoEntity> _set = new DataSet<MonoEntity>();
 
-		public DataSet<MonoEntity> MonoEntities { get; } = new DataSet<MonoEntity>();
+		public IReadOnlyDataSet<MonoEntity> Set => _set;
 
 		public MonoEntitiesDataBase(IRegistry registry)
 		{
@@ -19,17 +20,17 @@ namespace Massive.Unity
 			var monoEntity = _monoEntityPool.Get();
 			monoEntity.gameObject.SetActive(true);
 			monoEntity.Synchronize(_registry, entity);
-			MonoEntities.Assign(entity.Id, monoEntity);
+			_set.Assign(entity.Id, monoEntity);
 		}
 
 		public void DestroyMonoEntity(int entityId)
 		{
-			if (MonoEntities.TryGetDense(entityId, out var dense))
+			if (Set.TryGetDense(entityId, out var dense))
 			{
-				var monoEntity = MonoEntities.Data[dense];
+				var monoEntity = Set.Data[dense];
 				monoEntity.gameObject.SetActive(false);
 				_monoEntityPool.Return(monoEntity);
-				MonoEntities.Unassign(entityId);
+				_set.Unassign(entityId);
 			}
 		}
 	}
