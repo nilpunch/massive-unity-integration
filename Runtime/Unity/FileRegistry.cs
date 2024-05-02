@@ -8,7 +8,7 @@ namespace Massive.Unity
 		[SerializeField] private RegistryParserConfig _parserConfig;
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 
-		private ViewDataBase _viewDataBase;
+		private ViewPool _viewPool;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
 
@@ -23,7 +23,7 @@ namespace Massive.Unity
 
 			_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _parserConfig.CreateParser());
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewDataBase(_viewConfig));
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewPool(_viewConfig));
 		}
 
 		private void OnDestroy()

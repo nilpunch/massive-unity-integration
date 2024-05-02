@@ -2,13 +2,13 @@
 
 namespace Massive.Unity
 {
-	public class ViewDataBase
+	public class ViewPool
 	{
 		private readonly ViewDataBaseConfig _config;
 		private readonly VariantPool<ViewAsset, GameObject> _viewPool = new VariantPool<ViewAsset, GameObject>();
 		private readonly DataSet<Transform> _poolRoots = new DataSet<Transform>();
 
-		public ViewDataBase(ViewDataBaseConfig config)
+		public ViewPool(ViewDataBaseConfig config)
 		{
 			_config = config;
 		}

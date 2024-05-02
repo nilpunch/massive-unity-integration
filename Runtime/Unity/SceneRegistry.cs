@@ -8,6 +8,7 @@ namespace Massive.Unity
 	public class SceneRegistry : MonoBehaviour
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
+		[SerializeField] private bool _reactiveSynchronization = true;
 
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
@@ -23,7 +24,7 @@ namespace Massive.Unity
 				Destroy(monoEntity.gameObject);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewDataBase(_viewConfig));
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewPool(_viewConfig), _reactiveSynchronization);
 		}
 
 		private void OnDestroy()
@@ -33,8 +34,12 @@ namespace Massive.Unity
 
 		private void LateUpdate()
 		{
-			_unityEntitySynchronization.SyncronizeEntities();
-			_unityEntitySynchronization.SynchronizeComponents();
+			if (!_reactiveSynchronization)
+			{
+				_unityEntitySynchronization.SynchronizeComponents();
+				_unityEntitySynchronization.SyncronizeEntities();
+				_unityEntitySynchronization.SynchronizeViews();
+			}
 		}
 	}
 }

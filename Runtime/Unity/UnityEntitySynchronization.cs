@@ -7,33 +7,36 @@ namespace Massive.Unity
 	public class UnityEntitySynchronization : IComponentsEventHandler, IDisposable
 	{
 		private readonly IRegistry _registry;
-		private readonly ViewDataBase _viewDataBase;
+		private readonly ViewPool _viewPool;
 		private readonly MonoEntitiesDataBase _monoEntities;
+		private readonly DataSet<ViewInstance> _monoViews;
 		private int _entityCounter;
 
-		public UnityEntitySynchronization(IRegistry registry, ViewDataBase viewDataBase)
+		public UnityEntitySynchronization(IRegistry registry, ViewPool viewPool, bool reactiveSynchronization = true)
 		{
 			_registry = registry;
-			_viewDataBase = viewDataBase;
+			_viewPool = viewPool;
 			_monoEntities = new MonoEntitiesDataBase(registry);
+			_monoViews = new DataSet<ViewInstance>();
+
+			SyncronizeEntities();
+			SynchronizeComponents();
+			SynchronizeViews();
+
+			if (!reactiveSynchronization)
+			{
+				return;
+			}
 
 			_registry.Entities.AfterCreated += OnAfterEntityCreated;
 			_registry.Entities.BeforeDestroyed += OnBeforeEntityDestroyed;
 
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.SubscribeAssignCallbacks(_registry, this);
-			}
-
-			SyncronizeEntities();
-			SynchronizeComponents();
-
 			_registry.Any<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
 			_registry.Any<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
 
-			foreach (var entityId in registry.Any<ViewAsset>().Ids)
+			foreach (var reflector in ComponentReflectors.All)
 			{
-				OnAfterViewAssigned(entityId);
+				reflector.SubscribeAssignCallbacks(_registry, this);
 			}
 		}
 
@@ -57,14 +60,54 @@ namespace Massive.Unity
 			}
 		}
 
+		public void SynchronizeViews()
+		{
+			var viewAssets = _registry.Components<ViewAsset>();
+
+			// Remove to pool all invalid views
+			var monoViewsData = _monoViews.Data;
+			var monoViewsIds = _monoViews.Ids;
+			for (int i = monoViewsIds.Length - 1; i >= 0; i--)
+			{
+				int entityId = monoViewsIds[i];
+				var viewInstance = monoViewsData[i];
+				if (!viewAssets.IsAssigned(entityId) || !viewAssets.Get(entityId).Equals(viewInstance.Asset))
+				{
+					_viewPool.ReturnView(viewInstance.Instance);
+					_monoViews.Unassign(entityId);
+				}
+			}
+
+			// Add whats missing
+			var viewAssetData = viewAssets.Data;
+			var viewAssetIds = viewAssets.Ids;
+			for (int i = 0; i < viewAssetIds.Length; i++)
+			{
+				int entityId = viewAssetIds[i];
+				var viewAsset = viewAssetData[i];
+
+				if (!_monoViews.IsAssigned(entityId))
+				{
+					var view = _viewPool.GetView(viewAsset);
+
+					_monoViews.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
+
+					view.transform.SetParent(_monoEntities.Set.Get(entityId).transform);
+					view.transform.localPosition = Vector3.zero;
+					view.transform.localRotation = Quaternion.identity;
+					view.transform.localScale = Vector3.one;
+				}
+			}
+		}
+
 		public void SynchronizeComponents()
 		{
 			foreach (var reflector in ComponentReflectors.All)
 			{
-				reflector.SynchronizeComponents(_registry, this);
+				reflector.SynchronizeComponents(_registry, _monoEntities.Set, this);
 			}
 		}
-		
+
 		private void OnAfterEntityCreated(Entity entity)
 		{
 			_monoEntities.CreateMonoEntity(entity);
@@ -82,7 +125,7 @@ namespace Massive.Unity
 			{
 				return;
 			}
-			
+
 			var go = monoEntities.Get(entityId).gameObject;
 
 			if (!go.TryGetComponent<TMonoComponent>(out var component))
@@ -100,7 +143,7 @@ namespace Massive.Unity
 			{
 				return;
 			}
-			
+
 			var go = monoEntities.Get(entityId).gameObject;
 
 			if (go.TryGetComponent<TMonoComponent>(out var component))
@@ -111,8 +154,27 @@ namespace Massive.Unity
 
 		private void OnAfterViewAssigned(int entityId)
 		{
-			var viewId = _registry.Get<ViewAsset>(entityId);
-			var view = _viewDataBase.GetView(viewId);
+			var viewAsset = _registry.Get<ViewAsset>(entityId);
+
+			if (_monoViews.IsAssigned(entityId))
+			{
+				var viewInstance = _monoViews.Get(entityId);
+
+				// If instance is alright, nothing to be done
+				if (viewInstance.Asset.Equals(viewAsset))
+				{
+					return;
+				}
+				else
+				{
+					_viewPool.ReturnView(viewInstance.Instance);
+					_monoViews.Unassign(entityId);
+				}
+			}
+
+			var view = _viewPool.GetView(viewAsset);
+
+			_monoViews.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
 
 			view.transform.SetParent(_monoEntities.Set.Get(entityId).transform);
 			view.transform.localPosition = Vector3.zero;
@@ -122,12 +184,10 @@ namespace Massive.Unity
 
 		private void OnBeforeViewUnassigned(int entityId)
 		{
-			var transform = _monoEntities.Set.Get(entityId).transform;
-
-			if (transform.childCount != 0)
+			if (_monoViews.IsAssigned(entityId))
 			{
-				var view = transform.GetChild(0).gameObject;
-				_viewDataBase.ReturnView(view);
+				_viewPool.ReturnView(_monoViews.Get(entityId).Instance);
+				_monoViews.Unassign(entityId);
 			}
 		}
 
@@ -135,7 +195,7 @@ namespace Massive.Unity
 		{
 			_registry.Entities.AfterCreated -= OnAfterEntityCreated;
 			_registry.Entities.BeforeDestroyed -= OnBeforeEntityDestroyed;
-			
+
 			_registry.Any<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
 			_registry.Any<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
 

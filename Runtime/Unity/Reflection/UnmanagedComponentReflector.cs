@@ -6,18 +6,24 @@ namespace Massive.Unity
 		where TComponent : unmanaged
 		where TMonoComponent : UnmanagedComponentBase<TComponent, TMonoComponent>
 	{
-		public void SynchronizeComponents(IRegistry registry, IComponentsEventHandler componentsEventHandler)
+		public void SynchronizeComponents(IRegistry registry, IReadOnlyDataSet<MonoEntity> monoEntities, IComponentsEventHandler componentsEventHandler)
 		{
 			var components = registry.Any<TComponent>();
-			foreach (var entity in registry.Entities.Alive)
+			var componentsIds = components.Ids;
+
+			var monoEntityIds = monoEntities.Ids;
+			var monoEntityData = monoEntities.Data;
+			for (int i = 0; i < monoEntityIds.Length; i++)
 			{
-				if (components.IsAssigned(entity.Id))
+				int entityId = monoEntityIds[i];
+				var monoEntity = monoEntityData[i];
+				if (!components.IsAssigned(entityId) || monoEntity.Entity != registry.GetEntity(entityId))
 				{
-					componentsEventHandler.OnAfterAssigned<TMonoComponent>(entity.Id);
+					componentsEventHandler.OnBeforeUnassigned<TMonoComponent>(entityId);
 				}
 				else
 				{
-					componentsEventHandler.OnBeforeUnassigned<TMonoComponent>(entity.Id);
+					componentsEventHandler.OnAfterAssigned<TMonoComponent>(entityId);
 				}
 			}
 		}
