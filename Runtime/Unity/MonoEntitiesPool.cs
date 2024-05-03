@@ -15,11 +15,11 @@ namespace Massive.Unity
 		{
 			_registry = registry;
 		}
-		
+
 		public void CreateMonoEntity(Entity entity)
 		{
 			_poolRoot ??= new GameObject("Entity Pool").transform;
-			
+
 			var monoEntity = _monoEntityPool.Get();
 			monoEntity.gameObject.SetActive(true);
 			monoEntity.transform.SetParent(null);

@@ -37,7 +37,7 @@ namespace Massive.Unity
 			{
 				viewBehaviour.OnEntityUnassigned();
 			}
-			
+
 			gameObject.SetActive(false);
 		}
 

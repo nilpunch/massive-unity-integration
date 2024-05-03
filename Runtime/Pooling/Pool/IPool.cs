@@ -1,7 +1,7 @@
 ﻿namespace Massive.Unity
 {
-    public interface IPool<TItem> : IPoolReturn<TItem>
-    {
-        TItem Get();
-    }
+	public interface IPool<TItem> : IPoolReturn<TItem>
+	{
+		TItem Get();
+	}
 }

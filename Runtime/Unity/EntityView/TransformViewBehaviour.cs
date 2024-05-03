@@ -23,6 +23,11 @@ namespace Massive.Unity
 
 		private void LateUpdate()
 		{
+			if (!_localTransforms.IsAssigned(_entity.Id))
+			{
+				return;
+			}
+
 			var localTransformData = _localTransforms.Get(_entity.Id);
 
 			_rootTransform.localPosition = localTransformData.Position;
