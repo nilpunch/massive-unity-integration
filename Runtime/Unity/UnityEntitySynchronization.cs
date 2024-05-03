@@ -8,7 +8,7 @@ namespace Massive.Unity
 	{
 		private readonly IRegistry _registry;
 		private readonly ViewPool _viewPool;
-		private readonly MonoEntitiesDataBase _monoEntities;
+		private readonly MonoEntitiesPool _monoEntities;
 		private readonly DataSet<ViewInstance> _monoViews;
 		private int _entityCounter;
 
@@ -16,12 +16,8 @@ namespace Massive.Unity
 		{
 			_registry = registry;
 			_viewPool = viewPool;
-			_monoEntities = new MonoEntitiesDataBase(registry);
+			_monoEntities = new MonoEntitiesPool(registry);
 			_monoViews = new DataSet<ViewInstance>();
-
-			SyncronizeEntities();
-			SynchronizeComponents();
-			SynchronizeViews();
 
 			if (!reactiveSynchronization)
 			{
@@ -43,11 +39,12 @@ namespace Massive.Unity
 		public void SyncronizeEntities()
 		{
 			var monoEntities = _monoEntities.Set;
-			foreach (var entityId in monoEntities.Ids)
+			foreach (var monoEntity in monoEntities.Data)
 			{
-				if (!_registry.IsAlive(entityId))
+				var entity = monoEntity.Entity;
+				if (!_registry.IsAlive(entity))
 				{
-					_monoEntities.DestroyMonoEntity(entityId);
+					_monoEntities.DestroyMonoEntity(entity.Id);
 				}
 			}
 
@@ -73,8 +70,7 @@ namespace Massive.Unity
 				var viewInstance = monoViewsData[i];
 				if (!viewAssets.IsAssigned(entityId) || !viewAssets.Get(entityId).Equals(viewInstance.Asset))
 				{
-					_viewPool.ReturnView(viewInstance.Instance);
-					_monoViews.Unassign(entityId);
+					UnassignViewInstance(entityId, viewInstance);
 				}
 			}
 
@@ -88,14 +84,7 @@ namespace Massive.Unity
 
 				if (!_monoViews.IsAssigned(entityId))
 				{
-					var view = _viewPool.GetView(viewAsset);
-
-					_monoViews.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
-
-					view.transform.SetParent(_monoEntities.Set.Get(entityId).transform);
-					view.transform.localPosition = Vector3.zero;
-					view.transform.localRotation = Quaternion.identity;
-					view.transform.localScale = Vector3.one;
+					AssignViewInstance(viewAsset, entityId);
 				}
 			}
 		}
@@ -167,28 +156,38 @@ namespace Massive.Unity
 				}
 				else
 				{
-					_viewPool.ReturnView(viewInstance.Instance);
-					_monoViews.Unassign(entityId);
+					UnassignViewInstance(entityId, viewInstance);
 				}
 			}
 
-			var view = _viewPool.GetView(viewAsset);
-
-			_monoViews.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
-
-			view.transform.SetParent(_monoEntities.Set.Get(entityId).transform);
-			view.transform.localPosition = Vector3.zero;
-			view.transform.localRotation = Quaternion.identity;
-			view.transform.localScale = Vector3.one;
+			AssignViewInstance(viewAsset, entityId);
 		}
 
 		private void OnBeforeViewUnassigned(int entityId)
 		{
 			if (_monoViews.IsAssigned(entityId))
 			{
-				_viewPool.ReturnView(_monoViews.Get(entityId).Instance);
-				_monoViews.Unassign(entityId);
+				UnassignViewInstance(entityId, _monoViews.Get(entityId));
 			}
+		}
+
+		private void AssignViewInstance(ViewAsset viewAsset, int entityId)
+		{
+			var view = _viewPool.GetView(viewAsset);
+
+			view.transform.SetParent(null);
+			view.AssignEntity(_registry, _registry.GetEntity(entityId));
+
+			_monoViews.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
+		}
+
+		private void UnassignViewInstance(int entityId, ViewInstance viewInstance)
+		{
+			viewInstance.Instance.UnassignEntity();
+
+			_viewPool.ReturnView(viewInstance.Instance);
+
+			_monoViews.Unassign(entityId);
 		}
 
 		public void Dispose()

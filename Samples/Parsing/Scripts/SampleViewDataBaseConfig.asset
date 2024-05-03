@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: SampleViewDataBaseConfig
   m_EditorClassIdentifier: 
   <ViewsPrefabs>k__BackingField:
-  - {fileID: 5398472311337326050, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}
+  - {fileID: 5878791917240238856, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}

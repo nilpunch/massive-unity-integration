@@ -9,6 +9,9 @@ namespace Massive.Unity
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 		[SerializeField] private bool _reactiveSynchronization = true;
+		[SerializeField] private bool _synchronizeEntities = true;
+		[SerializeField] private bool _synchronizeComponents = true;
+		[SerializeField] private bool _synchronizeViews = true;
 
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
@@ -25,6 +28,19 @@ namespace Massive.Unity
 			}
 
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewPool(_viewConfig), _reactiveSynchronization);
+
+			if (_synchronizeEntities)
+			{
+				_unityEntitySynchronization.SyncronizeEntities();
+			}
+			if (_synchronizeComponents)
+			{
+				_unityEntitySynchronization.SynchronizeComponents();
+			}
+			if (_synchronizeViews)
+			{
+				_unityEntitySynchronization.SynchronizeViews();
+			}
 		}
 
 		private void OnDestroy()
@@ -32,13 +48,22 @@ namespace Massive.Unity
 			_unityEntitySynchronization.Dispose();
 		}
 
-		private void LateUpdate()
+		private void Update()
 		{
 			if (!_reactiveSynchronization)
 			{
-				_unityEntitySynchronization.SynchronizeComponents();
-				_unityEntitySynchronization.SyncronizeEntities();
-				_unityEntitySynchronization.SynchronizeViews();
+				if (_synchronizeComponents) // Synchronize components first to remove all components from dying entity
+				{
+					_unityEntitySynchronization.SynchronizeComponents();
+				}
+				if (_synchronizeEntities)
+				{
+					_unityEntitySynchronization.SyncronizeEntities();
+				}
+				if (_synchronizeViews)
+				{
+					_unityEntitySynchronization.SynchronizeViews();
+				}
 			}
 		}
 	}

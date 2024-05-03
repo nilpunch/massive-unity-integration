@@ -6,14 +6,14 @@ namespace Massive.Unity
 	[CreateAssetMenu]
 	public class ViewDataBaseConfig : ScriptableObject
 	{
-		[field: SerializeField] public List<GameObject> ViewsPrefabs { get; private set; }
+		[field: SerializeField] public List<EntityView> ViewsPrefabs { get; private set; }
 
-		public ViewAsset GetAssetId(GameObject prefab)
+		public ViewAsset GetAssetId(EntityView prefab)
 		{
 			return new ViewAsset(ViewsPrefabs.IndexOf(prefab));
 		}
 
-		public GameObject GetViewPrefab(ViewAsset viewAsset)
+		public EntityView GetViewPrefab(ViewAsset viewAsset)
 		{
 			return ViewsPrefabs[viewAsset.Id];
 		}

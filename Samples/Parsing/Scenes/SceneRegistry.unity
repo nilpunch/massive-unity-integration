@@ -855,7 +855,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _viewConfig: {fileID: 11400000, guid: a48039d3443895d48a27e0d0c14829eb, type: 2}
-  _reactiveSynchronization: 0
+  _reactiveSynchronization: 1
+  _synchronizeEntities: 1
+  _synchronizeComponents: 1
+  _synchronizeViews: 1
 --- !u!4 &1053553947
 Transform:
   m_ObjectHideFlags: 0
@@ -1108,7 +1111,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a7b32f0f6949e1ace356f03115d2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewPrefab: {fileID: 5398472311337326050, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}
+  _viewPrefab: {fileID: 5878791917240238856, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}
   _viewConfig: {fileID: 11400000, guid: a48039d3443895d48a27e0d0c14829eb, type: 2}
 --- !u!114 &1944062567
 MonoBehaviour:
@@ -1193,7 +1196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94a7b32f0f6949e1ace356f03115d2cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _viewPrefab: {fileID: 5398472311337326050, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}
+  _viewPrefab: {fileID: 5878791917240238856, guid: 5ee6fa71d031fea46b8757bb1bad1617, type: 3}
   _viewConfig: {fileID: 11400000, guid: a48039d3443895d48a27e0d0c14829eb, type: 2}
 --- !u!114 &2110576695
 MonoBehaviour:

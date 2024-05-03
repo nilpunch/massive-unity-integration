@@ -4,7 +4,7 @@ namespace Massive.Unity
 {
 	public class ViewComponent : UnmanagedComponentBase<ViewAsset, ViewComponent>
 	{
-		[SerializeField] private GameObject _viewPrefab;
+		[SerializeField] private EntityView _viewPrefab;
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 
 		private IRegistry _registry;

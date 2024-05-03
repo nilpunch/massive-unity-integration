@@ -4,7 +4,7 @@ namespace Massive.Unity
 {
 	public struct ViewInstance
 	{
-		public GameObject Instance;
+		public EntityView Instance;
 		public ViewAsset Asset;
 	}
 }
