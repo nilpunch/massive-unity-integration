@@ -1,28 +1,25 @@
-﻿using UnityEngine;
+﻿using Massive.Unity;
+using UnityEngine;
 
 namespace Massive.Samples.Shooter
 {
-	public class CharactersRotator : WorldUpdater
+	public class CharactersRotator : UpdateSystem
 	{
 		[SerializeField] private float _rotation = 400f;
 
-		private IRegistry _registry;
-		private IReadOnlyDataSet<CharacterState> _characters;
+		private GroupView<LocalTransform> _characters;
 
 		public override void Init(IRegistry registry)
 		{
-			_registry = registry;
-			_characters = registry.Components<CharacterState>();
+			_characters = new GroupView<LocalTransform>(registry, registry.Group(registry.Many<WeaponState>(), registry.Many<LocalTransform>()));
 		}
 
-		public override void UpdateWorld(float deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
-			var data = _characters.Data;
-			for (var i = 0; i < data.Length; i++)
+			_characters.ForEachExtra((deltaTime, _rotation), (int id, ref LocalTransform characterTransform, (float deltaTime, float rotationSpeed) inner) =>
 			{
-				ref var characterState = ref data[i];
-				characterState.Transform.Rotation *= Quaternion.AngleAxis(_rotation * deltaTime, Vector3.forward);
-			}
+				characterTransform.Rotation *= Quaternion.AngleAxis(inner.rotationSpeed * inner.deltaTime, Vector3.forward);
+			});
 		}
 	}
 }

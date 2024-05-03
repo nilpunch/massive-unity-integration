@@ -1,28 +1,31 @@
-﻿namespace Massive.Samples.Shooter
+﻿using Massive.Unity;
+
+namespace Massive.Samples.Shooter
 {
-	public class BulletsUpdater : WorldUpdater
+	public class BulletsUpdater : UpdateSystem
 	{
 		private IRegistry _registry;
-		private View<BulletState> _bullets;
+		private GroupView<BulletState, LocalTransform> _bullets;
 
 		public override void Init(IRegistry registry)
 		{
 			_registry = registry;
-			_bullets = new View<BulletState>(registry);
+			_bullets = new GroupView<BulletState, LocalTransform>(registry, registry.Group(_registry.Many<BulletState>(), _registry.Many<LocalTransform>()));
 		}
 
-		public override void UpdateWorld(float deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
-			_bullets.ForEachExtra((_registry, deltaTime), (int entityId, ref BulletState state, (IRegistry Registry, float DeltaTime) inner) =>
+			_bullets.ForEachExtra((_registry, deltaTime), (int entityId, ref BulletState bullet, ref LocalTransform bulletTransform,
+				(IRegistry Registry, float DeltaTime) inner) =>
 			{
-				state.Lifetime -= inner.DeltaTime;
-				if (state.IsDestroyed)
+				bullet.Lifetime -= inner.DeltaTime;
+				if (bullet.IsDestroyed)
 				{
 					inner.Registry.Destroy(entityId);
 					return;
 				}
 
-				state.Transform.Position += state.Velocity * inner.DeltaTime;
+				bulletTransform.Position += bullet.Velocity * inner.DeltaTime;
 			});
 		}
 	}

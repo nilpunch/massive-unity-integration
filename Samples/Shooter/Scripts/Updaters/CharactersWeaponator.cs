@@ -1,45 +1,72 @@
-﻿using UnityEngine;
+﻿using Massive.Unity;
+using UnityEngine;
 
 namespace Massive.Samples.Shooter
 {
-	public class CharactersWeaponator : WorldUpdater
+	public class CharactersWeaponator : UpdateSystem
 	{
+		[SerializeField] private EntityView _bulletViewPrefab;
+		[SerializeField] private ViewDataBaseConfig _viewDataBase;
 		[SerializeField] private float _cooldown = 0.2f;
 		[SerializeField] private float _bulletVelocity = 1f;
 		[SerializeField] private float _bulletDamage = 1f;
 		[SerializeField] private float _bulletLifetime = 2f;
 
 		private IRegistry _registry;
-		private GroupView<CharacterState, WeaponState> _characters;
+		private GroupView<WeaponState, LocalTransform> _characters;
 
 		public override void Init(IRegistry registry)
 		{
 			_registry = registry;
-			_characters = new GroupView<CharacterState, WeaponState>(registry, registry.Group(registry.Many<CharacterState, WeaponState>()));
+			_characters = new GroupView<WeaponState, LocalTransform>(registry, registry.Group(registry.Many<WeaponState>(), registry.Many<LocalTransform>()));
 		}
 
-		public override void UpdateWorld(float deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
-			_characters.ForEachExtra((_registry, deltaTime, _cooldown, _bulletVelocity, _bulletDamage, _bulletLifetime),
-				(int entity, ref CharacterState characterState, ref WeaponState weaponState,
-					(IRegistry Registry, float DeltaTime, float DefaultCooldown, float BulletVelocity, float BulletDamage, float BulletLifetime) inner) =>
+			var args = new Args()
+			{
+				Registry = _registry,
+				DeltaTime = deltaTime,
+				BulletViewPrefab = _bulletViewPrefab,
+				ViewDataBase = _viewDataBase,
+				Cooldown = _cooldown,
+				BulletVelocity = _bulletVelocity,
+				BulletDamage = _bulletDamage,
+				BulletLifetime = _bulletLifetime
+			};
+
+			_characters.ForEachExtra(args, (int entity, ref WeaponState weaponState, ref LocalTransform characterTransform, Args args) =>
+			{
+				weaponState.Cooldown -= args.DeltaTime;
+				if (weaponState.Cooldown > 0)
 				{
-					weaponState.Cooldown -= inner.DeltaTime;
-					if (weaponState.Cooldown > 0)
-					{
-						return;
-					}
+					return;
+				}
 
-					weaponState.Cooldown = inner.DefaultCooldown;
+				weaponState.Cooldown = args.Cooldown;
 
-					inner.Registry.Create(new BulletState
-					{
-						Transform = characterState.Transform,
-						Velocity = characterState.Transform.Rotation * Vector3.up * inner.BulletVelocity,
-						Lifetime = inner.BulletLifetime,
-						Damage = inner.BulletDamage
-					});
+				var bulletId = args.Registry.Create(new BulletState
+				{
+					Velocity = characterTransform.Rotation * Vector3.up * args.BulletVelocity,
+					Lifetime = args.BulletLifetime,
+					Damage = args.BulletDamage
 				});
+
+				args.Registry.Assign(bulletId, args.ViewDataBase.GetAssetId(args.BulletViewPrefab));
+				args.Registry.Assign(bulletId, characterTransform);
+			});
+		}
+
+		private struct Args
+		{
+			public IRegistry Registry;
+			public float DeltaTime;
+			public EntityView BulletViewPrefab;
+			public ViewDataBaseConfig ViewDataBase;
+			public float Cooldown;
+			public float BulletVelocity;
+			public float BulletDamage;
+			public float BulletLifetime;
 		}
 	}
 }

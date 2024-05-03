@@ -41,6 +41,7 @@ namespace Massive.Unity
 			gameObject.SetActive(false);
 		}
 
+#if UNITY_EDITOR
 		[ContextMenu("Find behaviours")]
 		private void FindBehaviours()
 		{
@@ -58,5 +59,6 @@ namespace Massive.Unity
 
 			UnityEditor.EditorUtility.SetDirty(this);
 		}
+#endif
 	}
 }
