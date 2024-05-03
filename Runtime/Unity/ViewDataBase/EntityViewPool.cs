@@ -2,13 +2,13 @@
 
 namespace Massive.Unity
 {
-	public class ViewPool
+	public class EntityViewPool
 	{
 		private readonly ViewDataBaseConfig _config;
 		private readonly VariantPool<ViewAsset, EntityView> _viewPool = new VariantPool<ViewAsset, EntityView>();
 		private readonly DataSet<Transform> _poolRoots = new DataSet<Transform>();
 
-		public ViewPool(ViewDataBaseConfig config)
+		public EntityViewPool(ViewDataBaseConfig config)
 		{
 			_config = config;
 		}
@@ -18,7 +18,7 @@ namespace Massive.Unity
 			return _config.GetViewPrefab(viewAsset);
 		}
 
-		public EntityView GetView(ViewAsset viewAsset)
+		public EntityView CreateView(ViewAsset viewAsset)
 		{
 			if (!_viewPool.ContainsVariant(viewAsset))
 			{

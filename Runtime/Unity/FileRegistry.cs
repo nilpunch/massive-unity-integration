@@ -12,7 +12,7 @@ namespace Massive.Unity
 		[SerializeField] private bool _synchronizeComponents = true;
 		[SerializeField] private bool _synchronizeViews = true;
 
-		private ViewPool _viewPool;
+		private EntityViewPool _entityViewPool;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
 
@@ -27,11 +27,11 @@ namespace Massive.Unity
 
 			_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _parserConfig.CreateParser());
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewPool(_viewConfig), _reactiveSynchronization);
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig), _reactiveSynchronization);
 
 			if (_synchronizeEntities)
 			{
-				_unityEntitySynchronization.SyncronizeEntities();
+				_unityEntitySynchronization.SynchronizeEntities();
 			}
 			if (_synchronizeComponents)
 			{
@@ -58,7 +58,7 @@ namespace Massive.Unity
 				}
 				if (_synchronizeEntities)
 				{
-					_unityEntitySynchronization.SyncronizeEntities();
+					_unityEntitySynchronization.SynchronizeEntities();
 				}
 				if (_synchronizeViews)
 				{

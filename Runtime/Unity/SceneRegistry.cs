@@ -27,11 +27,11 @@ namespace Massive.Unity
 				Destroy(monoEntity.gameObject);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new ViewPool(_viewConfig), _reactiveSynchronization);
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig), _reactiveSynchronization);
 
 			if (_synchronizeEntities)
 			{
-				_unityEntitySynchronization.SyncronizeEntities();
+				_unityEntitySynchronization.SynchronizeEntities();
 			}
 			if (_synchronizeComponents)
 			{
@@ -58,7 +58,7 @@ namespace Massive.Unity
 				}
 				if (_synchronizeEntities)
 				{
-					_unityEntitySynchronization.SyncronizeEntities();
+					_unityEntitySynchronization.SynchronizeEntities();
 				}
 				if (_synchronizeViews)
 				{

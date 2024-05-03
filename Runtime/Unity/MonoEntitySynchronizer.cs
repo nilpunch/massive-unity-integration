@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class MonoEntitiesPool
+	public class MonoEntitySynchronizer
 	{
 		private readonly IRegistry _registry;
 		private readonly Pool<MonoEntity> _monoEntityPool = new Pool<MonoEntity>(new MonoEntityFactory());
@@ -11,9 +11,29 @@ namespace Massive.Unity
 
 		public IReadOnlyDataSet<MonoEntity> Set => _set;
 
-		public MonoEntitiesPool(IRegistry registry)
+		public MonoEntitySynchronizer(IRegistry registry)
 		{
 			_registry = registry;
+		}
+
+		public void SynchronizeAll()
+		{
+			foreach (var monoEntity in _set.Data)
+			{
+				var entity = monoEntity.Entity;
+				if (!_registry.IsAlive(entity))
+				{
+					DestroyMonoEntity(entity.Id);
+				}
+			}
+
+			foreach (var entity in _registry.Entities.Alive)
+			{
+				if (!_set.IsAssigned(entity.Id))
+				{
+					CreateMonoEntity(entity);
+				}
+			}
 		}
 
 		public void CreateMonoEntity(Entity entity)
