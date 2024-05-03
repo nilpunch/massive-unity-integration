@@ -67,7 +67,7 @@ namespace Massive.Unity
 
 		private void OnBeforeViewUnassigned(int entityId)
 		{
-			_entityViewSynchronizer.UnassignView(entityId);
+			_entityViewSynchronizer.DestroyView(entityId);
 		}
 
 		public void OnAfterAssigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent

@@ -66,7 +66,7 @@
 			AssignViewInstance(viewAsset, entityId);
 		}
 
-		public void UnassignView(int entityId)
+		public void DestroyView(int entityId)
 		{
 			if (_viewInstances.IsAssigned(entityId))
 			{
