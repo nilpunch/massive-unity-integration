@@ -5,7 +5,8 @@ namespace Massive.Samples.Shooter
 {
 	public class ShooterSimulation : MonoBehaviour
 	{
-		[SerializeField] private int _simulationsPerFrame = 120;
+		[SerializeField, Min(1)] private int _saveEachNthFrame = 1;
+		[SerializeField] private int _resimulationsPerFrame = 120;
 		[SerializeField] private int _entitiesCapacity = 3000;
 		[SerializeField] private int _charactersAmount = 10;
 
@@ -20,7 +21,7 @@ namespace Massive.Samples.Shooter
 
 		private void Awake()
 		{
-			_registry = new MassiveRegistry(dataCapacity: _entitiesCapacity, framesCapacity: _simulationsPerFrame + 1);
+			_registry = new MassiveRegistry(dataCapacity: _entitiesCapacity, framesCapacity: _resimulationsPerFrame + 1);
 
 			_worldUpdaters = FindObjectsOfType<WorldUpdater>();
 			foreach (var worldUpdaters in _worldUpdaters)
@@ -55,12 +56,17 @@ namespace Massive.Samples.Shooter
 		{
 			Stopwatch stopwatch = Stopwatch.StartNew();
 
-			// if (_registry.CanRollbackFrames >= 0)
-			// {
-			// 	var previousFrameCount = _currentFrame;
-			// 	_currentFrame = Mathf.Max(_currentFrame - _registry.CanRollbackFrames, 0);
-			// 	_registry.Rollback(previousFrameCount - _currentFrame);
-			// }
+			if (_registry.CanRollbackFrames >= 0)
+			{
+				int framesToRollback = _registry.CanRollbackFrames;
+
+				int currentFrameCompressed = _currentFrame / _saveEachNthFrame;
+				
+				int compressedFramesToRollback = currentFrameCompressed - (_currentFrame - framesToRollback) / _saveEachNthFrame;
+				
+				_currentFrame = (currentFrameCompressed - compressedFramesToRollback) * _saveEachNthFrame;
+				_registry.Rollback(compressedFramesToRollback);
+			}
 
 			_elapsedTime += Time.deltaTime;
 
@@ -68,6 +74,8 @@ namespace Massive.Samples.Shooter
 
 			int targetFrame = Mathf.RoundToInt(_elapsedTime * 60);
 
+			var previousCurrentFrame = _currentFrame;
+			
 			while (_currentFrame < targetFrame)
 			{
 				foreach (var worldUpdater in _worldUpdaters)
@@ -75,22 +83,27 @@ namespace Massive.Samples.Shooter
 					worldUpdater.UpdateWorld(deltaTime);
 				}
 
-				_registry.SaveFrame();
 				_currentFrame++;
+				if (_currentFrame % _saveEachNthFrame == 0)
+				{
+					_registry.SaveFrame();
+				}
 			}
 
 			_characterSynchronisation.Synchronize(_registry.Components<CharacterState>());
 			_bulletSynchronisation.Synchronize(_registry.Components<BulletState>());
 
 			_debugTime = stopwatch.ElapsedMilliseconds;
+			_debugResimulations = _currentFrame - previousCurrentFrame;
 		}
 
 		private long _debugTime;
+		private int _debugResimulations;
 
 		private void OnGUI()
 		{
 			GUILayout.TextField($"{_debugTime}ms Simulation", new GUIStyle() { fontSize = 70, normal = new GUIStyleState() { textColor = Color.white } });
-			GUILayout.TextField($"{_registry.CanRollbackFrames} Resimulations",
+			GUILayout.TextField($"{_debugResimulations} Resimulations",
 				new GUIStyle() { fontSize = 50, normal = new GUIStyleState() { textColor = Color.white } });
 			GUILayout.TextField($"{_registry.Components<CharacterState>().Count} Characters",
 				new GUIStyle() { fontSize = 50, normal = new GUIStyleState() { textColor = Color.white } });
