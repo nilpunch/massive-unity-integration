@@ -12,6 +12,8 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
+			gameObject.SetActive(false);
+
 			foreach (MonoBehaviour monoBehaviour in _viewBehaviours)
 			{
 				if (monoBehaviour is IViewBehaviour viewBehaviour)
