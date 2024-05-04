@@ -25,8 +25,7 @@ namespace Massive.Unity
 			Entity = entity;
 		}
 
-		[ContextMenu("Destroy Entity")]
-		private void DestroyEntity()
+		public void DestroyEntity()
 		{
 			if (_registry != null)
 			{

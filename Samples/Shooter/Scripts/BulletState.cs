@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Massive.Samples.Shooter
 {
+	[Serializable]
 	public struct BulletState
 	{
 		public Vector3 Velocity;

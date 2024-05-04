@@ -83,9 +83,8 @@ namespace Massive.Unity
 			if (!go.TryGetComponent<TMonoComponent>(out var component))
 			{
 				component = go.AddComponent<TMonoComponent>();
+				component.Synchronize(_registry, _registry.GetEntity(entityId));
 			}
-
-			component.Synchronize(_registry, _registry.GetEntity(entityId));
 		}
 
 		public void OnBeforeUnassigned<TMonoComponent>(int entityId) where TMonoComponent : MonoComponent

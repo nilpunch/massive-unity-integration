@@ -9,7 +9,6 @@ namespace Massive.Unity
 		public void SynchronizeComponents(IRegistry registry, IReadOnlyDataSet<MonoEntity> monoEntities, IComponentsEventHandler componentsEventHandler)
 		{
 			var components = registry.Any<TComponent>();
-			var componentsIds = components.Ids;
 
 			var monoEntityIds = monoEntities.Ids;
 			var monoEntityData = monoEntities.Data;

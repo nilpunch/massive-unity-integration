@@ -17,6 +17,7 @@ namespace Massive.Unity
 		private UpdateSystem[] _updateSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private IRegistry _registry;
+		private int _currentFrame;
 
 		private void Awake()
 		{
@@ -58,11 +59,17 @@ namespace Massive.Unity
 
 		private void Update()
 		{
-			float deltaTime = Mathf.RoundToInt(1f / _simulationFrequency);
+			int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
+			float deltaTime = 1f / _simulationFrequency;
 			
-			foreach (var updateSystem in _updateSystems)
+			while (_currentFrame < targetFrame)
 			{
-				updateSystem.UpdateFrame(deltaTime);
+				foreach (var updateSystem in _updateSystems)
+				{
+					updateSystem.UpdateFrame(deltaTime);
+				}
+
+				_currentFrame++;
 			}
 
 			if (!_reactiveSynchronization)

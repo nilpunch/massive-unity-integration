@@ -25,7 +25,7 @@ namespace Massive.Unity
 			registry.Get<TComponent>(entity).CopyTo(ref _data);
 		}
 
-		private void OnDestroy()
+		public override void DestroyComponent()
 		{
 			if (_registry != null)
 			{
@@ -43,7 +43,7 @@ namespace Massive.Unity
 
 		private void LateUpdate()
 		{
-			if (_registry != null)
+			if (_registry != null && _registry.IsAlive(_entity))
 			{
 				_registry.Get<TComponent>(_entity).CopyTo(ref _data);
 			}

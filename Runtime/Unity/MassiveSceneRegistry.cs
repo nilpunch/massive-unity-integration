@@ -31,7 +31,8 @@ namespace Massive.Unity
 			_stopwatch = new Stopwatch();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>()))
+				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>())
+				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
 				monoEntity.ApplyToRegistry(_registry);
 				Destroy(monoEntity.gameObject);
@@ -74,7 +75,9 @@ namespace Massive.Unity
 			{
 				int currentFrameCompressed = _currentFrame / _saveEachNthFrame;
 
-				int compressedFramesToRollback = currentFrameCompressed - Mathf.Max(_currentFrame - _resimulations, 0) / _saveEachNthFrame;
+				int targetCompressedFrame = Mathf.Max(_currentFrame - _resimulations, 0) / _saveEachNthFrame;
+
+				int compressedFramesToRollback = currentFrameCompressed - targetCompressedFrame;
 
 				compressedFramesToRollback = Mathf.Min(compressedFramesToRollback, _registry.CanRollbackFrames);
 				
@@ -94,11 +97,6 @@ namespace Massive.Unity
 					updateSystem.UpdateFrame(deltaTime);
 				}
 
-				if (_currentFrame == 1000)
-				{
-					
-				}
-				
 				_currentFrame++;
 				if (_currentFrame % _saveEachNthFrame == 0)
 				{

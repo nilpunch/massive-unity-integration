@@ -1,8 +1,9 @@
-﻿namespace Massive.Unity
+﻿using UnityEngine;
+
+namespace Massive.Unity
 {
 	public class TransformComponent : UnmanagedComponentBase<LocalTransform, TransformComponent>
 	{
-		private LocalTransform _lastRegistryLocalTransform;
 		private LocalTransform _lastGoLocalTransform;
 
 		private IRegistry _registry;
@@ -21,7 +22,7 @@
 			ApplyTransformData(_registry.Get<LocalTransform>(entity));
 		}
 
-		private void OnDestroy()
+		public override void DestroyComponent()
 		{
 			if (_registry != null)
 			{
@@ -31,24 +32,25 @@
 
 		private void LateUpdate()
 		{
-			if (_registry == null)
+			if (_registry == null || !_registry.IsAlive(_entity))
 			{
 				return;
 			}
 
-			var goTransformData = GetTransformData();
+			var lastGoLocalTransform = _lastGoLocalTransform;
+			var goLocalTransform = GetTransformData();
+
+			Vector3 deltaPosition = goLocalTransform.Position - lastGoLocalTransform.Position;
+			Quaternion deltaRotation = Quaternion.Inverse(lastGoLocalTransform.Rotation) * goLocalTransform.Rotation;
+			Vector3 deltaScale = goLocalTransform.Scale - lastGoLocalTransform.Scale;
+
 			ref var registryTransformData = ref _registry.Get<LocalTransform>(_entity);
-			if (_lastRegistryLocalTransform != registryTransformData)
-			{
-				_lastRegistryLocalTransform = registryTransformData;
-				ApplyTransformData(registryTransformData);
-			}
-			else if (_lastGoLocalTransform != goTransformData)
-			{
-				_lastRegistryLocalTransform = goTransformData;
-				_lastGoLocalTransform = goTransformData;
-				registryTransformData = goTransformData;
-			}
+
+			registryTransformData.Position += deltaPosition;
+			registryTransformData.Rotation *= deltaRotation.normalized;
+			registryTransformData.Scale += deltaScale;
+
+			ApplyTransformData(registryTransformData);
 		}
 
 		private LocalTransform GetTransformData()

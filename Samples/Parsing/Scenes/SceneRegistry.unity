@@ -855,10 +855,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _viewConfig: {fileID: 11400000, guid: a48039d3443895d48a27e0d0c14829eb, type: 2}
-  _reactiveSynchronization: 1
+  _reactiveSynchronization: 0
   _synchronizeEntities: 1
   _synchronizeComponents: 1
   _synchronizeViews: 1
+  _simulationFrequency: 60
 --- !u!4 &1053553947
 Transform:
   m_ObjectHideFlags: 0

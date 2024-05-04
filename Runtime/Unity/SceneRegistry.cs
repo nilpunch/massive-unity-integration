@@ -25,7 +25,8 @@ namespace Massive.Unity
 			_registry = new Registry();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>()))
+				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>())
+				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
 				monoEntity.ApplyToRegistry(_registry);
 				Destroy(monoEntity.gameObject);
