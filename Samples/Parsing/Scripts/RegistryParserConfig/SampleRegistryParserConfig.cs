@@ -6,17 +6,17 @@ namespace Massive.Unity
 	[CreateAssetMenu]
 	public class SampleRegistryParserConfig : RegistryParserConfig
 	{
-		public override IRegistryParser CreateParser()
+		public override IRegistrySerializer CreateParser()
 		{
-			var registryParser = new RegistryParser();
-			registryParser.AddComponent<LocalTransform>();
-			registryParser.AddComponent<int>();
-			registryParser.AddComponent<Vector3>();
-			registryParser.AddComponent<float>();
+			var registrySerializer = new RegistrySerializer();
+			registrySerializer.AddComponent<LocalTransform>();
+			registrySerializer.AddComponent<int>();
+			registrySerializer.AddComponent<Vector3>();
+			registrySerializer.AddComponent<float>();
 
-			registryParser.AddNonOwningGroup(new ComponentsGroup<int, float>());
+			registrySerializer.AddNonOwningGroup(Select.Many<int, float>);
 
-			return registryParser;
+			return registrySerializer;
 		}
 	}
 }

@@ -865,7 +865,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &869530740
 Transform:
   m_ObjectHideFlags: 0
@@ -895,10 +895,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _viewConfig: {fileID: 11400000, guid: 03ffc59d4c08b18468ed54bac176e2c5, type: 2}
   _reactiveSynchronization: 1
-  _synchronizeEntities: 1
-  _synchronizeComponents: 1
+  _synchronizeEntities: 0
+  _synchronizeComponents: 0
   _synchronizeViews: 1
-  _simulationFrequency: 120
+  _simulationFrequency: 60
 --- !u!1 &1239848241
 GameObject:
   m_ObjectHideFlags: 0
@@ -1003,7 +1003,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1294936879
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1017,13 +1017,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _viewConfig: {fileID: 11400000, guid: 03ffc59d4c08b18468ed54bac176e2c5, type: 2}
-  _synchronizeEntities: 1
-  _synchronizeComponents: 1
+  _synchronizeEntities: 0
+  _synchronizeComponents: 0
   _synchronizeViews: 1
-  _framesCapacity: 24
+  _framesCapacity: 120
   _resimulations: 120
-  _simulationFrequency: 120
-  _saveEachNthFrame: 5
+  _simulationFrequency: 60
+  _saveEachNthFrame: 1
   _drawDebugGUI: 1
 --- !u!4 &1294936880
 Transform:

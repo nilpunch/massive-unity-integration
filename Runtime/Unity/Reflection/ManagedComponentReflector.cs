@@ -27,9 +27,9 @@ namespace Massive.Unity
 			}
 		}
 
-		public void PopulateRegistryParser(RegistryParser registryParser)
+		public void PopulateRegistryParser(RegistrySerializer registrySerializer)
 		{
-			registryParser.AddCustomComponent<TComponent>();
+			registrySerializer.AddCustomComponent<TComponent>();
 		}
 
 		public void SubscribeAssignCallbacks(IRegistry registry, IComponentsEventHandler eventHandler)

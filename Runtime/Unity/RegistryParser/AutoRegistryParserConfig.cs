@@ -6,9 +6,9 @@ namespace Massive.Unity
 	[CreateAssetMenu(fileName = "AutoRegistryParserConfig", menuName = "Massive ECS/Auto Registry Parser Config")]
 	public class AutoRegistryParserConfig : RegistryParserConfig
 	{
-		public override IRegistryParser CreateParser()
+		public override IRegistrySerializer CreateParser()
 		{
-			var registryParser = new RegistryParser();
+			var registryParser = new RegistrySerializer();
 
 			foreach (var monoComponentReflection in ComponentReflectors.All)
 			{

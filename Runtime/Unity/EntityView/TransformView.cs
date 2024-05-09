@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class TransformViewBehaviour : MonoBehaviour, IViewBehaviour
+	public class TransformView : MonoBehaviour, IViewBehaviour
 	{
 		[SerializeField] private Transform _rootTransform;
 
