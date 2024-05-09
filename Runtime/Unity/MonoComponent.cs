@@ -9,6 +9,6 @@ namespace Massive.Unity
 
 		public abstract void Synchronize(IRegistry registry, Entity entity);
 
-		public abstract void DestroyComponent();
+		public abstract void UnassignComponent();
 	}
 }

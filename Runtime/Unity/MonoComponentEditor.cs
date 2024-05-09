@@ -16,11 +16,11 @@ namespace Massive.Unity
 			
 			if (Application.isPlaying)
 			{
-				if (GUILayout.Button("Destroy Component"))
+				if (GUILayout.Button("Unassign Component"))
 				{
 					foreach (MonoComponent monoComponent in targets)
 					{
-						monoComponent.DestroyComponent();
+						monoComponent.UnassignComponent();
 					}
 				}
 			}

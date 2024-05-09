@@ -22,7 +22,7 @@ namespace Massive.Unity
 			ApplyTransformData(_registry.Get<LocalTransform>(entity));
 		}
 
-		public override void DestroyComponent()
+		public override void UnassignComponent()
 		{
 			if (_registry != null)
 			{

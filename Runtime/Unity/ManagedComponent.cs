@@ -25,7 +25,7 @@ namespace Massive.Unity
 			registry.Get<TComponent>(entity).CopyTo(ref _data);
 		}
 
-		public override void DestroyComponent()
+		public override void UnassignComponent()
 		{
 			if (_registry != null)
 			{

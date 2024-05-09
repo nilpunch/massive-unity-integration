@@ -22,7 +22,7 @@ namespace Massive.Unity
 			_registry = registry;
 		}
 
-		public override void DestroyComponent()
+		public override void UnassignComponent()
 		{
 			if (_registry != null)
 			{

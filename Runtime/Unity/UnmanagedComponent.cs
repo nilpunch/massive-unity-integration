@@ -25,7 +25,7 @@ namespace Massive.Unity
 			_data = registry.Get<TComponent>(entity);
 		}
 
-		public override void DestroyComponent()
+		public override void UnassignComponent()
 		{
 			if (_registry != null)
 			{
