@@ -22,6 +22,7 @@ namespace Massive.Unity
 		private UpdateSystem[] _updateSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private MassiveRegistry _registry;
+		private float _elapsedTime;
 		private int _currentFrame;
 		private Stopwatch _stopwatch;
 
@@ -46,7 +47,7 @@ namespace Massive.Unity
 				updateSystem.Init(_registry);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig), false);
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
 
 			if (_synchronizeEntities)
 			{
@@ -85,7 +86,9 @@ namespace Massive.Unity
 				_registry.Rollback(compressedFramesToRollback);
 			}
 
-			int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
+			_elapsedTime += Time.deltaTime;
+			
+			int targetFrame = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 			float deltaTime = 1f / _simulationFrequency;
 
 			_debugResimulations = targetFrame - _currentFrame;

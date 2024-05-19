@@ -13,12 +13,12 @@ namespace Massive.Samples.Shooter
 		[SerializeField] private float _bulletLifetime = 2f;
 
 		private IRegistry _registry;
-		private GroupView<WeaponState, LocalTransform> _characters;
+		private View<WeaponState, LocalTransform> _characters;
 
 		public override void Init(IRegistry registry)
 		{
 			_registry = registry;
-			_characters = new GroupView<WeaponState, LocalTransform>(registry, registry.Group(registry.Many<WeaponState>(), registry.Many<LocalTransform>()));
+			_characters = registry.View<WeaponState, LocalTransform>();
 		}
 
 		public override void UpdateFrame(float deltaTime)

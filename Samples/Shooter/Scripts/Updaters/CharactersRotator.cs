@@ -7,11 +7,11 @@ namespace Massive.Samples.Shooter
 	{
 		[SerializeField] private float _rotation = 400f;
 
-		private GroupView<LocalTransform> _characters;
+		private FilterView<LocalTransform> _characters;
 
 		public override void Init(IRegistry registry)
 		{
-			_characters = new GroupView<LocalTransform>(registry, registry.Group(registry.Many<WeaponState>(), registry.Many<LocalTransform>()));
+			_characters = registry.FilterView<LocalTransform>(new IncludeFilter(registry.Many<WeaponState>()));
 		}
 
 		public override void UpdateFrame(float deltaTime)

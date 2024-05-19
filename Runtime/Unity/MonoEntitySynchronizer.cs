@@ -18,7 +18,7 @@ namespace Massive.Unity
 
 		public void SynchronizeAll()
 		{
-			foreach (var monoEntity in _set.Data)
+			foreach (var monoEntity in _set.Data.AsSpan(_set.Count))
 			{
 				var entity = monoEntity.Entity;
 				if (!_registry.IsAlive(entity))

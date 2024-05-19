@@ -9,29 +9,53 @@ namespace Massive.Unity
 		private readonly EntityViewSynchronizer _entityViewSynchronizer;
 		private readonly MonoEntitySynchronizer _monoEntities;
 
-		public UnityEntitySynchronization(IRegistry registry, EntityViewPool entityViewPool, bool reactiveSynchronization = true)
+		public UnityEntitySynchronization(IRegistry registry, EntityViewPool entityViewPool)
 		{
 			_registry = registry;
 			_entityViewSynchronizer = new EntityViewSynchronizer(registry, entityViewPool);
 			_monoEntities = new MonoEntitySynchronizer(registry);
+		}
 
-			if (!reactiveSynchronization)
-			{
-				return;
-			}
-
+		public void SubscribeEntities()
+		{
 			_registry.Entities.AfterCreated += OnAfterEntityCreated;
 			_registry.Entities.BeforeDestroyed += OnBeforeEntityDestroyed;
+		}
 
+		public void SubscribeViews()
+		{
 			_registry.Any<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
 			_registry.Any<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
+		}
 
+		public void SubscribeComponents()
+		{
 			foreach (var reflector in ComponentReflectors.All)
 			{
 				reflector.SubscribeAssignCallbacks(_registry, this);
 			}
 		}
+		
+		public void UnsubscribeEntities()
+		{
+			_registry.Entities.AfterCreated -= OnAfterEntityCreated;
+			_registry.Entities.BeforeDestroyed -= OnBeforeEntityDestroyed;
+		}
 
+		public void UnsubscribeViews()
+		{
+			_registry.Any<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
+			_registry.Any<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
+		}
+
+		public void UnsubscribeComponents()
+		{
+			foreach (var reflector in ComponentReflectors.All)
+			{
+				reflector.UnsubscribeAssignCallbacks(_registry, this);
+			}
+		}
+		
 		public void SynchronizeEntities()
 		{
 			_monoEntities.SynchronizeAll();
@@ -105,16 +129,9 @@ namespace Massive.Unity
 
 		public void Dispose()
 		{
-			_registry.Entities.AfterCreated -= OnAfterEntityCreated;
-			_registry.Entities.BeforeDestroyed -= OnBeforeEntityDestroyed;
-
-			_registry.Any<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
-			_registry.Any<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
-
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.UnsubscribeAssignCallbacks(_registry, this);
-			}
+			UnsubscribeEntities();
+			UnsubscribeViews();
+			UnsubscribeComponents();
 		}
 	}
 }

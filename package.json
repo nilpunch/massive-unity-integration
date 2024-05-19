@@ -1,11 +1,11 @@
 ﻿{
   "name": "massive-unity-integration",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "displayName": "Massive ECS for Unity",
   "unity": "2021.2",
   "description": "Deterministic prediction-rollback netcode library for Unity.",
   "dependencies":
   {
-    "massive-ecs": "https://github.com/nilpunch/massive-ecs#4.1.0"
+    "massive-ecs": "https://github.com/nilpunch/massive-ecs#5.0.1"
   }
 }

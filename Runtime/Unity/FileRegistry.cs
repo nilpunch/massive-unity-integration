@@ -36,19 +36,34 @@ namespace Massive.Unity
 				updateSystem.Init(_registry);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig), _reactiveSynchronization);
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
 
 			if (_synchronizeEntities)
 			{
 				_unityEntitySynchronization.SynchronizeEntities();
+
+				if (_reactiveSynchronization)
+				{
+					_unityEntitySynchronization.SubscribeEntities();
+				}
 			}
 			if (_synchronizeComponents)
 			{
 				_unityEntitySynchronization.SynchronizeComponents();
+				
+				if (_reactiveSynchronization)
+				{
+					_unityEntitySynchronization.SubscribeComponents();
+				}
 			}
 			if (_synchronizeViews)
 			{
 				_unityEntitySynchronization.SynchronizeViews();
+				
+				if (_reactiveSynchronization)
+				{
+					_unityEntitySynchronization.SubscribeViews();
+				}
 			}
 		}
 
