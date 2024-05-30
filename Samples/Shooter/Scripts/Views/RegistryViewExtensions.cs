@@ -44,28 +44,24 @@ namespace Massive
 			return new FilterView<T1, T2, T3>(registry, filter);
 		}
 
-		public static GroupView GroupView(this IRegistry registry, IReadOnlyList<ISet> owned = null,
-			IReadOnlyList<IReadOnlySet> include = null, IReadOnlyList<IReadOnlySet> exclude = null)
+		public static GroupView GroupView(this IRegistry registry, IGroup group)
 		{
-			return new GroupView(registry.Group(owned, include, exclude));
+			return new GroupView(group);
 		}
 
-		public static GroupView<T> GroupView<T>(this IRegistry registry, IReadOnlyList<ISet> owned = null,
-			IReadOnlyList<IReadOnlySet> include = null, IReadOnlyList<IReadOnlySet> exclude = null)
+		public static GroupView<T> GroupView<T>(this IRegistry registry, IGroup group)
 		{
-			return new GroupView<T>(registry, registry.Group(owned, include, exclude));
+			return new GroupView<T>(registry, group);
 		}
 
-		public static GroupView<T1, T2> GroupView<T1, T2>(this IRegistry registry, IReadOnlyList<ISet> owned = null,
-			IReadOnlyList<IReadOnlySet> include = null, IReadOnlyList<IReadOnlySet> exclude = null)
+		public static GroupView<T1, T2> GroupView<T1, T2>(this IRegistry registry, IGroup group)
 		{
-			return new GroupView<T1, T2>(registry, registry.Group(owned, include, exclude));
+			return new GroupView<T1, T2>(registry, group);
 		}
 
-		public static GroupView<T1, T2, T3> GroupView<T1, T2, T3>(this IRegistry registry, IReadOnlyList<ISet> owned = null,
-			IReadOnlyList<IReadOnlySet> include = null, IReadOnlyList<IReadOnlySet> exclude = null)
+		public static GroupView<T1, T2, T3> GroupView<T1, T2, T3>(this IRegistry registry, IGroup group)
 		{
-			return new GroupView<T1, T2, T3>(registry, registry.Group(owned, include, exclude));
+			return new GroupView<T1, T2, T3>(registry, group);
 		}
 	}
 }

@@ -28,7 +28,7 @@ namespace Massive.Unity
 			if (type.IsGenericType)
 			{
 				string genericArguments = string.Join(",", type.GetGenericArguments().Select(GetSimpleGenericTypeName));
-				string typeItself = type.FullName!.Substring(0, type.FullName.IndexOf("`", StringComparison.Ordinal));
+				string typeItself = type.FullName[..type.FullName.IndexOf("`", StringComparison.Ordinal)];
 				return $"{typeItself}<{genericArguments}>";
 			}
 			return type.FullName;

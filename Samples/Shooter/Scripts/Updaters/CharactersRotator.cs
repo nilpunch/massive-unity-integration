@@ -11,7 +11,7 @@ namespace Massive.Samples.Shooter
 
 		public override void Init(IRegistry registry)
 		{
-			_characters = registry.FilterView<LocalTransform>(new IncludeFilter(registry.Many<WeaponState>()));
+			_characters = registry.FilterView<LocalTransform>(registry.Filter<Include<WeaponState>>());
 		}
 
 		public override void UpdateFrame(float deltaTime)

@@ -14,7 +14,7 @@ namespace Massive.Unity
 			registrySerializer.AddComponent<Vector3>();
 			registrySerializer.AddComponent<float>();
 
-			registrySerializer.AddNonOwningGroup(Select.Many<int, float>);
+			registrySerializer.AddNonOwningGroup<Include<int, float>>();
 
 			return registrySerializer;
 		}
