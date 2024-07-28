@@ -8,7 +8,7 @@ namespace Massive.Unity
 	{
 		public void SynchronizeComponents(IRegistry registry, IReadOnlyDataSet<MonoEntity> monoEntities, IComponentsEventHandler componentsEventHandler)
 		{
-			var components = registry.Any<TComponent>();
+			var components = registry.Set<TComponent>();
 
 			var monoEntityIds = monoEntities.Ids;
 			var monoEntityData = monoEntities.Data;
@@ -34,14 +34,14 @@ namespace Massive.Unity
 
 		public void SubscribeAssignCallbacks(IRegistry registry, IComponentsEventHandler eventHandler)
 		{
-			registry.Any<TComponent>().AfterAssigned += eventHandler.OnAfterAssigned<TMonoComponent>;
-			registry.Any<TComponent>().BeforeUnassigned += eventHandler.OnBeforeUnassigned<TMonoComponent>;
+			registry.Set<TComponent>().AfterAssigned += eventHandler.OnAfterAssigned<TMonoComponent>;
+			registry.Set<TComponent>().BeforeUnassigned += eventHandler.OnBeforeUnassigned<TMonoComponent>;
 		}
 
 		public void UnsubscribeAssignCallbacks(IRegistry registry, IComponentsEventHandler eventHandler)
 		{
-			registry.Any<TComponent>().AfterAssigned -= eventHandler.OnAfterAssigned<TMonoComponent>;
-			registry.Any<TComponent>().BeforeUnassigned -= eventHandler.OnBeforeUnassigned<TMonoComponent>;
+			registry.Set<TComponent>().AfterAssigned -= eventHandler.OnAfterAssigned<TMonoComponent>;
+			registry.Set<TComponent>().BeforeUnassigned -= eventHandler.OnBeforeUnassigned<TMonoComponent>;
 		}
 	}
 }

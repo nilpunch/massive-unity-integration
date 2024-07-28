@@ -12,7 +12,7 @@ namespace Massive.Unity
 		public void OnEntityAssigned(IRegistry registry, Entity entity)
 		{
 			_entity = entity;
-			_localTransforms = registry.Components<LocalTransform>();
+			_localTransforms = registry.DataSet<LocalTransform>();
 		}
 
 		public void OnEntityUnassigned()

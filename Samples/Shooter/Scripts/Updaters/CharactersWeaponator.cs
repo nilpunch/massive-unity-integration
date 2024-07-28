@@ -1,7 +1,6 @@
-﻿using Massive.Unity;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Massive.Samples.Shooter
+namespace Massive.Unity.Samples.Shooter
 {
 	public class CharactersWeaponator : UpdateSystem
 	{
@@ -13,60 +12,40 @@ namespace Massive.Samples.Shooter
 		[SerializeField] private float _bulletLifetime = 2f;
 
 		private IRegistry _registry;
-		private View<WeaponState, LocalTransform> _characters;
 
 		public override void Init(IRegistry registry)
 		{
 			_registry = registry;
-			_characters = registry.View<WeaponState, LocalTransform>();
 		}
 
 		public override void UpdateFrame(float deltaTime)
 		{
-			var args = new Args()
-			{
-				Registry = _registry,
-				DeltaTime = deltaTime,
-				BulletViewPrefab = _bulletViewPrefab,
-				ViewDataBase = _viewDataBase,
-				Cooldown = _cooldown,
-				BulletVelocity = _bulletVelocity,
-				BulletDamage = _bulletDamage,
-				BulletLifetime = _bulletLifetime
-			};
+			var weapons = _registry.DataSet<WeaponState>();
+			var transforms = _registry.DataSet<LocalTransform>();
 
-			_characters.ForEachExtra(args, (int entity, ref WeaponState weaponState, ref LocalTransform characterTransform, Args args) =>
+			foreach (var entityId in _registry.View().Include<WeaponState, LocalTransform>())
 			{
-				weaponState.Cooldown -= args.DeltaTime;
+				ref var weaponState = ref weapons.Get(entityId);
+				ref var characterTransform = ref transforms.Get(entityId);
+
+				weaponState.Cooldown -= deltaTime;
 				if (weaponState.Cooldown > 0)
 				{
-					return;
+					continue;
 				}
 
-				weaponState.Cooldown = args.Cooldown;
+				weaponState.Cooldown = _cooldown;
 
-				var bulletId = args.Registry.Create(new BulletState
+				var bulletId = _registry.Create(new BulletState
 				{
-					Velocity = characterTransform.Rotation * Vector3.up * args.BulletVelocity,
-					Lifetime = args.BulletLifetime,
-					Damage = args.BulletDamage
+					Velocity = characterTransform.Rotation * Vector3.up * _bulletVelocity,
+					Lifetime = _bulletLifetime,
+					Damage = _bulletDamage
 				});
 
-				args.Registry.Assign(bulletId, args.ViewDataBase.GetAssetId(args.BulletViewPrefab));
-				args.Registry.Assign(bulletId, characterTransform);
-			});
-		}
-
-		private struct Args
-		{
-			public IRegistry Registry;
-			public float DeltaTime;
-			public EntityView BulletViewPrefab;
-			public ViewDataBaseConfig ViewDataBase;
-			public float Cooldown;
-			public float BulletVelocity;
-			public float BulletDamage;
-			public float BulletLifetime;
+				_registry.Assign(bulletId, _viewDataBase.GetAssetId(_bulletViewPrefab));
+				_registry.Assign(bulletId, characterTransform);
+			}
 		}
 	}
 }

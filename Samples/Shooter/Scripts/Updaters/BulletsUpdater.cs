@@ -1,44 +1,29 @@
-﻿using Massive.Unity;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Massive.Samples.Shooter
+namespace Massive.Unity.Samples.Shooter
 {
 	public class BulletsUpdater : UpdateSystem
 	{
 		private IRegistry _registry;
-		private View<BulletState, LocalTransform> _bullets;
 
 		public override void Init(IRegistry registry)
 		{
 			_registry = registry;
-			_bullets = registry.View<BulletState, LocalTransform>();
 		}
 
-		public override unsafe void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
-			// foreach (var (entityId, bullet, bulletTransform) in _bullets)
-			// {
-			// 	bullet->Lifetime -= deltaTime;
-			// 	if (bullet->IsDestroyed)
-			// 	{
-			// 		_registry.Destroy(entityId);
-			// 		continue;
-			// 	}
-			//
-			// 	bulletTransform->Position += bullet->Velocity * deltaTime;
-			// }
-
-			_bullets.ForEachExtra((_registry, deltaTime), (int entityId, ref BulletState bullet, ref LocalTransform bulletTransform,
-				(IRegistry Registry, float DeltaTime) inner) =>
+			_registry.View().ForEachExtra((_registry, deltaTime),
+				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (IRegistry Registry, float DeltaTime) args) =>
 			{
-				bullet.Lifetime -= inner.DeltaTime;
+				bullet.Lifetime -= args.DeltaTime;
 				if (bullet.IsDestroyed)
 				{
-					inner.Registry.Destroy(entityId);
+					args.Registry.Destroy(entityId);
 					return;
 				}
 			
-				bulletTransform.Position += bullet.Velocity * inner.DeltaTime;
+				bulletTransform.Position += bullet.Velocity * args.DeltaTime;
 			});
 		}
 		
@@ -52,7 +37,7 @@ namespace Massive.Samples.Shooter
 
 			GUILayout.FlexibleSpace();
 
-			GUILayout.TextField($"{_registry.Any<BulletState>().Count} Bullets",
+			GUILayout.TextField($"{_registry.Set<BulletState>().Count} Bullets",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 
 			GUILayout.EndVertical();

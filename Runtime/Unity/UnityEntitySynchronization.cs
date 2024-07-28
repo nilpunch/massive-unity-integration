@@ -24,8 +24,8 @@ namespace Massive.Unity
 
 		public void SubscribeViews()
 		{
-			_registry.Any<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
-			_registry.Any<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
+			_registry.Set<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
+			_registry.Set<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
 		}
 
 		public void SubscribeComponents()
@@ -44,8 +44,8 @@ namespace Massive.Unity
 
 		public void UnsubscribeViews()
 		{
-			_registry.Any<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
-			_registry.Any<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
+			_registry.Set<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
+			_registry.Set<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
 		}
 
 		public void UnsubscribeComponents()

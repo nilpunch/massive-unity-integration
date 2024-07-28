@@ -1,6 +1,4 @@
-﻿using Massive.Unity;
-
-namespace Massive.Samples.Shooter
+﻿namespace Massive.Unity.Samples.Shooter
 {
 	public class WeaponStateComponent : UnmanagedComponent<WeaponState, WeaponStateComponent>
 	{

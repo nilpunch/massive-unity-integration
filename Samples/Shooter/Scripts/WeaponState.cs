@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Massive.Samples.Shooter
+namespace Massive.Unity.Samples.Shooter
 {
 	[Serializable]
 	public struct WeaponState

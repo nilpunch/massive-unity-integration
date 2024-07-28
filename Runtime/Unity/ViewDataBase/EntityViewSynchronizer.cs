@@ -14,7 +14,7 @@
 
 		public void SynchronizeAll()
 		{
-			var viewAssets = _registry.Components<ViewAsset>();
+			var viewAssets = _registry.DataSet<ViewAsset>();
 
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
