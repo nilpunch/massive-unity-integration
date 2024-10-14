@@ -15,10 +15,11 @@ namespace Massive.Unity
 		[SerializeField] private bool _synchronizeViews = true;
 		
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
+		[SerializeField] private bool _fixedTimeStep = false;
 
 		private UpdateSystem[] _updateSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
-		private IRegistry _registry;
+		private Registry _registry;
 		private int _currentFrame;
 
 		private void Awake()
@@ -81,24 +82,29 @@ namespace Massive.Unity
 		{
 			_stopwatch.Restart();
 
-			// foreach (var updateSystem in _updateSystems)
-			// {
-			// 	updateSystem.UpdateFrame(Time.deltaTime);
-			// }
+			if (_fixedTimeStep)
+			{
+				int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
+				float deltaTime = 1f / _simulationFrequency;
 			
-			int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
-			float deltaTime = 1f / _simulationFrequency;
+				while (_currentFrame < targetFrame)
+				{
+					foreach (var updateSystem in _updateSystems)
+					{
+						updateSystem.UpdateFrame(deltaTime);
+					}
 			
-			while (_currentFrame < targetFrame)
+					_currentFrame++;
+				}
+			}
+			else
 			{
 				foreach (var updateSystem in _updateSystems)
 				{
-					updateSystem.UpdateFrame(deltaTime);
+					updateSystem.UpdateFrame(Time.deltaTime);
 				}
-			
-				_currentFrame++;
 			}
-			
+
 			const int averageCount = 10;
 			
 			_debugSimulationMs = _debugSimulationMs * (averageCount - 1) / averageCount + _stopwatch.ElapsedMilliseconds / (float)averageCount;

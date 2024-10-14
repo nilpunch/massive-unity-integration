@@ -5,11 +5,11 @@ namespace Massive.Unity
 	[DisallowMultipleComponent]
 	public class MonoEntity : MonoBehaviour
 	{
-		private IRegistry _registry;
+		private Registry _registry;
 
 		public Entity Entity { get; private set; }
 
-		public void ApplyToRegistry(IRegistry registry)
+		public void ApplyToRegistry(Registry registry)
 		{
 			var entity = registry.CreateEntity();
 
@@ -19,7 +19,7 @@ namespace Massive.Unity
 			}
 		}
 
-		public void Synchronize(IRegistry registry, Entity entity)
+		public void Synchronize(Registry registry, Entity entity)
 		{
 			_registry = registry;
 			Entity = entity;

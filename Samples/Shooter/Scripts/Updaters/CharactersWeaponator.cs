@@ -10,10 +10,11 @@ namespace Massive.Unity.Samples.Shooter
 		[SerializeField] private float _bulletVelocity = 1f;
 		[SerializeField] private float _bulletDamage = 1f;
 		[SerializeField] private float _bulletLifetime = 2f;
+		[SerializeField] private Vector3 _bulletScale = Vector3.one * 2f;
 
-		private IRegistry _registry;
+		private Registry _registry;
 
-		public override void Init(IRegistry registry)
+		public override void Init(Registry registry)
 		{
 			_registry = registry;
 		}
@@ -43,8 +44,10 @@ namespace Massive.Unity.Samples.Shooter
 					Damage = _bulletDamage
 				});
 
-				_registry.Assign(bulletId, _viewDataBase.GetAssetId(_bulletViewPrefab));
-				_registry.Assign(bulletId, characterTransform);
+				// _registry.Assign(bulletId, _viewDataBase.GetAssetId(_bulletViewPrefab));
+				var bulletTransform = characterTransform;
+				bulletTransform.Scale = _bulletScale;
+				_registry.Assign(bulletId, bulletTransform);
 			}
 		}
 	}

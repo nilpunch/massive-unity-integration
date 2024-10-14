@@ -20,6 +20,7 @@ namespace Massive.Unity
 		[SerializeField] private bool _drawDebugGUI = false;
 
 		private UpdateSystem[] _updateSystems;
+		private RollbackUpdateSystem[] _rollbackSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private MassiveRegistry _registry;
 		private float _elapsedTime;
@@ -28,7 +29,7 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_registry = new MassiveRegistry(framesCapacity: _framesCapacity + 1);
+			_registry = new MassiveRegistry(new MassiveRegistryConfig() { FramesCapacity = _framesCapacity + 1 });
 			_stopwatch = new Stopwatch();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
@@ -42,6 +43,7 @@ namespace Massive.Unity
 			_registry.SaveFrame();
 
 			_updateSystems = FindObjectsOfType<UpdateSystem>();
+			_rollbackSystems = _updateSystems.OfType<RollbackUpdateSystem>().ToArray();
 			foreach (var updateSystem in _updateSystems)
 			{
 				updateSystem.Init(_registry);
@@ -71,7 +73,7 @@ namespace Massive.Unity
 		private void Update()
 		{
 			_stopwatch.Restart();
-			
+
 			if (_resimulations > 0)
 			{
 				int currentFrameCompressed = _currentFrame / _saveEachNthFrame;
@@ -81,13 +83,17 @@ namespace Massive.Unity
 				int compressedFramesToRollback = currentFrameCompressed - targetCompressedFrame;
 
 				compressedFramesToRollback = Mathf.Min(compressedFramesToRollback, _registry.CanRollbackFrames);
-				
+
 				_currentFrame = (currentFrameCompressed - compressedFramesToRollback) * _saveEachNthFrame;
 				_registry.Rollback(compressedFramesToRollback);
+				foreach (var rollbackSystem in _rollbackSystems)
+				{
+					rollbackSystem.Rollback(compressedFramesToRollback);
+				}
 			}
 
 			_elapsedTime += Time.deltaTime;
-			
+
 			int targetFrame = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 			float deltaTime = 1f / _simulationFrequency;
 
@@ -104,6 +110,10 @@ namespace Massive.Unity
 				if (_currentFrame % _saveEachNthFrame == 0)
 				{
 					_registry.SaveFrame();
+					foreach (var rollbackSystem in _rollbackSystems)
+					{
+						rollbackSystem.SaveFrame();
+					}
 				}
 			}
 
@@ -122,25 +132,26 @@ namespace Massive.Unity
 			{
 				_unityEntitySynchronization.SynchronizeViews();
 			}
-			
+
 			_debugSynchronizationMs = _stopwatch.ElapsedMilliseconds;
 		}
 
 		private long _debugSimulationMs;
 		private long _debugSynchronizationMs;
 		private int _debugResimulations;
-		
+
 		private void OnGUI()
 		{
 			if (!_drawDebugGUI)
 			{
 				return;
 			}
-			
+
 			float fontScaling = Screen.height / (float)1080;
 
 			GUILayout.TextField($"{_debugSimulationMs}ms Simulation", new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
-			GUILayout.TextField($"{_debugSynchronizationMs}ms Synchronization", new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
+			GUILayout.TextField($"{_debugSynchronizationMs}ms Synchronization",
+				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 			GUILayout.TextField($"{_debugResimulations} Resimulations",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 		}

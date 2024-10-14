@@ -6,15 +6,15 @@ namespace Massive.Unity
 	{
 		private LocalTransform _lastGoLocalTransform;
 
-		private IRegistry _registry;
+		private Registry _registry;
 		private Entity _entity;
 
-		public override void ApplyToEntity(IRegistry registry, Entity entity)
+		public override void ApplyToEntity(Registry registry, Entity entity)
 		{
 			registry.Assign(entity, GetTransformData());
 		}
 
-		public override void Synchronize(IRegistry registry, Entity entity)
+		public override void Synchronize(Registry registry, Entity entity)
 		{
 			_registry = registry;
 			_entity = entity;

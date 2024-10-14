@@ -6,15 +6,14 @@ namespace Massive.Unity
 		where TComponent : IManaged<TComponent>
 		where TMonoComponent : ManagedComponentBase<TComponent, TMonoComponent>
 	{
-		public void SynchronizeComponents(IRegistry registry, IReadOnlyDataSet<MonoEntity> monoEntities, IComponentsEventHandler componentsEventHandler)
+		public void SynchronizeComponents(Registry registry, DataSet<MonoEntity> monoEntities, IComponentsEventHandler componentsEventHandler)
 		{
 			var components = registry.Set<TComponent>();
 
-			var monoEntityIds = monoEntities.Ids;
 			var monoEntityData = monoEntities.Data;
-			for (int i = 0; i < monoEntityIds.Length; i++)
+			for (int i = 0; i < monoEntities.Count; i++)
 			{
-				int entityId = monoEntityIds[i];
+				int entityId = monoEntities.Ids[i];
 				var monoEntity = monoEntityData[i];
 				if (!components.IsAssigned(entityId) || monoEntity.Entity != registry.GetEntity(entityId))
 				{
@@ -32,13 +31,13 @@ namespace Massive.Unity
 			registrySerializer.AddCustomComponent<TComponent>();
 		}
 
-		public void SubscribeAssignCallbacks(IRegistry registry, IComponentsEventHandler eventHandler)
+		public void SubscribeAssignCallbacks(Registry registry, IComponentsEventHandler eventHandler)
 		{
 			registry.Set<TComponent>().AfterAssigned += eventHandler.OnAfterAssigned<TMonoComponent>;
 			registry.Set<TComponent>().BeforeUnassigned += eventHandler.OnBeforeUnassigned<TMonoComponent>;
 		}
 
-		public void UnsubscribeAssignCallbacks(IRegistry registry, IComponentsEventHandler eventHandler)
+		public void UnsubscribeAssignCallbacks(Registry registry, IComponentsEventHandler eventHandler)
 		{
 			registry.Set<TComponent>().AfterAssigned -= eventHandler.OnAfterAssigned<TMonoComponent>;
 			registry.Set<TComponent>().BeforeUnassigned -= eventHandler.OnBeforeUnassigned<TMonoComponent>;

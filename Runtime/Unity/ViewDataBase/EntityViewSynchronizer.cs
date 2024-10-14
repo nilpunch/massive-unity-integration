@@ -3,10 +3,10 @@
 	public class EntityViewSynchronizer
 	{
 		private readonly DataSet<ViewInstance> _viewInstances = new DataSet<ViewInstance>();
-		private readonly IRegistry _registry;
+		private readonly Registry _registry;
 		private readonly EntityViewPool _viewPool;
 
-		public EntityViewSynchronizer(IRegistry registry, EntityViewPool viewPool)
+		public EntityViewSynchronizer(Registry registry, EntityViewPool viewPool)
 		{
 			_registry = registry;
 			_viewPool = viewPool;
@@ -19,7 +19,7 @@
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
 			var monoViewsIds = _viewInstances.Ids;
-			for (int i = monoViewsIds.Length - 1; i >= 0; i--)
+			for (int i = _viewInstances.Count - 1; i >= 0; i--)
 			{
 				int entityId = monoViewsIds[i];
 				var viewInstance = monoViewsData[i];
@@ -32,7 +32,7 @@
 			// Add whats missing
 			var viewAssetData = viewAssets.Data;
 			var viewAssetIds = viewAssets.Ids;
-			for (int i = 0; i < viewAssetIds.Length; i++)
+			for (int i = 0; i < viewAssets.Count; i++)
 			{
 				int entityId = viewAssetIds[i];
 				var viewAsset = viewAssetData[i];

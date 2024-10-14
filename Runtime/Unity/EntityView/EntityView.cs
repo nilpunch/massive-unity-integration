@@ -23,7 +23,7 @@ namespace Massive.Unity
 			}
 		}
 
-		public void AssignEntity(IRegistry registry, Entity entity)
+		public void AssignEntity(Registry registry, Entity entity)
 		{
 			gameObject.SetActive(true);
 

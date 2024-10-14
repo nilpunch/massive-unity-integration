@@ -16,7 +16,7 @@ namespace Massive.Unity
 		
 		private UpdateSystem[] _updateSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
-		private IRegistry _registry;
+		private Registry _registry;
 		private int _currentFrame;
 
 		private void Awake()

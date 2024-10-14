@@ -9,7 +9,7 @@ namespace Massive.Unity
 		private IReadOnlyDataSet<LocalTransform> _localTransforms;
 		private Entity _entity;
 
-		public void OnEntityAssigned(IRegistry registry, Entity entity)
+		public void OnEntityAssigned(Registry registry, Entity entity)
 		{
 			_entity = entity;
 			_localTransforms = registry.DataSet<LocalTransform>();

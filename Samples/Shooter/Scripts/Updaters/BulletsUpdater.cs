@@ -1,12 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
 	public class BulletsUpdater : UpdateSystem
 	{
-		private IRegistry _registry;
+		private Registry _registry;
 
-		public override void Init(IRegistry registry)
+		public override void Init(Registry registry)
 		{
 			_registry = registry;
 		}
@@ -14,23 +15,23 @@ namespace Massive.Unity.Samples.Shooter
 		public override void UpdateFrame(float deltaTime)
 		{
 			_registry.View().ForEachExtra((_registry, deltaTime),
-				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (IRegistry Registry, float DeltaTime) args) =>
-			{
-				bullet.Lifetime -= args.DeltaTime;
-				if (bullet.IsDestroyed)
+				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (Registry Registry, float DeltaTime) args) =>
 				{
-					args.Registry.Destroy(entityId);
-					return;
-				}
-			
-				bulletTransform.Position += bullet.Velocity * args.DeltaTime;
-			});
+					bullet.Lifetime -= args.DeltaTime;
+					if (bullet.IsDestroyed)
+					{
+						args.Registry.Destroy(entityId);
+						return;
+					}
+
+					bulletTransform.Position += bullet.Velocity * args.DeltaTime;
+				});
 		}
-		
+
 		private void OnGUI()
 		{
 			float fontScaling = Screen.height / (float)1080;
-			
+
 			GUILayout.BeginArea(new Rect(0, 0, Screen.width, Screen.height));
 
 			GUILayout.BeginVertical();

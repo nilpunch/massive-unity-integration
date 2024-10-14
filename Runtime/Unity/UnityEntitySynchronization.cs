@@ -5,11 +5,11 @@ namespace Massive.Unity
 {
 	public class UnityEntitySynchronization : IComponentsEventHandler, IDisposable
 	{
-		private readonly IRegistry _registry;
+		private readonly Registry _registry;
 		private readonly EntityViewSynchronizer _entityViewSynchronizer;
 		private readonly MonoEntitySynchronizer _monoEntities;
 
-		public UnityEntitySynchronization(IRegistry registry, EntityViewPool entityViewPool)
+		public UnityEntitySynchronization(Registry registry, EntityViewPool entityViewPool)
 		{
 			_registry = registry;
 			_entityViewSynchronizer = new EntityViewSynchronizer(registry, entityViewPool);

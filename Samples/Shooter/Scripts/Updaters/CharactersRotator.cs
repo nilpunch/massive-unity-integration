@@ -6,9 +6,9 @@ namespace Massive.Unity.Samples.Shooter
 	{
 		[SerializeField] private float _rotation = 400f;
 
-		private IRegistry _registry;
+		private Registry _registry;
 
-		public override void Init(IRegistry registry)
+		public override void Init(Registry registry)
 		{
 			_registry = registry;
 		}

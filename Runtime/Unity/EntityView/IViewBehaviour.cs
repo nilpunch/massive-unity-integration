@@ -2,7 +2,7 @@
 {
 	public interface IViewBehaviour
 	{
-		void OnEntityAssigned(IRegistry registry, Entity entity);
+		void OnEntityAssigned(Registry registry, Entity entity);
 
 		void OnEntityUnassigned();
 	}

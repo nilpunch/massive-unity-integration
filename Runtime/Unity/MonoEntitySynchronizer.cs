@@ -4,14 +4,14 @@ namespace Massive.Unity
 {
 	public class MonoEntitySynchronizer
 	{
-		private readonly IRegistry _registry;
+		private readonly Registry _registry;
 		private readonly Pool<MonoEntity> _monoEntityPool = new Pool<MonoEntity>(new MonoEntityFactory());
 		private readonly DataSet<MonoEntity> _set = new DataSet<MonoEntity>();
 		private Transform _poolRoot;
 
-		public IReadOnlyDataSet<MonoEntity> Set => _set;
+		public DataSet<MonoEntity> Set => _set;
 
-		public MonoEntitySynchronizer(IRegistry registry)
+		public MonoEntitySynchronizer(Registry registry)
 		{
 			_registry = registry;
 		}
@@ -29,9 +29,9 @@ namespace Massive.Unity
 
 			foreach (var entity in _registry.Entities.Alive)
 			{
-				if (!_set.IsAssigned(entity.Id))
+				if (!_set.IsAssigned(entity))
 				{
-					CreateMonoEntity(entity);
+					CreateMonoEntity(_registry.Entities.GetEntity(entity));
 				}
 			}
 		}
@@ -49,9 +49,9 @@ namespace Massive.Unity
 
 		public void DestroyMonoEntity(int entityId)
 		{
-			if (Set.TryGetDense(entityId, out var dense))
+			if (Set.TryGetIndex(entityId, out var packed))
 			{
-				var monoEntity = Set.Data[dense];
+				var monoEntity = Set.Data[packed];
 				monoEntity.gameObject.SetActive(false);
 				monoEntity.transform.SetParent(_poolRoot);
 				_monoEntityPool.Return(monoEntity);

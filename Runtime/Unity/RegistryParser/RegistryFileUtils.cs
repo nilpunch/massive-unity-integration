@@ -5,7 +5,7 @@ namespace Massive.Unity
 {
 	public static class RegistryFileUtils
 	{
-		public static void WriteToFile(string fileName, IRegistry registry, IRegistrySerializer registrySerializer)
+		public static void WriteToFile(string fileName, Registry registry, IRegistrySerializer registrySerializer)
 		{
 			Directory.CreateDirectory(Path.GetDirectoryName(fileName)!);
 
@@ -15,7 +15,7 @@ namespace Massive.Unity
 			}
 		}
 
-		public static IRegistry ReadFromFile(string fileName, IRegistrySerializer registrySerializer)
+		public static Registry ReadFromFile(string fileName, IRegistrySerializer registrySerializer)
 		{
 			var registry = new Registry();
 

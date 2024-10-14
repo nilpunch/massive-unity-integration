@@ -7,15 +7,15 @@ namespace Massive.Unity
 		[SerializeField] private EntityView _viewPrefab;
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 
-		private IRegistry _registry;
+		private Registry _registry;
 		private Entity _entity;
 
-		public override void ApplyToEntity(IRegistry registry, Entity entity)
+		public override void ApplyToEntity(Registry registry, Entity entity)
 		{
 			registry.Assign(entity, _viewConfig.GetAssetId(_viewPrefab));
 		}
 
-		public override void Synchronize(IRegistry registry, Entity entity)
+		public override void Synchronize(Registry registry, Entity entity)
 		{
 			_entity = entity;
 			_registry = registry;
