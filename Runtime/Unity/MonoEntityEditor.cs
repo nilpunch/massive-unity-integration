@@ -10,12 +10,10 @@ namespace Massive.Unity
 	{
 		public override void OnInspectorGUI()
 		{
-			base.OnInspectorGUI();
-
-			GUILayout.Space(5f);
-
 			if (Application.isPlaying)
 			{
+				GUILayout.Space(5f);
+
 				if (GUILayout.Button("Destroy Entity"))
 				{
 					foreach (MonoEntity monoEntity in targets)

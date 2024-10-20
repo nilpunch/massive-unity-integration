@@ -6,7 +6,7 @@ namespace Massive.Unity
 	{
 		[SerializeField] private Transform _rootTransform;
 
-		private IReadOnlyDataSet<LocalTransform> _localTransforms;
+		private DataSet<LocalTransform> _localTransforms;
 		private Entity _entity;
 
 		public void OnEntityAssigned(Registry registry, Entity entity)

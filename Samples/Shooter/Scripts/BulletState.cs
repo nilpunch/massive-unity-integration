@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Massive.Unity.Samples.Shooter
 {
 	[Serializable]
-	public struct BulletState// : IFixedInMemory, IManaged<BulletState>
+	public struct BulletState //, IManaged<BulletState>
 	{
 		public Vector3 Velocity;
 

@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Massive.Unity
 {
-	public class EntityView : MonoBehaviour
+	public class EntityView : MonoComponentsView
 	{
 		[SerializeField] private List<MonoBehaviour> _viewBehaviours = new List<MonoBehaviour>();
 
@@ -25,6 +24,8 @@ namespace Massive.Unity
 
 		public void AssignEntity(Registry registry, Entity entity)
 		{
+			Entity = entity;
+			Registry = registry;
 			gameObject.SetActive(true);
 
 			foreach (IViewBehaviour viewBehaviour in _cachedViewBehaviours)

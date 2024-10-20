@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Massive.Unity
 {
+	[Serializable]
 	public struct LocalTransform : IEquatable<LocalTransform>
 	{
 		public Vector3 Position;
