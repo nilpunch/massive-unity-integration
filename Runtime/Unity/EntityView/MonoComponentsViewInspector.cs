@@ -29,18 +29,20 @@ namespace Massive.Unity
 			{
 				_commonSets.Add(allSets[i]);
 			}
-			foreach (MonoComponentsView target in targets)
+
+			for (int i = _commonSets.Count - 1; i >= 0; i--)
 			{
-				if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
+				foreach (MonoComponentsView target in targets)
 				{
-					continue;
-				}
-				
-				for (int i = _commonSets.Count - 1; i >= 0; i--)
-				{
+					if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
+					{
+						continue;
+					}
+
 					if (!_commonSets[i].IsAssigned(target.Entity.Id))
 					{
 						_commonSets.RemoveAt(i);
+						break;
 					}
 				}
 			}
@@ -95,7 +97,7 @@ namespace Massive.Unity
 				{
 					EditorGUILayout.BeginVertical(GUI.skin.box);
 					Rect controlRect = EditorGUILayout.GetControlRect(true);
-					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.height);
+					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing, controlRect.height);
 					Rect buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y, EditorGUIUtility.singleLineHeight, controlRect.height);
 					EditorGUI.LabelField(fieldRect, setRegistry.TypeOf(commonSet).GetGenericName());
 					if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
@@ -107,10 +109,9 @@ namespace Massive.Unity
 				}
 
 				var componentType = dataSet.GetDataType();
-
 				var componentName = componentType.GetGenericName();
 
-				var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf((IDataSet)commonSet));
+				var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
 
 				EditorGUI.showMixedValue = arrayElement.hasMultipleDifferentValues;
 				EditorGUILayout.BeginVertical(GUI.skin.box);
@@ -199,7 +200,9 @@ namespace Massive.Unity
 				Rect CreateFieldRect(out Rect controlRect)
 				{
 					controlRect = EditorGUILayout.GetControlRect(true);
-					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
+					Rect fieldRect = new Rect(controlRect.x, controlRect.y,
+						controlRect.width - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing,
+						EditorGUIUtility.singleLineHeight);
 					return fieldRect;
 				}
 
