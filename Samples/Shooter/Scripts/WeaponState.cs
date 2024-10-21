@@ -8,6 +8,6 @@ namespace Massive.Unity.Samples.Shooter
 	{
 		[Range(0f, 1f)]
 		public float Cooldown;
-		public WeaponStatus WeaponStatus;
+		public SomeStatus _someStatus;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -7,80 +8,135 @@ using Object = UnityEngine.Object;
 namespace Massive.Unity
 {
 	[CustomEditor(typeof(MonoComponentsView), true)]
+	[CanEditMultipleObjects]
 	public class MonoComponentsViewInspector : Editor
 	{
-		private readonly List<IDataSet> _usedDataSets = new List<IDataSet>();
+		private readonly List<IDataSet> _commonSetIndices = new List<IDataSet>();
+		private readonly List<SparseSet> _commonSets = new List<SparseSet>();
+		private readonly List<IDataSet> _commonDataSets = new List<IDataSet>();
 		private SerializedProperty _dummyComponents;
-
-		private void OnEnable()
-		{
-			_dummyComponents = serializedObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
-		}
 
 		public override void OnInspectorGUI()
 		{
 			serializedObject.Update();
+			_dummyComponents = serializedObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
 
-			var view = (MonoComponentsView)target;
-			if (view.Registry is null || !view.Registry.IsAlive(view.Entity))
+			_commonSets.Clear();
+			var setRegistry = ((MonoComponentsView)targets.FirstOrDefault(target => ((MonoComponentsView)target).Registry != null))?.Registry.SetRegistry;
+			if (setRegistry == null)
 			{
 				return;
 			}
 
-			EditorGUI.indentLevel++;
-			_usedDataSets.Clear();
-			for (var i = 0; i < view.Registry.SetRegistry.All.Length; i++)
+			var allSets = setRegistry.All;
+			for (int i = 0; i < allSets.Length; i++)
 			{
-				var set = view.Registry.SetRegistry.All[i];
-
-				if (view.Registry.SetRegistry.All[i] is not IDataSet dataSet)
+				_commonSets.Add(allSets[i]);
+			}
+			foreach (MonoComponentsView target in serializedObject.targetObjects)
+			{
+				if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
 				{
 					continue;
 				}
-
-				if (!set.IsAssigned(view.Entity.Id))
+				
+				for (int i = _commonSets.Count - 1; i >= 0; i--)
 				{
+					if (!_commonSets[i].IsAssigned(target.Entity.Id))
+					{
+						_commonSets.RemoveAt(i);
+					}
+				}
+			}
+
+			_commonDataSets.Clear();
+			foreach (var commonSet in _commonSets)
+			{
+				if (commonSet is IDataSet dataSet)
+				{
+					_commonDataSets.Add(dataSet);
+				}
+			}
+
+			foreach (MonoComponentsView target in serializedObject.targetObjects)
+			{
+				var targetObject = new SerializedObject(target);
+				var dummyComponents = targetObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
+			
+				for (var i = 0; i < _commonDataSets.Count; i++)
+				{
+					var dataSet = _commonDataSets[i];
+
+					if (dummyComponents.arraySize < i + 1)
+					{
+						dummyComponents.InsertArrayElementAtIndex(i);
+					}
+					
+					var arrayElement = dummyComponents.GetArrayElementAtIndex(i);
+
+					if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
+					{
+						arrayElement.boxedValue = null;
+					}
+					else
+					{
+						arrayElement.boxedValue = dataSet.GetRaw(target.Entity.Id);
+					}
+				}
+
+				for (int i = dummyComponents.arraySize - 1; i >= _commonDataSets.Count; i--)
+				{
+					dummyComponents.DeleteArrayElementAtIndex(i);
+				}
+
+				targetObject.ApplyModifiedPropertiesWithoutUndo();
+			}
+
+			serializedObject.Update();
+
+			EditorGUI.indentLevel++;
+			for (var i = 0; i < _commonSets.Count; i++)
+			{
+				var commonSet = _commonSets[i];
+				if (commonSet is not IDataSet dataSet)
+				{
+					EditorGUILayout.BeginVertical(GUI.skin.box);
+					EditorGUILayout.LabelField(setRegistry.TypeOf(commonSet).GetGenericName());
+					EditorGUILayout.EndVertical();
 					continue;
 				}
 
 				var componentType = dataSet.GetDataType();
 
-				_usedDataSets.Add(dataSet);
-
-				if (_dummyComponents.arraySize < _usedDataSets.Count)
-				{
-					_dummyComponents.InsertArrayElementAtIndex(_usedDataSets.Count - 1);
-				}
-
 				var componentName = componentType.GetGenericName();
-				var componentValue = dataSet.GetRaw(view.Entity.Id);
 
-				var arrayElement = _dummyComponents.GetArrayElementAtIndex(_usedDataSets.Count - 1);
-				
+				var arrayElement = _dummyComponents.GetArrayElementAtIndex(_commonDataSets.IndexOf((IDataSet)commonSet));
+
+				EditorGUI.showMixedValue = arrayElement.hasMultipleDifferentValues;
 				EditorGUILayout.BeginVertical(GUI.skin.box);
-				if (TryDrawBuiltIn(componentType, componentName, ref componentValue))
+				var boxedValue = arrayElement.boxedValue;
+				if (TryDrawBuiltIn(componentType, componentName, ref boxedValue))
 				{
-					arrayElement.boxedValue = componentValue;
+					arrayElement.boxedValue = boxedValue;
 				}
 				else
 				{
-					arrayElement.boxedValue = componentValue;
 					EditorGUILayout.PropertyField(arrayElement, new GUIContent(componentName), true);
 				}
 				EditorGUILayout.EndVertical();
+				EditorGUI.showMixedValue = false;
 			}
-			for (int i = _usedDataSets.Count; i < _dummyComponents.arraySize; i++)
-			{
-				_dummyComponents.DeleteArrayElementAtIndex(i);
-			}
-
 			EditorGUI.indentLevel--;
 
 			serializedObject.ApplyModifiedPropertiesWithoutUndo();
-
-			for (int i = 0; i < _usedDataSets.Count; i++)
+			
+			foreach (MonoComponentsView target in serializedObject.targetObjects)
 			{
-				_usedDataSets[i].SetRaw(view.Entity.Id, view.DummyComponents[i]);
+				for (var i = 0; i < _commonDataSets.Count; i++)
+				{
+					var dataSet = _commonDataSets[i];
+					dataSet.SetRaw(target.Entity.Id, target.DummyComponents[i]);
+				}
 			}
 
 			bool TryDrawBuiltIn(Type type, string label, ref object value)

@@ -10,6 +10,8 @@ namespace Massive.Unity
 	{
 		public override void OnInspectorGUI()
 		{
+			base.OnInspectorGUI();
+			
 			if (Application.isPlaying)
 			{
 				GUILayout.Space(5f);
