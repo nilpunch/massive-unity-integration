@@ -1,13 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using Massive.Unity.Samples.Cars;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
 	[Serializable]
-	public struct BulletState //, IManaged<BulletState>
+	public struct BulletState
 	{
 		public Vector3 Velocity;
 
@@ -20,10 +18,5 @@ namespace Massive.Unity.Samples.Shooter
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => Lifetime <= 0f;
 		}
-
-		// public void CopyTo(ref BulletState other)
-		// {
-		// 	other = this;
-		// }
 	}
 }
