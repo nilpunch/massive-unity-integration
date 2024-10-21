@@ -11,16 +11,12 @@ namespace Massive.Unity
 	[CanEditMultipleObjects]
 	public class MonoComponentsViewInspector : Editor
 	{
-		private readonly List<IDataSet> _commonSetIndices = new List<IDataSet>();
+		private readonly List<SparseSet> _toUnassign = new List<SparseSet>();
 		private readonly List<SparseSet> _commonSets = new List<SparseSet>();
 		private readonly List<IDataSet> _commonDataSets = new List<IDataSet>();
-		private SerializedProperty _dummyComponents;
 
 		public override void OnInspectorGUI()
 		{
-			serializedObject.Update();
-			_dummyComponents = serializedObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
-
 			_commonSets.Clear();
 			var setRegistry = ((MonoComponentsView)targets.FirstOrDefault(target => ((MonoComponentsView)target).Registry != null))?.Registry.SetRegistry;
 			if (setRegistry == null)
@@ -33,7 +29,7 @@ namespace Massive.Unity
 			{
 				_commonSets.Add(allSets[i]);
 			}
-			foreach (MonoComponentsView target in serializedObject.targetObjects)
+			foreach (MonoComponentsView target in targets)
 			{
 				if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
 				{
@@ -58,42 +54,39 @@ namespace Massive.Unity
 				}
 			}
 
-			foreach (MonoComponentsView target in serializedObject.targetObjects)
+			foreach (MonoComponentsView target in targets)
 			{
-				var targetObject = new SerializedObject(target);
-				var dummyComponents = targetObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
-			
 				for (var i = 0; i < _commonDataSets.Count; i++)
 				{
 					var dataSet = _commonDataSets[i];
 
-					if (dummyComponents.arraySize < i + 1)
+					if (target.DummyComponents.Count < i + 1)
 					{
-						dummyComponents.InsertArrayElementAtIndex(i);
+						target.DummyComponents.Insert(i, null);
 					}
 					
-					var arrayElement = dummyComponents.GetArrayElementAtIndex(i);
-
 					if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
 					{
-						arrayElement.boxedValue = null;
+						target.DummyComponents[i] = null;
 					}
 					else
 					{
-						arrayElement.boxedValue = dataSet.GetRaw(target.Entity.Id);
+						target.DummyComponents[i] = dataSet.GetRaw(target.Entity.Id);
 					}
 				}
 
-				for (int i = dummyComponents.arraySize - 1; i >= _commonDataSets.Count; i--)
+				if (target.DummyComponents.Count > _commonDataSets.Count)
 				{
-					dummyComponents.DeleteArrayElementAtIndex(i);
+					target.DummyComponents.RemoveRange(_commonDataSets.Count, target.DummyComponents.Count - _commonDataSets.Count);
 				}
-
-				targetObject.ApplyModifiedPropertiesWithoutUndo();
 			}
 
 			serializedObject.Update();
+			var serializedDummies = serializedObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
+			var buttonIcon = EditorGUIUtility.IconContent("d_winbtn_win_close_h@2x");
+			var buttonStyle = new GUIStyle() { padding = new RectOffset() };
 
+			_toUnassign.Clear();
 			EditorGUI.indentLevel++;
 			for (var i = 0; i < _commonSets.Count; i++)
 			{
@@ -101,7 +94,14 @@ namespace Massive.Unity
 				if (commonSet is not IDataSet dataSet)
 				{
 					EditorGUILayout.BeginVertical(GUI.skin.box);
-					EditorGUILayout.LabelField(setRegistry.TypeOf(commonSet).GetGenericName());
+					Rect controlRect = EditorGUILayout.GetControlRect(true);
+					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.height);
+					Rect buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y, EditorGUIUtility.singleLineHeight, controlRect.height);
+					EditorGUI.LabelField(fieldRect, setRegistry.TypeOf(commonSet).GetGenericName());
+					if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
+					{
+						_toUnassign.Add(commonSet);
+					}
 					EditorGUILayout.EndVertical();
 					continue;
 				}
@@ -110,18 +110,33 @@ namespace Massive.Unity
 
 				var componentName = componentType.GetGenericName();
 
-				var arrayElement = _dummyComponents.GetArrayElementAtIndex(_commonDataSets.IndexOf((IDataSet)commonSet));
+				var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf((IDataSet)commonSet));
 
 				EditorGUI.showMixedValue = arrayElement.hasMultipleDifferentValues;
 				EditorGUILayout.BeginVertical(GUI.skin.box);
-				var boxedValue = arrayElement.boxedValue;
-				if (TryDrawBuiltIn(componentType, componentName, ref boxedValue))
 				{
-					arrayElement.boxedValue = boxedValue;
-				}
-				else
-				{
-					EditorGUILayout.PropertyField(arrayElement, new GUIContent(componentName), true);
+					Rect buttonRect;
+					if (DrawBuiltInField(componentType, componentName, arrayElement, out var controlRect))
+					{
+						buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y,
+							EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
+						if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
+						{
+							_toUnassign.Add(commonSet);
+						}
+					}
+					else
+					{
+						controlRect = EditorGUILayout.GetControlRect(true, EditorGUI.GetPropertyHeight(arrayElement, true));
+						buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y,
+							EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
+						if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
+						{
+							_toUnassign.Add(commonSet);
+						}
+						EditorGUI.PropertyField(controlRect, arrayElement, new GUIContent(componentName), true);
+					}
+					
 				}
 				EditorGUILayout.EndVertical();
 				EditorGUI.showMixedValue = false;
@@ -129,36 +144,63 @@ namespace Massive.Unity
 			EditorGUI.indentLevel--;
 
 			serializedObject.ApplyModifiedPropertiesWithoutUndo();
-			
-			foreach (MonoComponentsView target in serializedObject.targetObjects)
+
+			foreach (var setToUnassign in _toUnassign)
 			{
-				for (var i = 0; i < _commonDataSets.Count; i++)
+				foreach (MonoComponentsView target in targets)
 				{
-					var dataSet = _commonDataSets[i];
+					setToUnassign.Unassign(target.Entity.Id);
+				}
+				var index = _commonDataSets.FindIndex(set => ReferenceEquals(set, setToUnassign));
+				if (index >= 0)
+				{
+					_commonDataSets[index] = null;
+				}
+			}
+			
+			for (var i = 0; i < _commonDataSets.Count; i++)
+			{
+				var dataSet = _commonDataSets[i];
+				if (dataSet == null)
+				{
+					continue;
+				}
+				foreach (MonoComponentsView target in targets)
+				{
 					dataSet.SetRaw(target.Entity.Id, target.DummyComponents[i]);
 				}
 			}
 
-			bool TryDrawBuiltIn(Type type, string label, ref object value)
+			bool DrawBuiltInField(Type type, string label, SerializedProperty serializedProperty, out Rect controlRect)
 			{
+				controlRect = default;
+				
+				var value = serializedProperty.boxedValue;
 				if (type.IsEnum)
 				{
 					bool isFlags = Attribute.IsDefined(type, typeof(FlagsAttribute));
-					value = isFlags
-						? EditorGUILayout.EnumFlagsField(label, (Enum)value)
-						: EditorGUILayout.EnumPopup(label, (Enum)value);
+					serializedProperty.boxedValue = isFlags
+						? EditorGUI.EnumFlagsField(CreateFieldRect(out controlRect), label, (Enum)value)
+						: EditorGUI.EnumPopup(CreateFieldRect(out controlRect), label, (Enum)value);
 					return true;
 				}
 
 				if (type == typeof(int))
 				{
-					value = EditorGUILayout.IntField(label, (int)value);
+					serializedProperty.boxedValue = EditorGUI.IntField(CreateFieldRect(out controlRect), label, (int)value);
 					return true;
 				}
 				else if (type == typeof(Vector3))
 				{
-					value = EditorGUILayout.Vector3Field(label, (Vector3)value);
+					serializedProperty.boxedValue = EditorGUI.Vector3Field(CreateFieldRect(out controlRect), label, (Vector3)value);
 					return true;
+				}
+
+				Rect CreateFieldRect(out Rect controlRect)
+				{
+					controlRect = EditorGUILayout.GetControlRect(true);
+					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
+					return fieldRect;
 				}
 
 				return false;
