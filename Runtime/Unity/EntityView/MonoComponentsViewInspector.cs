@@ -90,61 +90,57 @@ namespace Massive.Unity
 
 			_toUnassign.Clear();
 			EditorGUI.indentLevel++;
+			EditorGUI.BeginChangeCheck();
 			for (var i = 0; i < _commonSets.Count; i++)
 			{
+				EditorGUILayout.BeginVertical(GUI.skin.box);
+
 				var commonSet = _commonSets[i];
-				if (commonSet is not IDataSet dataSet)
+				IDataSet dataSet = commonSet as IDataSet;
+
+				// Define control rect
+				Rect controlRect;
+				if (dataSet is null)
 				{
-					EditorGUILayout.BeginVertical(GUI.skin.box);
-					Rect controlRect = EditorGUILayout.GetControlRect(true);
-					Rect fieldRect = new Rect(controlRect.x, controlRect.y, controlRect.width - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing, controlRect.height);
-					Rect buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y, EditorGUIUtility.singleLineHeight, controlRect.height);
-					EditorGUI.LabelField(fieldRect, setRegistry.TypeOf(commonSet).GetGenericName());
-					if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
-					{
-						_toUnassign.Add(commonSet);
-					}
-					EditorGUILayout.EndVertical();
-					continue;
+					controlRect = EditorGUILayout.GetControlRect(true);
+				}
+				else
+				{
+					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
+					controlRect = GetPropertyControlRect(dataSet.GetDataType(), arrayElement);
 				}
 
-				var componentType = dataSet.GetDataType();
-				var componentName = componentType.GetGenericName();
-
-				var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
-
-				EditorGUI.showMixedValue = arrayElement.hasMultipleDifferentValues;
-				EditorGUILayout.BeginVertical(GUI.skin.box);
+				// Draw button before any properties top made it clickable
+				if (GUI.Button(GetButtonRect(controlRect), buttonIcon, buttonStyle))
 				{
-					Rect buttonRect;
-					if (DrawBuiltInField(componentType, componentName, arrayElement, out var controlRect))
+					_toUnassign.Add(commonSet);
+				}
+
+				// Draw everything
+				if (dataSet is null)
+				{
+					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), setRegistry.TypeOf(commonSet).GetGenericName());
+				}
+				else
+				{
+					var componentType = dataSet.GetDataType();
+					var componentName = componentType.GetGenericName();
+					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
+
+					EditorGUI.showMixedValue = arrayElement.hasMultipleDifferentValues;
+					if (HasBuiltInDrawer(componentType))
 					{
-						buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y,
-							EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
-						if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
-						{
-							_toUnassign.Add(commonSet);
-						}
+						DrawBuiltInField(controlRect, componentType, componentName, arrayElement);
 					}
 					else
 					{
-						controlRect = EditorGUILayout.GetControlRect(true, EditorGUI.GetPropertyHeight(arrayElement, true));
-						buttonRect = new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y,
-							EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
-						if (GUI.Button(buttonRect, buttonIcon, buttonStyle))
-						{
-							_toUnassign.Add(commonSet);
-						}
 						EditorGUI.PropertyField(controlRect, arrayElement, new GUIContent(componentName), true);
 					}
-					
+					EditorGUI.showMixedValue = false;
 				}
 				EditorGUILayout.EndVertical();
-				EditorGUI.showMixedValue = false;
 			}
 			EditorGUI.indentLevel--;
-
-			serializedObject.ApplyModifiedPropertiesWithoutUndo();
 
 			foreach (var setToUnassign in _toUnassign)
 			{
@@ -158,55 +154,78 @@ namespace Massive.Unity
 					_commonDataSets[index] = null;
 				}
 			}
-			
-			for (var i = 0; i < _commonDataSets.Count; i++)
+
+			if (EditorGUI.EndChangeCheck())
 			{
-				var dataSet = _commonDataSets[i];
-				if (dataSet == null)
+				serializedObject.ApplyModifiedPropertiesWithoutUndo();
+
+				for (var i = 0; i < _commonDataSets.Count; i++)
 				{
-					continue;
-				}
-				foreach (MonoComponentsView target in targets)
-				{
-					dataSet.SetRaw(target.Entity.Id, target.DummyComponents[i]);
+					var dataSet = _commonDataSets[i];
+					if (dataSet == null)
+					{
+						continue;
+					}
+					foreach (MonoComponentsView target in targets)
+					{
+						dataSet.SetRaw(target.Entity.Id, target.DummyComponents[i]);
+					}
 				}
 			}
 
-			bool DrawBuiltInField(Type type, string label, SerializedProperty serializedProperty, out Rect controlRect)
+			bool HasBuiltInDrawer(Type type)
 			{
-				controlRect = default;
-				
+				return type.IsEnum || type.IsPrimitive || type.IsArray
+				       || type == typeof(Vector3);
+			}
+
+			Rect GetPropertyControlRect(Type type, SerializedProperty serializedProperty)
+			{
+				if (HasBuiltInDrawer(type))
+				{
+					return EditorGUILayout.GetControlRect(true);
+				}
+				else
+				{
+					return EditorGUILayout.GetControlRect(true, EditorGUI.GetPropertyHeight(serializedProperty, true));
+				}
+			}
+
+			void DrawBuiltInField(Rect controlRect, Type type, string label, SerializedProperty serializedProperty)
+			{
 				var value = serializedProperty.boxedValue;
 				if (type.IsEnum)
 				{
 					bool isFlags = Attribute.IsDefined(type, typeof(FlagsAttribute));
 					serializedProperty.boxedValue = isFlags
-						? EditorGUI.EnumFlagsField(CreateFieldRect(out controlRect), label, (Enum)value)
-						: EditorGUI.EnumPopup(CreateFieldRect(out controlRect), label, (Enum)value);
-					return true;
+						? EditorGUI.EnumFlagsField(GetSingleLineFieldRect(controlRect), label, (Enum)value)
+						: EditorGUI.EnumPopup(GetSingleLineFieldRect(controlRect), label, (Enum)value);
 				}
-
-				if (type == typeof(int))
+				else if (type == typeof(int))
 				{
-					serializedProperty.boxedValue = EditorGUI.IntField(CreateFieldRect(out controlRect), label, (int)value);
-					return true;
+					serializedProperty.boxedValue = EditorGUI.IntField(GetSingleLineFieldRect(controlRect), label, (int)value);
 				}
 				else if (type == typeof(Vector3))
 				{
-					serializedProperty.boxedValue = EditorGUI.Vector3Field(CreateFieldRect(out controlRect), label, (Vector3)value);
-					return true;
+					serializedProperty.boxedValue = EditorGUI.Vector3Field(GetSingleLineFieldRect(controlRect), label, (Vector3)value);
 				}
-
-				Rect CreateFieldRect(out Rect controlRect)
+				else
 				{
-					controlRect = EditorGUILayout.GetControlRect(true);
-					Rect fieldRect = new Rect(controlRect.x, controlRect.y,
-						controlRect.width - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing,
-						EditorGUIUtility.singleLineHeight);
-					return fieldRect;
+					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), label);
 				}
+			}
 
-				return false;
+			Rect GetSingleLineFieldRect(Rect controlRect)
+			{
+				return new Rect(controlRect.x, controlRect.y,
+					controlRect.width - EditorGUIUtility.singleLineHeight - EditorGUIUtility.standardVerticalSpacing,
+					EditorGUIUtility.singleLineHeight);
+			}
+			
+			Rect GetButtonRect(Rect controlRect)
+			{
+				return new Rect(controlRect.x + controlRect.width - EditorGUIUtility.singleLineHeight, controlRect.y,
+					EditorGUIUtility.singleLineHeight, EditorGUIUtility.singleLineHeight);
 			}
 		}
 	}
