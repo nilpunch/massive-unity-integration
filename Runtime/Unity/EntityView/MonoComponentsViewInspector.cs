@@ -1,13 +1,14 @@
-﻿using System;
+﻿#if UNITY_EDITOR
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using UnityEditor;
 
 namespace Massive.Unity
 {
-	[CustomEditor(typeof(MonoComponentsView), true)]
+	[CustomEditor(typeof(ComponentsView), true)]
 	[CanEditMultipleObjects]
 	public class MonoComponentsViewInspector : Editor
 	{
@@ -18,7 +19,7 @@ namespace Massive.Unity
 		public override void OnInspectorGUI()
 		{
 			_commonSets.Clear();
-			var setRegistry = ((MonoComponentsView)targets.FirstOrDefault(target => ((MonoComponentsView)target).Registry != null))?.Registry.SetRegistry;
+			var setRegistry = ((ComponentsView)targets.FirstOrDefault(target => ((ComponentsView)target).Registry != null))?.Registry.SetRegistry;
 			if (setRegistry == null)
 			{
 				return;
@@ -32,7 +33,7 @@ namespace Massive.Unity
 
 			for (int i = _commonSets.Count - 1; i >= 0; i--)
 			{
-				foreach (MonoComponentsView target in targets)
+				foreach (ComponentsView target in targets)
 				{
 					if (target.Registry is null || !target.Registry.IsAlive(target.Entity))
 					{
@@ -56,7 +57,7 @@ namespace Massive.Unity
 				}
 			}
 
-			foreach (MonoComponentsView target in targets)
+			foreach (ComponentsView target in targets)
 			{
 				for (var i = 0; i < _commonDataSets.Count; i++)
 				{
@@ -84,7 +85,7 @@ namespace Massive.Unity
 			}
 
 			serializedObject.Update();
-			var serializedDummies = serializedObject.FindProperty(nameof(MonoComponentsView.DummyComponents));
+			var serializedDummies = serializedObject.FindProperty(nameof(ComponentsView.DummyComponents));
 			var buttonIcon = EditorGUIUtility.IconContent("d_winbtn_win_close_h@2x");
 			var buttonStyle = new GUIStyle() { padding = new RectOffset() };
 
@@ -107,7 +108,7 @@ namespace Massive.Unity
 				else
 				{
 					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
-					controlRect = GetPropertyControlRect(dataSet.GetDataType(), arrayElement);
+					controlRect = GetPropertyControlRect(dataSet.DataType, arrayElement);
 				}
 
 				// Draw button before any properties top made it clickable
@@ -123,7 +124,7 @@ namespace Massive.Unity
 				}
 				else
 				{
-					var componentType = dataSet.GetDataType();
+					var componentType = dataSet.DataType;
 					var componentName = componentType.GetGenericName();
 					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
 
@@ -144,7 +145,7 @@ namespace Massive.Unity
 
 			foreach (var setToUnassign in _toUnassign)
 			{
-				foreach (MonoComponentsView target in targets)
+				foreach (ComponentsView target in targets)
 				{
 					setToUnassign.Unassign(target.Entity.Id);
 				}
@@ -166,7 +167,7 @@ namespace Massive.Unity
 					{
 						continue;
 					}
-					foreach (MonoComponentsView target in targets)
+					foreach (ComponentsView target in targets)
 					{
 						dataSet.SetRaw(target.Entity.Id, target.DummyComponents[i]);
 					}
@@ -211,7 +212,7 @@ namespace Massive.Unity
 				}
 				else
 				{
-					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), label);
+					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), label + " (no drawer)");
 				}
 			}
 
@@ -230,3 +231,4 @@ namespace Massive.Unity
 		}
 	}
 }
+#endif

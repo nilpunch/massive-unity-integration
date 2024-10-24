@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System.Linq;
+using Massive.Serialization;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -64,26 +65,24 @@ namespace Massive.Unity
 			_parserConfig = (RegistryParserConfig)EditorGUILayout.ObjectField(_parserConfig, typeof(RegistryParserConfig), false);
 			EditorGUILayout.EndHorizontal();
 
-			GUI.enabled = _parserConfig != null;
-
 			EditorGUILayout.Space(5f);
 			if (GUILayout.Button("Save Scene Registry"))
 			{
 				SaveSceneRegistry();
 			}
-
-			GUI.enabled = true;
 		}
 
 		private void SaveSceneRegistry()
 		{
-			if (_parserConfig == null)
+			IRegistrySerializer registrySerializer;
+			if (_parserConfig != null)
 			{
-				ShowNotification(new GUIContent("No parser config found"));
-				return;
+				registrySerializer = _parserConfig.CreateParser();
 			}
-
-			var registryParser = _parserConfig.CreateParser();
+			else
+			{
+				registrySerializer = new RegistrySerializer();
+			}
 
 			var registry = new Registry();
 
@@ -95,7 +94,7 @@ namespace Massive.Unity
 				monoEntity.ApplyToRegistry(registry);
 			}
 
-			RegistryFileUtils.WriteToFile(FileSceneRegistryUtils.GetPathToSceneRegistry(activeScene), registry, registryParser);
+			RegistryFileUtils.WriteToFile(FileSceneRegistryUtils.GetPathToSceneRegistry(activeScene), registry, registrySerializer);
 
 			AssetDatabase.Refresh();
 		}

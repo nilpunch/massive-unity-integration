@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Massive.Unity
 {
-	public class EntityView : MonoComponentsView
+	public class EntityView : ComponentsView
 	{
 		[SerializeField] private List<MonoBehaviour> _viewBehaviours = new List<MonoBehaviour>();
 

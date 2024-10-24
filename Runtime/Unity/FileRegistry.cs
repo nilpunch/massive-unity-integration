@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Massive.Serialization;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Massive.Unity
@@ -9,7 +10,6 @@ namespace Massive.Unity
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 		[SerializeField] private bool _reactiveSynchronization = true;
 		[SerializeField] private bool _synchronizeEntities = true;
-		[SerializeField] private bool _synchronizeComponents = true;
 		[SerializeField] private bool _synchronizeViews = true;
 
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
@@ -28,7 +28,14 @@ namespace Massive.Unity
 
 			var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
 
-			_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _parserConfig.CreateParser());
+			if (_parserConfig != null)
+			{
+				_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _parserConfig.CreateParser());
+			}
+			else
+			{
+				_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, new RegistrySerializer());
+			}
 			
 			_updateSystems = FindObjectsOfType<UpdateSystem>();
 			foreach (var updateSystem in _updateSystems)
@@ -45,15 +52,6 @@ namespace Massive.Unity
 				if (_reactiveSynchronization)
 				{
 					_unityEntitySynchronization.SubscribeEntities();
-				}
-			}
-			if (_synchronizeComponents)
-			{
-				_unityEntitySynchronization.SynchronizeComponents();
-				
-				if (_reactiveSynchronization)
-				{
-					_unityEntitySynchronization.SubscribeComponents();
 				}
 			}
 			if (_synchronizeViews)
@@ -89,10 +87,6 @@ namespace Massive.Unity
 
 			if (!_reactiveSynchronization)
 			{
-				if (_synchronizeComponents) // Synchronize components first to remove all components from dying entity
-				{
-					_unityEntitySynchronization.SynchronizeComponents();
-				}
 				if (_synchronizeEntities)
 				{
 					_unityEntitySynchronization.SynchronizeEntities();

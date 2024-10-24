@@ -9,7 +9,6 @@ namespace Massive.Unity
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 		[SerializeField] private bool _synchronizeEntities = true;
-		[SerializeField] private bool _synchronizeComponents = true;
 		[SerializeField] private bool _synchronizeViews = true;
 
 		[SerializeField, Min(0)] private int _framesCapacity = 120;
@@ -54,10 +53,6 @@ namespace Massive.Unity
 			if (_synchronizeEntities)
 			{
 				_unityEntitySynchronization.SynchronizeEntities();
-			}
-			if (_synchronizeComponents)
-			{
-				_unityEntitySynchronization.SynchronizeComponents();
 			}
 			if (_synchronizeViews)
 			{
@@ -120,10 +115,6 @@ namespace Massive.Unity
 			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 			_stopwatch.Restart();
 
-			if (_synchronizeComponents) // Synchronize components first to remove all components from dying entity
-			{
-				_unityEntitySynchronization.SynchronizeComponents();
-			}
 			if (_synchronizeEntities)
 			{
 				_unityEntitySynchronization.SynchronizeEntities();

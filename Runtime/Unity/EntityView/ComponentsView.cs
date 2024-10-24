@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Massive.Unity
 {
-	public class MonoComponentsView : MonoBehaviour
+	public class ComponentsView : MonoBehaviour
 	{
 		public Registry Registry { get; protected set; }
 		public Entity Entity  { get; protected set; }

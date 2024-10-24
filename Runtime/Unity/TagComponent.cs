@@ -4,7 +4,7 @@ namespace Massive.Unity
 {
 	[RequireComponent(typeof(MonoEntity))]
 	[DisallowMultipleComponent]
-	public class TagComponent<TComponent, TMonoComponent> : UnmanagedComponentBase<TComponent, TMonoComponent>
+	public class TagComponent<TComponent, TMonoComponent> : MonoComponent
 		where TComponent : unmanaged
 		where TMonoComponent : TagComponent<TComponent, TMonoComponent>
 	{

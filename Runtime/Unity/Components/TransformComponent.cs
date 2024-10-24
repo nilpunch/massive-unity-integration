@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class TransformComponent : UnmanagedComponentBase<LocalTransform, TransformComponent>
+	public class TransformComponent : MonoComponent
 	{
 		private LocalTransform _lastGoLocalTransform;
 

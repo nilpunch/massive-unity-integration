@@ -3,7 +3,7 @@ using Object = UnityEngine.Object;
 
 namespace Massive.Unity
 {
-	public class UnityEntitySynchronization : IComponentsEventHandler, IDisposable
+	public class UnityEntitySynchronization : IDisposable
 	{
 		private readonly Registry _registry;
 		private readonly EntityViewSynchronizer _entityViewSynchronizer;
@@ -27,14 +27,6 @@ namespace Massive.Unity
 			_registry.Set<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
 			_registry.Set<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
 		}
-
-		public void SubscribeComponents()
-		{
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.SubscribeAssignCallbacks(_registry, this);
-			}
-		}
 		
 		public void UnsubscribeEntities()
 		{
@@ -47,14 +39,6 @@ namespace Massive.Unity
 			_registry.Set<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
 			_registry.Set<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
 		}
-
-		public void UnsubscribeComponents()
-		{
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.UnsubscribeAssignCallbacks(_registry, this);
-			}
-		}
 		
 		public void SynchronizeEntities()
 		{
@@ -64,14 +48,6 @@ namespace Massive.Unity
 		public void SynchronizeViews()
 		{
 			_entityViewSynchronizer.SynchronizeAll();
-		}
-
-		public void SynchronizeComponents()
-		{
-			foreach (var reflector in ComponentReflectors.All)
-			{
-				reflector.SynchronizeComponents(_registry, _monoEntities.Set, this);
-			}
 		}
 
 		private void OnAfterEntityCreated(Entity entity)
@@ -131,7 +107,6 @@ namespace Massive.Unity
 		{
 			UnsubscribeEntities();
 			UnsubscribeViews();
-			UnsubscribeComponents();
 		}
 	}
 }

@@ -4,7 +4,7 @@ namespace Massive.Unity
 {
 	[RequireComponent(typeof(MonoEntity))]
 	[DisallowMultipleComponent]
-	public class ManagedComponent<TComponent, TMonoComponent> : ManagedComponentBase<TComponent, TMonoComponent>
+	public class ManagedComponent<TComponent, TMonoComponent> : MonoComponent
 		where TComponent : IManaged<TComponent>
 		where TMonoComponent : ManagedComponent<TComponent, TMonoComponent>
 	{

@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class ViewComponent : UnmanagedComponentBase<ViewAsset, ViewComponent>
+	public class ViewComponent : MonoComponent
 	{
 		[SerializeField] private EntityView _viewPrefab;
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
