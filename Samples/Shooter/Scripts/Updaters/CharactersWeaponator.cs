@@ -23,8 +23,8 @@ namespace Massive.Unity.Samples.Shooter
 		{
 			var weapons = _registry.DataSet<WeaponState>();
 			var transforms = _registry.DataSet<LocalTransform>();
-
-			foreach (var entityId in _registry.View().Include<WeaponState, LocalTransform>())
+			
+			foreach (var entityId in _registry.View().Group<Include<WeaponState, LocalTransform>>())
 			{
 				ref var weaponState = ref weapons.Get(entityId);
 				ref var characterTransform = ref transforms.Get(entityId);

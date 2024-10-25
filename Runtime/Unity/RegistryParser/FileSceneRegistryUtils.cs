@@ -10,10 +10,10 @@ namespace Massive.Unity
 
 		public static string GetPathToSceneRegistry(Scene scene)
 		{
-			var assetDirectory = Path.GetDirectoryName(Application.dataPath)!;
+			var rootDirectory = Path.GetDirectoryName(Application.persistentDataPath)!;
 			var sceneDirectory = Path.GetDirectoryName(scene.path)!;
 			var sceneName = Path.GetFileNameWithoutExtension(scene.path);
-			var pathToFile = Path.Combine(assetDirectory, sceneDirectory, sceneName, RegistryFileName);
+			var pathToFile = Path.Combine(rootDirectory, sceneDirectory, sceneName, RegistryFileName);
 
 			return pathToFile;
 		}

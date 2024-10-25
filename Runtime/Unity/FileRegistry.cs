@@ -1,99 +1,41 @@
-﻿using Massive.Serialization;
+﻿using System.IO;
+using Massive.Serialization;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Massive.Unity
 {
-	public class FileRegistry : MonoBehaviour
+	public class FileRegistry : SceneRegistry
 	{
-		[SerializeField] private RegistryParserConfig _parserConfig;
-		[SerializeField] private ViewDataBaseConfig _viewConfig;
-		[SerializeField] private bool _reactiveSynchronization = true;
-		[SerializeField] private bool _synchronizeEntities = true;
-		[SerializeField] private bool _synchronizeViews = true;
-
-		[SerializeField, Min(1)] private int _simulationFrequency = 60;
-		
-		private UpdateSystem[] _updateSystems;
-		private UnityEntitySynchronization _unityEntitySynchronization;
-		private Registry _registry;
-		private int _currentFrame;
-
-		private void Awake()
+		private void OnGUI()
 		{
-			foreach (var monoEntity in FindObjectsOfType<MonoEntity>())
+			float fontScaling = Screen.height / (float)1080;
+			var guiStyle = new GUIStyle(GUI.skin.button);
+			guiStyle.fontSize = Mathf.RoundToInt(70 * fontScaling);
+
+			if (GUILayout.Button("Save Registry", guiStyle))
 			{
-				Destroy(monoEntity.gameObject);
+				var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
+
+				RegistryFileUtils.WriteToFile(pathToSceneRegistry, _registry, new RegistrySerializer());
 			}
 
-			var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
-
-			if (_parserConfig != null)
+			if (GUILayout.Button("Load Registry", guiStyle))
 			{
-				_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _parserConfig.CreateParser());
-			}
-			else
-			{
-				_registry = RegistryFileUtils.ReadFromFile(pathToSceneRegistry, new RegistrySerializer());
-			}
-			
-			_updateSystems = FindObjectsOfType<UpdateSystem>();
-			foreach (var updateSystem in _updateSystems)
-			{
-				updateSystem.Init(_registry);
-			}
+				var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
-
-			if (_synchronizeEntities)
-			{
-				_unityEntitySynchronization.SynchronizeEntities();
-
-				if (_reactiveSynchronization)
+				if (File.Exists(pathToSceneRegistry))
 				{
-					_unityEntitySynchronization.SubscribeEntities();
-				}
-			}
-			if (_synchronizeViews)
-			{
-				_unityEntitySynchronization.SynchronizeViews();
-				
-				if (_reactiveSynchronization)
-				{
-					_unityEntitySynchronization.SubscribeViews();
-				}
-			}
-		}
+					RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _registry, new RegistrySerializer());
 
-		private void OnDestroy()
-		{
-			_unityEntitySynchronization.Dispose();
-		}
-
-		private void Update()
-		{
-			int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
-			float deltaTime = 1f / _simulationFrequency;
-			
-			while (_currentFrame < targetFrame)
-			{
-				foreach (var updateSystem in _updateSystems)
-				{
-					updateSystem.UpdateFrame(deltaTime);
-				}
-
-				_currentFrame++;
-			}
-
-			if (!_reactiveSynchronization)
-			{
-				if (_synchronizeEntities)
-				{
-					_unityEntitySynchronization.SynchronizeEntities();
-				}
-				if (_synchronizeViews)
-				{
-					_unityEntitySynchronization.SynchronizeViews();
+					if (_synchronizeEntities)
+					{
+						_unityEntitySynchronization.SynchronizeEntities();
+					}
+					if (_synchronizeViews)
+					{
+						_unityEntitySynchronization.SynchronizeViews();
+					}
 				}
 			}
 		}

@@ -15,16 +15,12 @@ namespace Massive.Unity
 			}
 		}
 
-		public static Registry ReadFromFile(string fileName, IRegistrySerializer registrySerializer)
+		public static void ReadFromFile(string fileName, Registry registry, IRegistrySerializer registrySerializer)
 		{
-			var registry = new Registry();
-
 			using (FileStream stream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
 			{
 				registrySerializer.Deserialize(registry, stream);
 			}
-
-			return registry;
 		}
 	}
 }

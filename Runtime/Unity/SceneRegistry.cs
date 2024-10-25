@@ -10,15 +10,15 @@ namespace Massive.Unity
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 		[SerializeField] private bool _reactiveSynchronization = true;
-		[SerializeField] private bool _synchronizeEntities = true;
-		[SerializeField] private bool _synchronizeViews = true;
+		[SerializeField] protected bool _synchronizeEntities = true;
+		[SerializeField] protected bool _synchronizeViews = true;
 		
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
 		[SerializeField] private bool _fixedTimeStep = false;
 
 		private UpdateSystem[] _updateSystems;
-		private UnityEntitySynchronization _unityEntitySynchronization;
-		private Registry _registry;
+		protected UnityEntitySynchronization _unityEntitySynchronization;
+		protected Registry _registry;
 		private int _currentFrame;
 
 		private void Awake()

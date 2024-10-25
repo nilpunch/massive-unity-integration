@@ -9,9 +9,6 @@ namespace Massive.Unity
 		public override IRegistrySerializer CreateParser()
 		{
 			var registrySerializer = new RegistrySerializer();
-
-			registrySerializer.AddNonOwningGroup<Include<int, float>>();
-
 			return registrySerializer;
 		}
 	}
