@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Massive.Serialization;
 using UnityEngine;
+using UnityEngine.Profiling;
 using UnityEngine.SceneManagement;
 
 namespace Massive.Unity
@@ -17,7 +18,9 @@ namespace Massive.Unity
 			{
 				var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
 
+				Profiler.BeginSample("Serialize to file.");
 				RegistryFileUtils.WriteToFile(pathToSceneRegistry, _registry, new RegistrySerializer());
+				Profiler.EndSample();
 			}
 
 			if (GUILayout.Button("Load Registry", guiStyle))
@@ -26,8 +29,11 @@ namespace Massive.Unity
 
 				if (File.Exists(pathToSceneRegistry))
 				{
+					Profiler.BeginSample("Deserialize from file.");
 					RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _registry, new RegistrySerializer());
+					Profiler.EndSample();
 
+					Profiler.BeginSample("Synchronize entities.");
 					if (_synchronizeEntities)
 					{
 						_unityEntitySynchronization.SynchronizeEntities();
@@ -36,6 +42,7 @@ namespace Massive.Unity
 					{
 						_unityEntitySynchronization.SynchronizeViews();
 					}
+					Profiler.EndSample();
 				}
 			}
 		}

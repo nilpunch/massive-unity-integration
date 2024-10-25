@@ -70,6 +70,12 @@ namespace Massive.Unity
 			{
 				SaveSceneRegistry();
 			}
+
+			EditorGUILayout.Space(5f);
+			if (GUILayout.Button("Open persistent data path"))
+			{
+				OpenInWin(Application.persistentDataPath);
+			}
 		}
 
 		private void SaveSceneRegistry()
@@ -97,6 +103,26 @@ namespace Massive.Unity
 			RegistryFileUtils.WriteToFile(FileSceneRegistryUtils.GetPathToSceneRegistry(activeScene), registry, registrySerializer);
 
 			AssetDatabase.Refresh();
+		}
+
+		public static void OpenInWin(string path)
+		{
+			bool openInsidesOfFolder = false;
+
+			// try windows
+			string winPath = path.Replace("/", "\\"); // windows explorer doesn't like forward slashes
+
+			if ( System.IO.Directory.Exists(winPath) ) // if path requested is a folder, automatically open insides of that folder
+				openInsidesOfFolder = true;
+
+			try
+			{
+				System.Diagnostics.Process.Start("explorer.exe", (openInsidesOfFolder ? "/root," : "/select,") + "\"" + winPath + "\"");
+			}
+			catch ( System.ComponentModel.Win32Exception e )
+			{
+				e.HelpLink = "";
+			}
 		}
 	}
 }
