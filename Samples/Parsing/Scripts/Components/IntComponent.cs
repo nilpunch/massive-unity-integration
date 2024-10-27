@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public class IntComponent : UnmanagedComponent<int, IntComponent>
+	public class IntComponent : MonoComponent<int>
 	{
 	}
 }

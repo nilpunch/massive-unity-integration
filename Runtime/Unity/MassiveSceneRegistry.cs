@@ -8,7 +8,6 @@ namespace Massive.Unity
 	public class MassiveSceneRegistry : MonoBehaviour
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
-		[SerializeField] private bool _synchronizeEntities = true;
 		[SerializeField] private bool _synchronizeViews = true;
 
 		[SerializeField, Min(0)] private int _framesCapacity = 120;
@@ -50,10 +49,6 @@ namespace Massive.Unity
 
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
 
-			if (_synchronizeEntities)
-			{
-				_unityEntitySynchronization.SynchronizeEntities();
-			}
 			if (_synchronizeViews)
 			{
 				_unityEntitySynchronization.SynchronizeViews();
@@ -115,10 +110,6 @@ namespace Massive.Unity
 			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 			_stopwatch.Restart();
 
-			if (_synchronizeEntities)
-			{
-				_unityEntitySynchronization.SynchronizeEntities();
-			}
 			if (_synchronizeViews)
 			{
 				_unityEntitySynchronization.SynchronizeViews();

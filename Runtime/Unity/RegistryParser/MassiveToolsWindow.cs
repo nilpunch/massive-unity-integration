@@ -9,8 +9,6 @@ namespace Massive.Unity
 {
 	public class MassiveToolsWindow : EditorWindow
 	{
-		[SerializeField] private RegistryParserConfig _parserConfig;
-
 		[MenuItem("Window/Massive ECS/Tools")]
 		public static void ShowWindow()
 		{
@@ -60,35 +58,20 @@ namespace Massive.Unity
 				return;
 			}
 
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.PrefixLabel("Parser Config");
-			_parserConfig = (RegistryParserConfig)EditorGUILayout.ObjectField(_parserConfig, typeof(RegistryParserConfig), false);
-			EditorGUILayout.EndHorizontal();
-
 			EditorGUILayout.Space(5f);
 			if (GUILayout.Button("Save Scene Registry"))
 			{
 				SaveSceneRegistry();
 			}
-
-			EditorGUILayout.Space(5f);
-			if (GUILayout.Button("Open persistent data path"))
+			if (GUILayout.Button("Open save path"))
 			{
-				OpenInWin(Application.persistentDataPath);
+				OpenInWin(FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene()));
 			}
 		}
 
 		private void SaveSceneRegistry()
 		{
-			IRegistrySerializer registrySerializer;
-			if (_parserConfig != null)
-			{
-				registrySerializer = _parserConfig.CreateParser();
-			}
-			else
-			{
-				registrySerializer = new RegistrySerializer();
-			}
+			var registrySerializer = new RegistrySerializer();
 
 			var registry = new Registry();
 

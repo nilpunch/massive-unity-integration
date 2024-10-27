@@ -38,7 +38,7 @@ namespace Massive.Unity.Samples.Shooter
 
 			GUILayout.FlexibleSpace();
 
-			GUILayout.TextField($"{_registry.Set<BulletState>().Count} Bullets",
+			GUILayout.TextField($"{_registry.View().Include<BulletState>().Count()} Bullets",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 
 			GUILayout.EndVertical();

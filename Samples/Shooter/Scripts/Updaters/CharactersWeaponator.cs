@@ -5,7 +5,6 @@ namespace Massive.Unity.Samples.Shooter
 	public class CharactersWeaponator : UpdateSystem
 	{
 		[SerializeField] private EntityView _bulletViewPrefab;
-		[SerializeField] private ViewDataBaseConfig _viewDataBase;
 		[SerializeField] private float _cooldown = 0.2f;
 		[SerializeField] private float _bulletVelocity = 1f;
 		[SerializeField] private float _bulletDamage = 1f;
@@ -44,7 +43,7 @@ namespace Massive.Unity.Samples.Shooter
 					Damage = _bulletDamage
 				});
 
-				// _registry.Assign(bulletId, _viewDataBase.GetAssetId(_bulletViewPrefab));
+				_registry.Assign(bulletId, _bulletViewPrefab.ViewAsset);
 				var bulletTransform = characterTransform;
 				bulletTransform.Scale = _bulletScale;
 				_registry.Assign(bulletId, bulletTransform);

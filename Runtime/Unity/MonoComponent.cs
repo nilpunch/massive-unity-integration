@@ -6,9 +6,17 @@ namespace Massive.Unity
 	public abstract class MonoComponent : MonoBehaviour
 	{
 		public abstract void ApplyToEntity(Registry registry, Entity entity);
+	}
 
-		public abstract void Synchronize(Registry registry, Entity entity);
+	[RequireComponent(typeof(MonoEntity))]
+	[DisallowMultipleComponent]
+	public class MonoComponent<TComponent> : MonoComponent
+	{
+		[SerializeField] private TComponent _data;
 
-		public abstract void UnassignComponent();
+		public override void ApplyToEntity(Registry registry, Entity entity)
+		{
+			registry.Assign(entity, _data);
+		}
 	}
 }

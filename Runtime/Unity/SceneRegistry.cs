@@ -10,7 +10,6 @@ namespace Massive.Unity
 	{
 		[SerializeField] private ViewDataBaseConfig _viewConfig;
 		[SerializeField] private bool _reactiveSynchronization = true;
-		[SerializeField] protected bool _synchronizeEntities = true;
 		[SerializeField] protected bool _synchronizeViews = true;
 		
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
@@ -43,15 +42,6 @@ namespace Massive.Unity
 			
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
 
-			if (_synchronizeEntities)
-			{
-				_unityEntitySynchronization.SynchronizeEntities();
-
-				if (_reactiveSynchronization)
-				{
-					_unityEntitySynchronization.SubscribeEntities();
-				}
-			}
 			if (_synchronizeViews)
 			{
 				_unityEntitySynchronization.SynchronizeViews();
@@ -102,10 +92,6 @@ namespace Massive.Unity
 
 			if (!_reactiveSynchronization)
 			{
-				if (_synchronizeEntities)
-				{
-					_unityEntitySynchronization.SynchronizeEntities();
-				}
 				if (_synchronizeViews)
 				{
 					_unityEntitySynchronization.SynchronizeViews();

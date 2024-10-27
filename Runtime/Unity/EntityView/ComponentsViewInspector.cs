@@ -10,7 +10,7 @@ namespace Massive.Unity
 {
 	[CustomEditor(typeof(ComponentsView), true)]
 	[CanEditMultipleObjects]
-	public class MonoComponentsViewInspector : Editor
+	public class ComponentsViewInspector : Editor
 	{
 		private readonly List<SparseSet> _toUnassign = new List<SparseSet>();
 		private readonly List<SparseSet> _commonSets = new List<SparseSet>();
@@ -18,6 +18,12 @@ namespace Massive.Unity
 
 		public override void OnInspectorGUI()
 		{
+			if (!Application.isPlaying)
+			{
+				base.OnInspectorGUI();
+				return;
+			}
+
 			_commonSets.Clear();
 			var setRegistry = ((ComponentsView)targets.FirstOrDefault(target => ((ComponentsView)target).Registry != null))?.Registry.SetRegistry;
 			if (setRegistry == null)
@@ -108,7 +114,7 @@ namespace Massive.Unity
 				else
 				{
 					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
-					controlRect = GetPropertyControlRect(dataSet.DataType, arrayElement);
+					controlRect = GetPropertyControlRect(dataSet.Data.ElementType, arrayElement);
 				}
 
 				// Draw button before any properties top made it clickable
@@ -120,11 +126,11 @@ namespace Massive.Unity
 				// Draw everything
 				if (dataSet is null)
 				{
-					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), setRegistry.TypeOf(commonSet).GetGenericName());
+					EditorGUI.LabelField(GetSingleLineFieldRect(controlRect), setRegistry.GetKey(commonSet).GetGenericName());
 				}
 				else
 				{
-					var componentType = dataSet.DataType;
+					var componentType = dataSet.Data.ElementType;
 					var componentName = componentType.GetGenericName();
 					var arrayElement = serializedDummies.GetArrayElementAtIndex(_commonDataSets.IndexOf(dataSet));
 

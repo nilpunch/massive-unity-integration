@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public class FloatComponent : UnmanagedComponent<float, FloatComponent>
+	public class FloatComponent : MonoComponent<float>
 	{
 	}
 }

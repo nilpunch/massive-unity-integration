@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity.Samples.Shooter
 {
-	public class EnumComponent : UnmanagedComponent<SomeStatus, EnumComponent>
+	public class EnumComponent : MonoComponent<SomeStatus>
 	{
 	}
 }

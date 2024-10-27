@@ -10,6 +10,6 @@ namespace Massive.Unity
 		public Registry Registry { get; protected set; }
 		public Entity Entity  { get; protected set; }
 
-		[SerializeReference] public List<object> DummyComponents;
+		[SerializeReference, HideInInspector] public List<object> DummyComponents;
 	}
 }

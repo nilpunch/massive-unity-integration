@@ -34,10 +34,6 @@ namespace Massive.Unity
 					Profiler.EndSample();
 
 					Profiler.BeginSample("Synchronize entities.");
-					if (_synchronizeEntities)
-					{
-						_unityEntitySynchronization.SynchronizeEntities();
-					}
 					if (_synchronizeViews)
 					{
 						_unityEntitySynchronization.SynchronizeViews();

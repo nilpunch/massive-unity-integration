@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity.Samples.Shooter
 {
-	public class SomeTagTag : TagComponent<SomeTag, SomeTagTag>
+	public class SomeTagTag : TagComponent<SomeTag>
 	{
 	}
 }

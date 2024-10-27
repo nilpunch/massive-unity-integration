@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public class InventoryComponent : ManagedComponent<Inventory, InventoryComponent>
+	public class InventoryComponent : MonoComponent<Inventory>
 	{
 	}
 }

@@ -1,6 +1,9 @@
-﻿namespace Massive.Unity.Samples.Shooter
+﻿using UnityEditor;
+using UnityEngine;
+
+namespace Massive.Unity.Samples.Shooter
 {
-	public class WeaponStateComponent : UnmanagedComponent<WeaponState, WeaponStateComponent>
+	public class WeaponStateComponent : MonoComponent<WeaponState>
 	{
 	}
 }

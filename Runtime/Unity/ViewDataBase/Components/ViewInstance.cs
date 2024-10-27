@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Massive.Unity
+﻿namespace Massive.Unity
 {
 	public struct ViewInstance
 	{
