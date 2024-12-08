@@ -22,8 +22,6 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			Application.targetFrameRate = 60;
-			
 			_registry = new Registry();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()

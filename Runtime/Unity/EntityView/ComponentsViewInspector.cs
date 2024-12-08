@@ -31,10 +31,9 @@ namespace Massive.Unity
 				return;
 			}
 
-			var allSets = setRegistry.All;
-			for (int i = 0; i < allSets.Length; i++)
+			foreach (var set in setRegistry.All)
 			{
-				_commonSets.Add(allSets[i]);
+				_commonSets.Add(set);
 			}
 
 			for (int i = _commonSets.Count - 1; i >= 0; i--)

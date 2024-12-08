@@ -27,7 +27,7 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_registry = new MassiveRegistry(new MassiveRegistryConfig() { FramesCapacity = _framesCapacity + 1 });
+			_registry = new MassiveRegistry(new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1));
 			_stopwatch = new Stopwatch();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()

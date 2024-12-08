@@ -23,7 +23,7 @@ namespace Massive.Unity.Samples.Shooter
 			var weapons = _registry.DataSet<WeaponState>();
 			var transforms = _registry.DataSet<LocalTransform>();
 			
-			foreach (var entityId in _registry.View().Group<Include<WeaponState, LocalTransform>>())
+			foreach (var entityId in _registry.View().Filter<Include<WeaponState, LocalTransform>>())
 			{
 				ref var weaponState = ref weapons.Get(entityId);
 				ref var characterTransform = ref transforms.Get(entityId);
@@ -43,7 +43,7 @@ namespace Massive.Unity.Samples.Shooter
 					Damage = _bulletDamage
 				});
 
-				_registry.Assign(bulletId, _bulletViewPrefab.ViewAsset);
+				// _registry.Assign(bulletId, _bulletViewPrefab.ViewAsset);
 				var bulletTransform = characterTransform;
 				bulletTransform.Scale = _bulletScale;
 				_registry.Assign(bulletId, bulletTransform);

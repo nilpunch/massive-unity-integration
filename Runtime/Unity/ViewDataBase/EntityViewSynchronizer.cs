@@ -18,7 +18,7 @@
 
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
-			var monoViewsIds = _viewInstances.Ids;
+			var monoViewsIds = _viewInstances.Packed;
 			for (int i = _viewInstances.Count - 1; i >= 0; i--)
 			{
 				int entityId = monoViewsIds[i];
@@ -31,7 +31,7 @@
 
 			// Add whats missing
 			var viewAssetData = viewAssets.Data;
-			var viewAssetIds = viewAssets.Ids;
+			var viewAssetIds = viewAssets.Packed;
 			for (int i = 0; i < viewAssets.Count; i++)
 			{
 				int entityId = viewAssetIds[i];

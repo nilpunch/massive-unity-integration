@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Massive.Unity
 {
 	[Serializable]
-	public struct Inventory : IManaged<Inventory>
+	public struct Inventory : ICopyable<Inventory>
 	{
 		public List<int> Items;
 
