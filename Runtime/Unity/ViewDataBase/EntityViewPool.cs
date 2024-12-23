@@ -4,11 +4,11 @@ namespace Massive.Unity
 {
 	public class EntityViewPool
 	{
-		private readonly ViewDataBaseConfig _config;
+		private readonly ViewDataBase _config;
 		private readonly VariantPool<ViewAsset, EntityView> _viewPool = new VariantPool<ViewAsset, EntityView>();
 		private readonly DataSet<Transform> _poolRoots = new DataSet<Transform>();
 
-		public EntityViewPool(ViewDataBaseConfig config)
+		public EntityViewPool(ViewDataBase config)
 		{
 			_config = config;
 		}

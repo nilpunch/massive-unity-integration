@@ -7,11 +7,8 @@ namespace Massive.Unity
 	public class EntityView : ComponentsView
 	{
 		[SerializeField] private List<MonoBehaviour> _viewBehaviours = new List<MonoBehaviour>();
-		[SerializeField] private ViewDataBaseConfig _viewDataBase;
 
 		private readonly List<IViewBehaviour> _cachedViewBehaviours = new List<IViewBehaviour>();
-
-		public ViewAsset ViewAsset => _viewDataBase.GetAssetId(this);
 
 		private void Awake()
 		{

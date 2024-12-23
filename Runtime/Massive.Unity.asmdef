@@ -2,7 +2,8 @@
     "name": "Massive.Unity",
     "rootNamespace": "",
     "references": [
-        "GUID:cf2e24c64a0d02f4690b9be74f35390f"
+        "GUID:cf2e24c64a0d02f4690b9be74f35390f",
+        "GUID:0b848424a524d744c96da7c0cf603d21"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

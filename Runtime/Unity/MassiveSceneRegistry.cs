@@ -7,7 +7,7 @@ namespace Massive.Unity
 {
 	public class MassiveSceneRegistry : MonoBehaviour
 	{
-		[SerializeField] private ViewDataBaseConfig _viewConfig;
+		[SerializeField] private ViewDataBase _viewDataBase;
 		[SerializeField] private bool _synchronizeViews = true;
 
 		[SerializeField, Min(0)] private int _framesCapacity = 120;
@@ -28,10 +28,12 @@ namespace Massive.Unity
 		private void Awake()
 		{
 			_registry = new MassiveRegistry(new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1));
+			_registry.AssignService(_viewDataBase);
+			
 			_stopwatch = new Stopwatch();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>())
+				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
 				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
 				monoEntity.ApplyToRegistry(_registry);
@@ -47,7 +49,7 @@ namespace Massive.Unity
 				updateSystem.Init(_registry);
 			}
 
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewConfig));
+			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
 
 			if (_synchronizeViews)
 			{

@@ -77,7 +77,7 @@ namespace Massive.Unity
 
 			var activeScene = SceneManager.GetActiveScene();
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<MonoEntity>())
+				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
 				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
 				monoEntity.ApplyToRegistry(registry);

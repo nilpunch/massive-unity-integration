@@ -5,7 +5,7 @@ namespace Massive.Unity.Samples.Cars
 	public class CarSpawnerSystem : UpdateSystem
 	{
 		[SerializeField] private EntityView _carViewPrefab;
-		[SerializeField] private ViewDataBaseConfig _viewDataBase;
+		[SerializeField] private ViewDataBase _viewDataBase;
 		[SerializeField] private Car _carSettings;
 		[SerializeField] private int _carsLimit = 100;
 
