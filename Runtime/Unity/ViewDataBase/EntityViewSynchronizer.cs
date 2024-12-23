@@ -18,28 +18,45 @@
 
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
-			var monoViewsIds = _viewInstances.Packed;
-			for (int i = _viewInstances.Count - 1; i >= 0; i--)
+			foreach (var (pageIndex, pageLength, indexOffset) in new PageSequence(monoViewsData.PageSize, _viewInstances.Count))
 			{
-				int entityId = monoViewsIds[i];
-				var viewInstance = monoViewsData[i];
-				if (!viewAssets.IsAssigned(entityId) || !viewAssets.Get(entityId).Equals(viewInstance.Asset))
+				var page = monoViewsData.Pages[pageIndex];
+				for (var index = pageLength - 1; index >= 0; index--)
 				{
-					UnassignViewInstance(entityId, viewInstance);
+					if (indexOffset + index > _viewInstances.Count)
+					{
+						index = _viewInstances.Count - indexOffset;
+						continue;
+					}
+
+					var id = _viewInstances.Packed[indexOffset + index];
+					var viewInstance = page[index];
+					if (!viewAssets.IsAssigned(id) || !viewAssets.Get(id).Equals(viewInstance.Asset))
+					{
+						UnassignViewInstance(id, viewInstance);
+					}
 				}
 			}
 
 			// Add whats missing
 			var viewAssetData = viewAssets.Data;
-			var viewAssetIds = viewAssets.Packed;
-			for (int i = 0; i < viewAssets.Count; i++)
+			foreach (var (pageIndex, pageLength, indexOffset) in new PageSequence(viewAssetData.PageSize, viewAssets.Count))
 			{
-				int entityId = viewAssetIds[i];
-				var viewAsset = viewAssetData[i];
-
-				if (!_viewInstances.IsAssigned(entityId))
+				var page = viewAssetData.Pages[pageIndex];
+				for (var index = pageLength - 1; index >= 0; index--)
 				{
-					AssignViewInstance(viewAsset, entityId);
+					if (indexOffset + index > viewAssets.Count)
+					{
+						index = viewAssets.Count - indexOffset;
+						continue;
+					}
+
+					var id = viewAssets.Packed[indexOffset + index];
+					var viewAsset = page[index];
+					if (!_viewInstances.IsAssigned(id))
+					{
+						AssignViewInstance(viewAsset, id);
+					}
 				}
 			}
 		}

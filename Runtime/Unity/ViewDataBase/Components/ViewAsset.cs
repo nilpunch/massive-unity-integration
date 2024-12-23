@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace Massive.Unity
 {
@@ -12,6 +13,7 @@ namespace Massive.Unity
 			Id = id;
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public bool Equals(ViewAsset other)
 		{
 			return Id == other.Id;
