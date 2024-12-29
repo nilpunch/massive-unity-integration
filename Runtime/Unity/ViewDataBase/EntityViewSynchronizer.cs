@@ -18,19 +18,19 @@
 
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
-			foreach (var (pageIndex, pageLength, indexOffset) in new PageSequence(monoViewsData.PageSize, _viewInstances.Count))
+			foreach (var page in new PageSequence(monoViewsData.PageSize, _viewInstances.Count))
 			{
-				var page = monoViewsData.Pages[pageIndex];
-				for (var index = pageLength - 1; index >= 0; index--)
+				var dataPage = monoViewsData.Pages[page.Index];
+				for (var index = page.Length - 1; index >= 0; index--)
 				{
-					if (indexOffset + index > _viewInstances.Count)
+					if (page.Offset + index > _viewInstances.Count)
 					{
-						index = _viewInstances.Count - indexOffset;
+						index = _viewInstances.Count - page.Offset;
 						continue;
 					}
 
-					var id = _viewInstances.Packed[indexOffset + index];
-					var viewInstance = page[index];
+					var id = _viewInstances.Packed[page.Offset + index];
+					var viewInstance = dataPage[index];
 					if (!viewAssets.IsAssigned(id) || !viewAssets.Get(id).Equals(viewInstance.Asset))
 					{
 						UnassignViewInstance(id, viewInstance);
@@ -40,19 +40,19 @@
 
 			// Add whats missing
 			var viewAssetData = viewAssets.Data;
-			foreach (var (pageIndex, pageLength, indexOffset) in new PageSequence(viewAssetData.PageSize, viewAssets.Count))
+			foreach (var page in new PageSequence(viewAssetData.PageSize, viewAssets.Count))
 			{
-				var page = viewAssetData.Pages[pageIndex];
-				for (var index = pageLength - 1; index >= 0; index--)
+				var dataPage = viewAssetData.Pages[page.Index];
+				for (var index = page.Length - 1; index >= 0; index--)
 				{
-					if (indexOffset + index > viewAssets.Count)
+					if (page.Offset + index > viewAssets.Count)
 					{
-						index = viewAssets.Count - indexOffset;
+						index = viewAssets.Count - page.Offset;
 						continue;
 					}
 
-					var id = viewAssets.Packed[indexOffset + index];
-					var viewAsset = page[index];
+					var id = viewAssets.Packed[page.Offset + index];
+					var viewAsset = dataPage[index];
 					if (!_viewInstances.IsAssigned(id))
 					{
 						AssignViewInstance(viewAsset, id);
