@@ -19,7 +19,7 @@ namespace Massive.Unity
 		[SerializeField] private bool _drawDebugGUI = false;
 
 		private SimulationSystemAdapter _systemsAdapter;
-		private UpdateSystem[] _updateSystems;
+		private InputSystem[] _inputSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private Simulation _simulation;
 		private MassiveRegistry _registry;
@@ -51,10 +51,14 @@ namespace Massive.Unity
 
 			_registry.SaveFrame();
 
-			_updateSystems = FindObjectsOfType<UpdateSystem>();
-			foreach (var updateSystem in _updateSystems)
+			_inputSystems = FindObjectsOfType<InputSystem>();
+			foreach (var inputSystem in _inputSystems)
 			{
-				updateSystem.Init(_registry);
+				inputSystem.Init(_simulation);
+			}
+			foreach (var updateSystem in FindObjectsOfType<UpdateSystem>())
+			{
+				updateSystem.Init(_simulation);
 				_systemsAdapter.Systems.Add(updateSystem);
 			}
 
@@ -76,10 +80,17 @@ namespace Massive.Unity
 			_elapsedTime += Time.deltaTime;
 			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
+			foreach (var inputSystem in _inputSystems)
+			{
+				inputSystem.UpdateInput(targetTick);
+			}
+
 			_simulationTicksTracker.Restart();
 			_stopwatch.Restart();
-			_simulation.TickChangeLog.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
+
+			_simulation.ChangeTracker.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
 			_simulation.Loop.FastForwardToTick(targetTick);
+
 			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 			_debugResimulations = _simulationTicksTracker.TicksAmount;
 

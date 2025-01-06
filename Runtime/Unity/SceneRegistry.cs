@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Massive.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -15,6 +16,7 @@ namespace Massive.Unity
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
 		[SerializeField] private bool _fixedTimeStep = false;
 
+		private Simulation _simulation;
 		private UpdateSystem[] _updateSystems;
 		protected UnityEntitySynchronization _unityEntitySynchronization;
 		protected Registry _registry;
@@ -22,7 +24,9 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_registry = new Registry();
+			_simulation = new Simulation();
+			
+			_registry = _simulation.Registry;
 			_registry.AssignService(_viewDataBase);
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
@@ -36,7 +40,7 @@ namespace Massive.Unity
 			_updateSystems = FindObjectsOfType<UpdateSystem>();
 			foreach (var updateSystem in _updateSystems)
 			{
-				updateSystem.Init(_registry);
+				updateSystem.Init(_simulation);
 			}
 			
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));

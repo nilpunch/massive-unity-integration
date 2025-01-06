@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Massive.Netcode;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
@@ -13,10 +14,10 @@ namespace Massive.Unity.Samples.Shooter
 		private List<Matrix4x4> _matrices;
 		private Material _materialCopy;
 
-		public override void Init(Registry registry)
+		public override void Init(Simulation simulation)
 		{
 			_matrices = new List<Matrix4x4>();
-			_registry = registry;
+			_registry = simulation.Registry;
 			_quadMesh = CreateQuadMesh();
 			_materialCopy = Instantiate(_spriteMaterial);
 			_materialCopy.mainTexture = _texture;

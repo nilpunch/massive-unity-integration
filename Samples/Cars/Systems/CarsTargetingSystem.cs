@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Massive.Netcode;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Cars
 {
@@ -13,9 +14,9 @@ namespace Massive.Unity.Samples.Cars
 		public const float HalfPI = Mathf.PI / 2f;
 		public const float TwoPI = Mathf.PI * 2f;
 		
-		public override void Init(Registry registry)
+		public override void Init(Simulation simulation)
 		{
-			_registry = registry;
+			_registry = simulation.Registry;
 		}
 
 		public override void UpdateFrame(float deltaTime)
