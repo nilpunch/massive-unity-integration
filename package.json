@@ -6,6 +6,7 @@
   "description": "Deterministic prediction-rollback netcode library for Unity.",
   "dependencies":
   {
-    "massive-ecs": "https://github.com/nilpunch/massive-ecs#17.0.0-beta"
+    "massive-ecs": "https://github.com/nilpunch/massive-ecs#17.0.0-beta",
+    "massive-netcode": "https://github.com/nilpunch/massive-netcode#0.1.0"
   }
 }

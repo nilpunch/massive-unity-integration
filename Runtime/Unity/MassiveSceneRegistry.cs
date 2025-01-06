@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Linq;
+using Massive.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,13 +14,14 @@ namespace Massive.Unity
 		[SerializeField, Min(0)] private int _framesCapacity = 120;
 		[SerializeField, Min(0)] private int _resimulations = 120;
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
-		[SerializeField, Min(1)] private int _saveEachNthFrame = 3;
+		[SerializeField, Min(1)] private int _saveEachNthTick = 5;
 
 		[SerializeField] private bool _drawDebugGUI = false;
 
+		private SimulationSystemAdapter _systemsAdapter;
 		private UpdateSystem[] _updateSystems;
-		private RollbackUpdateSystem[] _rollbackSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
+		private Simulation _simulation;
 		private MassiveRegistry _registry;
 		private float _elapsedTime;
 		private int _currentFrame;
@@ -27,9 +29,14 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_registry = new MassiveRegistry(new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1));
+			_simulation = new Simulation(_simulationFrequency, _saveEachNthTick, new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1));
+
+			_registry = _simulation.Registry;
 			_registry.AssignService(_viewDataBase);
-			
+
+			_systemsAdapter = new SimulationSystemAdapter(_registry.Service<SimulationTime>());
+			_simulation.Systems.Add(_systemsAdapter);
+
 			_stopwatch = new Stopwatch();
 
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
@@ -43,10 +50,10 @@ namespace Massive.Unity
 			_registry.SaveFrame();
 
 			_updateSystems = FindObjectsOfType<UpdateSystem>();
-			_rollbackSystems = _updateSystems.OfType<RollbackUpdateSystem>().ToArray();
 			foreach (var updateSystem in _updateSystems)
 			{
 				updateSystem.Init(_registry);
+				_systemsAdapter.Systems.Add(updateSystem);
 			}
 
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
@@ -64,65 +71,24 @@ namespace Massive.Unity
 
 		private void Update()
 		{
-			_stopwatch.Restart();
-
-			if (_resimulations > 0)
-			{
-				int currentFrameCompressed = _currentFrame / _saveEachNthFrame;
-
-				int targetCompressedFrame = Mathf.Max(_currentFrame - _resimulations, 0) / _saveEachNthFrame;
-
-				int compressedFramesToRollback = currentFrameCompressed - targetCompressedFrame;
-
-				compressedFramesToRollback = Mathf.Min(compressedFramesToRollback, _registry.CanRollbackFrames);
-
-				_currentFrame = (currentFrameCompressed - compressedFramesToRollback) * _saveEachNthFrame;
-				_registry.Rollback(compressedFramesToRollback);
-				foreach (var rollbackSystem in _rollbackSystems)
-				{
-					rollbackSystem.Rollback(compressedFramesToRollback);
-				}
-			}
-
 			_elapsedTime += Time.deltaTime;
+			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
-			int targetFrame = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
-			float deltaTime = 1f / _simulationFrequency;
-
-			_debugResimulations = targetFrame - _currentFrame;
-
-			while (_currentFrame < targetFrame)
-			{
-				foreach (var updateSystem in _updateSystems)
-				{
-					updateSystem.UpdateFrame(deltaTime);
-				}
-
-				_currentFrame++;
-				if (_currentFrame % _saveEachNthFrame == 0)
-				{
-					_registry.SaveFrame();
-					foreach (var rollbackSystem in _rollbackSystems)
-					{
-						rollbackSystem.SaveFrame();
-					}
-				}
-			}
-
-			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 			_stopwatch.Restart();
+			_simulation.TickChangeLog.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
+			_simulation.Loop.FastForwardToTick(targetTick);
+			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 
+			_stopwatch.Restart();
 			if (_synchronizeViews)
 			{
 				_unityEntitySynchronization.SynchronizeViews();
 			}
-
 			_debugSynchronizationMs = _stopwatch.ElapsedMilliseconds;
 		}
 
 		private long _debugSimulationMs;
 		private long _debugSynchronizationMs;
-		private int _debugResimulations;
 
 		private void OnGUI()
 		{
@@ -135,8 +101,6 @@ namespace Massive.Unity
 
 			GUILayout.TextField($"{_debugSimulationMs}ms Simulation", new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 			GUILayout.TextField($"{_debugSynchronizationMs}ms Synchronization",
-				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
-			GUILayout.TextField($"{_debugResimulations} Resimulations",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 		}
 	}
