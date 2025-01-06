@@ -26,6 +26,7 @@ namespace Massive.Unity
 		private float _elapsedTime;
 		private int _currentFrame;
 		private Stopwatch _stopwatch;
+		private SimulationTicksTracker _simulationTicksTracker = new SimulationTicksTracker();
 
 		private void Awake()
 		{
@@ -36,6 +37,7 @@ namespace Massive.Unity
 
 			_systemsAdapter = new SimulationSystemAdapter(_registry.Service<SimulationTime>());
 			_simulation.Systems.Add(_systemsAdapter);
+			_simulation.Systems.Add(_simulationTicksTracker);
 
 			_stopwatch = new Stopwatch();
 
@@ -74,10 +76,12 @@ namespace Massive.Unity
 			_elapsedTime += Time.deltaTime;
 			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
+			_simulationTicksTracker.Restart();
 			_stopwatch.Restart();
 			_simulation.TickChangeLog.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
 			_simulation.Loop.FastForwardToTick(targetTick);
 			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
+			_debugResimulations = _simulationTicksTracker.TicksAmount;
 
 			_stopwatch.Restart();
 			if (_synchronizeViews)
@@ -89,6 +93,7 @@ namespace Massive.Unity
 
 		private long _debugSimulationMs;
 		private long _debugSynchronizationMs;
+		private int _debugResimulations;
 
 		private void OnGUI()
 		{
@@ -101,6 +106,8 @@ namespace Massive.Unity
 
 			GUILayout.TextField($"{_debugSimulationMs}ms Simulation", new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 			GUILayout.TextField($"{_debugSynchronizationMs}ms Synchronization",
+				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
+			GUILayout.TextField($"{_debugResimulations} Resimulations",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(50 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 		}
 	}
