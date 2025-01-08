@@ -6,6 +6,7 @@ namespace Massive.Unity.Samples.Shooter
 	public class MoveSystem : UpdateSystem
 	{
 		[SerializeField] private float _speed = 5f;
+		[SerializeField] private FadeOutConfig _inputFadeOut;
 		
 		private Simulation _simulation;
 
@@ -21,7 +22,7 @@ namespace Massive.Unity.Samples.Shooter
 			foreach (var entity in _simulation.Registry.View().Include<Player, LocalTransform>())
 			{
 				var clientId = players.Get(entity).ClientId;
-				var input = _simulation.Input.Get<MoveInput>(clientId);
+				var input = _simulation.Input.Get<MoveInput>(clientId).FadeOut(_inputFadeOut);
 
 				transforms.Get(entity).Position += input.Direction * deltaTime * _speed;
 			}
