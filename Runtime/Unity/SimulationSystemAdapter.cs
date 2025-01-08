@@ -3,7 +3,7 @@ using Massive.Netcode;
 
 namespace Massive.Unity
 {
-	public class SimulationSystemAdapter : ISimulation
+	public class SimulationSystemAdapter : ISimulationSystem
 	{
 		private readonly SimulationTime _simulationTime;
 

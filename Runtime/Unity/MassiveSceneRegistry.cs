@@ -30,7 +30,7 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_simulation = new Simulation(_simulationFrequency, _saveEachNthTick, new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1));
+			_simulation = new Simulation(new SimulationConfig(_simulationFrequency, _saveEachNthTick, 1, new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
 
 			_registry = _simulation.Registry;
 			_registry.AssignService(_viewDataBase);

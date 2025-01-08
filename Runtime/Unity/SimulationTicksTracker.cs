@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class SimulationTicksTracker : ISimulation
+	public class SimulationTicksTracker : ISimulationSystem
 	{
 		public int TicksAmount { get; private set; }
 

@@ -21,7 +21,7 @@ namespace Massive.Unity.Samples.Shooter
 			foreach (var entity in _simulation.Registry.View().Include<Player, LocalTransform>())
 			{
 				var clientId = players.Get(entity).ClientId;
-				var input = _simulation.Inputs.Get<MoveInput>(clientId);
+				var input = _simulation.Input.Get<MoveInput>(clientId);
 
 				transforms.Get(entity).Position += input.Direction * deltaTime * _speed;
 			}
