@@ -6,8 +6,7 @@ namespace Massive.Unity.Samples.Shooter
 	public class MoveInputSystem : InputSystem
 	{
 		[SerializeField] private int _clientId = 1;
-		[SerializeField] private int _tickOffset = 0;
-		
+
 		private Simulation _simulation;
 
 		public override void Init(Simulation simulation)
@@ -44,7 +43,7 @@ namespace Massive.Unity.Samples.Shooter
 
 			input.Normalize();
 
-			_simulation.Input.SetAt(targetTick + _tickOffset, _clientId, new MoveInput() { Direction = input });
+			_simulation.Input.SetAt(targetTick, _clientId, new MoveInput() { Direction = input });
 		}
 	}
 }

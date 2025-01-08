@@ -24,7 +24,6 @@ namespace Massive.Unity
 		private Simulation _simulation;
 		private MassiveRegistry _registry;
 		private float _elapsedTime;
-		private int _currentFrame;
 		private Stopwatch _stopwatch;
 		private SimulationTicksTracker _simulationTicksTracker = new SimulationTicksTracker();
 
@@ -80,9 +79,13 @@ namespace Massive.Unity
 			_elapsedTime += Time.deltaTime;
 			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
-			foreach (var inputSystem in _inputSystems)
+			// Update input once per tick
+			if (_simulation.Loop.CurrentTick != targetTick)
 			{
-				inputSystem.UpdateInput(targetTick);
+				foreach (var inputSystem in _inputSystems)
+				{
+					inputSystem.UpdateInput(targetTick);
+				}
 			}
 
 			_simulationTicksTracker.Restart();
