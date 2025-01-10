@@ -29,7 +29,7 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_simulation = new Simulation(new SimulationConfig(_simulationFrequency, _saveEachNthTick, 1, new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
+			_simulation = new Simulation(new SimulationConfig(_simulationFrequency, _saveEachNthTick, 1, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
 
 			_registry = _simulation.Registry;
 			_registry.AssignService(_viewDataBase);
@@ -53,11 +53,11 @@ namespace Massive.Unity
 			_inputSystems = FindObjectsOfType<InputSystem>();
 			foreach (var inputSystem in _inputSystems)
 			{
-				inputSystem.Init(_simulation);
+				inputSystem.Init(_simulation.Input);
 			}
 			foreach (var updateSystem in FindObjectsOfType<UpdateSystem>())
 			{
-				updateSystem.Init(_simulation);
+				updateSystem.Init(_simulation.Registry);
 				_systemsAdapter.Systems.Add(updateSystem);
 			}
 

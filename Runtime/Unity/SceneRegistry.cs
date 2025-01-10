@@ -40,7 +40,7 @@ namespace Massive.Unity
 			_updateSystems = FindObjectsOfType<UpdateSystem>();
 			foreach (var updateSystem in _updateSystems)
 			{
-				updateSystem.Init(_simulation);
+				updateSystem.Init(_simulation.Registry);
 			}
 			
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));

@@ -7,11 +7,11 @@ namespace Massive.Unity.Samples.Shooter
 	{
 		[SerializeField] private int _clientId = 1;
 
-		private Simulation _simulation;
+		private InputRegistry _input;
 
-		public override void Init(Simulation simulation)
+		public override void Init(InputRegistry input)
 		{
-			_simulation = simulation;
+			_input = input;
 		}
 
 		public override void UpdateInput(int targetTick)
@@ -43,7 +43,7 @@ namespace Massive.Unity.Samples.Shooter
 
 			input.Normalize();
 
-			_simulation.Input.SetAt(targetTick, _clientId, new MoveInput() { Direction = input });
+			_input.SetAt(targetTick, _clientId, new MoveInput() { Direction = input });
 		}
 	}
 }

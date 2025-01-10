@@ -1,4 +1,3 @@
-using Massive.Netcode;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Cars
@@ -12,9 +11,9 @@ namespace Massive.Unity.Samples.Cars
 
 		private Registry _registry;
 
-		public override void Init(Simulation simulation)
+		public override void Init(Registry registry)
 		{
-			_registry = simulation.Registry;
+			_registry = registry;
 		}
 
 		public override void UpdateFrame(float deltaTime)
