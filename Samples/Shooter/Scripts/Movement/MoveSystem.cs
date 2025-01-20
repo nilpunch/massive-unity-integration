@@ -8,13 +8,13 @@ namespace Massive.Unity.Samples.Shooter
 		[SerializeField] private float _speed = 5f;
 		[SerializeField] private FadeOutConfig _inputFadeOut;
 
-		private SimulationInput _input;
+		private Inputs _inputs;
 		private Registry _registry;
 
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = registry;
-			_input = _registry.Service<SimulationInput>();
+			_registry = serviceLocator.Find<Registry>();
+			_inputs = serviceLocator.Find<Inputs>();
 		}
 
 		public override void UpdateFrame(float deltaTime)
@@ -24,7 +24,7 @@ namespace Massive.Unity.Samples.Shooter
 			foreach (var entity in _registry.View().Include<Player, LocalTransform>())
 			{
 				var clientId = players.Get(entity).ClientId;
-				var input = _input.Get<MoveInput>(clientId).FadeOut(_inputFadeOut);
+				var input = _inputs.Get<MoveInput>(clientId).FadeOut(_inputFadeOut);
 
 				transforms.Get(entity).Position += input.Direction * deltaTime * _speed;
 			}

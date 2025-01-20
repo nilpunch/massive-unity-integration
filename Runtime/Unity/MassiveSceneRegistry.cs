@@ -3,6 +3,7 @@ using System.Linq;
 using Massive.Netcode;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Time = UnityEngine.Time;
 
 namespace Massive.Unity
 {
@@ -18,10 +19,10 @@ namespace Massive.Unity
 
 		[SerializeField] private bool _drawDebugGUI = false;
 
-		private SimulationSystemAdapter _systemsAdapter;
+		private SimulationAdapter _adapter;
 		private InputSystem[] _inputSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
-		private Simulation _simulation;
+		private Session _session;
 		private MassiveRegistry _registry;
 		private float _elapsedTime;
 		private Stopwatch _stopwatch;
@@ -29,14 +30,14 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_simulation = new Simulation(new SimulationConfig(_simulationFrequency, _saveEachNthTick, 1, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
+			_session = new Session(new SessionConfig(_simulationFrequency, _saveEachNthTick, 1, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
 
-			_registry = _simulation.Registry;
-			_registry.AssignService(_viewDataBase);
+			_registry = _session.Registry;
+			_session.Services.Assign(_viewDataBase);
 
-			_systemsAdapter = new SimulationSystemAdapter(_registry.Service<SimulationTime>());
-			_simulation.Systems.Add(_systemsAdapter);
-			_simulation.Systems.Add(_simulationTicksTracker);
+			_adapter = new SimulationAdapter(_session.Time);
+			_session.Simulations.Add(_adapter);
+			_session.Simulations.Add(_simulationTicksTracker);
 
 			_stopwatch = new Stopwatch();
 
@@ -44,7 +45,7 @@ namespace Massive.Unity
 				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
 				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
-				monoEntity.ApplyToRegistry(_registry);
+				monoEntity.ApplyToRegistry(_session.Services);
 				Destroy(monoEntity.gameObject);
 			}
 
@@ -53,12 +54,12 @@ namespace Massive.Unity
 			_inputSystems = FindObjectsOfType<InputSystem>();
 			foreach (var inputSystem in _inputSystems)
 			{
-				inputSystem.Init(_simulation.Input);
+				inputSystem.Init(_session.Inputs);
 			}
 			foreach (var updateSystem in FindObjectsOfType<UpdateSystem>())
 			{
-				updateSystem.Init(_simulation.Registry);
-				_systemsAdapter.Systems.Add(updateSystem);
+				updateSystem.Init(_session.Services);
+				_adapter.Systems.Add(updateSystem);
 			}
 
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
@@ -80,7 +81,7 @@ namespace Massive.Unity
 			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
 			// Update input once per tick
-			if (_simulation.Loop.CurrentTick != targetTick)
+			if (_session.Loop.CurrentTick != targetTick)
 			{
 				foreach (var inputSystem in _inputSystems)
 				{
@@ -91,8 +92,8 @@ namespace Massive.Unity
 			_simulationTicksTracker.Restart();
 			_stopwatch.Restart();
 
-			_simulation.ChangeTracker.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
-			_simulation.Loop.FastForwardToTick(targetTick);
+			_session.ChangeTracker.NotifyChange(Mathf.Max(0, targetTick - _resimulations));
+			_session.Loop.FastForwardToTick(targetTick);
 
 			_debugSimulationMs = _stopwatch.ElapsedMilliseconds;
 			_debugResimulations = _simulationTicksTracker.TicksAmount;

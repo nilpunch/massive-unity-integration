@@ -2,9 +2,9 @@
 {
 	public class LocalTransformProvider : ComponentProvider
 	{
-		public override void ApplyToEntity(Registry registry, Entity entity)
+		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			registry.Assign(entity, GetTransformData());
+			serviceLocator.Find<Registry>().Assign(entity, GetTransformData());
 		}
 
 		private LocalTransform GetTransformData()

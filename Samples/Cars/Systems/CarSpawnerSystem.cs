@@ -11,9 +11,9 @@ namespace Massive.Unity.Samples.Cars
 
 		private Registry _registry;
 
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = registry;
+			_registry = serviceLocator.Find<Registry>();
 		}
 
 		public override void UpdateFrame(float deltaTime)

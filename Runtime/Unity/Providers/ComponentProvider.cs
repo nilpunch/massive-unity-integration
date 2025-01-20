@@ -5,7 +5,7 @@ namespace Massive.Unity
 	[RequireComponent(typeof(EntityProvider))]
 	public abstract class ComponentProvider : MonoBehaviour
 	{
-		public abstract void ApplyToEntity(Registry registry, Entity entity);
+		public abstract void ApplyToEntity(ServiceLocator serviceLocator, Entity entity);
 	}
 
 	[RequireComponent(typeof(EntityProvider))]
@@ -14,9 +14,9 @@ namespace Massive.Unity
 	{
 		[SerializeField] private TComponent _data;
 
-		public override void ApplyToEntity(Registry registry, Entity entity)
+		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			registry.Assign(entity, _data);
+			serviceLocator.Find<Registry>().Assign(entity, _data);
 		}
 	}
 }

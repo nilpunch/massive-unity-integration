@@ -13,10 +13,10 @@ namespace Massive.Unity.Samples.Shooter
 		private List<Matrix4x4> _matrices;
 		private Material _materialCopy;
 
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
 			_matrices = new List<Matrix4x4>();
-			_registry = registry;
+			_registry = serviceLocator.Find<Registry>();
 			_quadMesh = CreateQuadMesh();
 			_materialCopy = Instantiate(_spriteMaterial);
 			_materialCopy.mainTexture = _texture;

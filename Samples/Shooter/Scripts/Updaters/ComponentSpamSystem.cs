@@ -12,8 +12,9 @@ namespace Massive.Unity.Samples.Shooter
 
 	public class ComponentSpamSystem : UpdateSystem
 	{
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
+			var registry = serviceLocator.Find<Registry>();
 			registry.Set<TestState64<long, double, int>>();
 			registry.Set<TestState64<double, long, int>>();
 			registry.Set<TestState64<int, double, long>>();

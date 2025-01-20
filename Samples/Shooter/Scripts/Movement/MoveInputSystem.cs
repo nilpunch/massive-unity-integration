@@ -1,5 +1,6 @@
 ﻿using Massive.Netcode;
 using UnityEngine;
+using Input = UnityEngine.Input;
 
 namespace Massive.Unity.Samples.Shooter
 {

@@ -5,13 +5,13 @@ namespace Massive.Unity
 	[DisallowMultipleComponent]
 	public class EntityProvider : MonoBehaviour
 	{
-		public void ApplyToRegistry(Registry registry)
+		public void ApplyToRegistry(ServiceLocator serviceLocator)
 		{
-			var entity = registry.CreateEntity();
+			var entity = serviceLocator.Find<Registry>().CreateEntity();
 
 			foreach (var monoComponent in GetComponents<ComponentProvider>())
 			{
-				monoComponent.ApplyToEntity(registry, entity);
+				monoComponent.ApplyToEntity(serviceLocator, entity);
 			}
 		}
 	}

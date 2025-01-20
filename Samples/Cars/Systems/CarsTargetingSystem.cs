@@ -13,9 +13,9 @@ namespace Massive.Unity.Samples.Cars
 		public const float HalfPI = Mathf.PI / 2f;
 		public const float TwoPI = Mathf.PI * 2f;
 		
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = registry;
+			_registry = serviceLocator.Find<Registry>();
 		}
 
 		public override void UpdateFrame(float deltaTime)

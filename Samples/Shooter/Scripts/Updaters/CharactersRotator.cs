@@ -8,14 +8,14 @@ namespace Massive.Unity.Samples.Shooter
 
 		private Registry _registry;
 
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = registry;
+			_registry = serviceLocator.Find<Registry>();
 		}
 
 		public override void UpdateFrame(float deltaTime)
 		{
-			_registry.View().Include<WeaponState>().ForEachExtra((deltaTime, _rotation),
+			_registry.View().Include<Weapon>().ForEachExtra((deltaTime, _rotation),
 				(int id, ref LocalTransform characterTransform, (float DeltaTime, float RotationSpeed) args) =>
 			{
 				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime, Vector3.forward);

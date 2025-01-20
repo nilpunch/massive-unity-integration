@@ -74,13 +74,15 @@ namespace Massive.Unity
 			var registrySerializer = new RegistrySerializer();
 
 			var registry = new Registry();
+			var serviceLocator = new ServiceLocator();
+			serviceLocator.Assign(registry);
 
 			var activeScene = SceneManager.GetActiveScene();
 			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
 				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
 				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
 			{
-				monoEntity.ApplyToRegistry(registry);
+				monoEntity.ApplyToRegistry(serviceLocator);
 			}
 
 			RegistryFileUtils.WriteToFile(FileSceneRegistryUtils.GetPathToSceneRegistry(activeScene), registry, registrySerializer);

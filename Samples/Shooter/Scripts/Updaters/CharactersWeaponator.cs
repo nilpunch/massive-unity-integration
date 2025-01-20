@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mathematics.Fixed;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
@@ -13,28 +14,28 @@ namespace Massive.Unity.Samples.Shooter
 
 		private Registry _registry;
 
-		public override void Init(Registry registry)
+		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = registry;
+			_registry = serviceLocator.Find<Registry>();
 		}
 
 		public override void UpdateFrame(float deltaTime)
 		{
-			var weapons = _registry.DataSet<WeaponState>();
+			var weapons = _registry.DataSet<Weapon>();
 			var transforms = _registry.DataSet<LocalTransform>();
 			
-			foreach (var entityId in _registry.View().Filter<Include<WeaponState, LocalTransform>>())
+			foreach (var entityId in _registry.View().Filter<Include<Weapon, LocalTransform>>())
 			{
 				ref var weaponState = ref weapons.Get(entityId);
 				ref var characterTransform = ref transforms.Get(entityId);
 
-				weaponState.Cooldown -= deltaTime;
-				if (weaponState.Cooldown > 0)
+				weaponState.Cooldown -= (FP)deltaTime;
+				if (weaponState.Cooldown > FP.Zero)
 				{
 					continue;
 				}
 
-				weaponState.Cooldown = _cooldown;
+				weaponState.Cooldown = (FP)_cooldown;
 
 				var bulletId = _registry.Create(new BulletState
 				{

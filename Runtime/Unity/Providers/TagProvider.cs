@@ -9,9 +9,9 @@ namespace Massive.Unity
 		private Registry _registry;
 		private Entity _entity;
 
-		public override void ApplyToEntity(Registry registry, Entity entity)
+		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			registry.Assign<TComponent>(entity);
+			serviceLocator.Find<Registry>().Assign<TComponent>(entity);
 		}
 	}
 }

@@ -9,10 +9,10 @@ namespace Massive.Unity
 		private Registry _registry;
 		private Entity _entity;
 
-		public override void ApplyToEntity(Registry registry, Entity entity)
+		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			var viewAsset = registry.Service<ViewDataBase>().GetViewAsset(_viewPrefab);
-			registry.Assign(entity, viewAsset);
+			var viewAsset = serviceLocator.Find<ViewDataBase>().GetViewAsset(_viewPrefab);
+			serviceLocator.Find<Registry>().Assign(entity, viewAsset);
 		}
 	}
 }
