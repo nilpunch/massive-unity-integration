@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public class IntComponentProvider : ComponentProvider<int>
+	public class IntComponentProvider : ComponentProviderInline<int>
 	{
 	}
 }

@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public class FloatComponentProvider : ComponentProvider<float>
+	public class FloatComponentProvider : ComponentProviderInline<float>
 	{
 	}
 }

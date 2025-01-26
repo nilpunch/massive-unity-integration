@@ -2,7 +2,7 @@
 
 namespace Massive.Unity
 {
-	public class Vector3ComponentProvider : ComponentProvider<Vector3>
+	public class Vector3ComponentProvider : ComponentProviderInline<Vector3>
 	{
 	}
 }
