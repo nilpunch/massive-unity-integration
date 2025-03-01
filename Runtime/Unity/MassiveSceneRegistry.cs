@@ -30,7 +30,7 @@ namespace Massive.Unity
 
 		private void Awake()
 		{
-			_session = new Session(new SessionConfig(_simulationFrequency, _saveEachNthTick, 1, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
+			_session = new Session(new SessionConfig(_simulationFrequency, _saveEachNthTick, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
 
 			_registry = _session.Registry;
 			_session.Services.Assign(_viewDataBase);
@@ -80,13 +80,9 @@ namespace Massive.Unity
 			_elapsedTime += Time.deltaTime;
 			int targetTick = Mathf.RoundToInt(_elapsedTime * _simulationFrequency);
 
-			// Update input once per tick
-			if (_session.Loop.CurrentTick != targetTick)
+			foreach (var inputSystem in _inputSystems)
 			{
-				foreach (var inputSystem in _inputSystems)
-				{
-					inputSystem.UpdateInput(targetTick);
-				}
+				inputSystem.UpdateInput(targetTick);
 			}
 
 			_simulationTicksTracker.Restart();

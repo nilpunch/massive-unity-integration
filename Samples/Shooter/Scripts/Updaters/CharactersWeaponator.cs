@@ -29,13 +29,13 @@ namespace Massive.Unity.Samples.Shooter
 				ref var weaponState = ref weapons.Get(entityId);
 				ref var characterTransform = ref transforms.Get(entityId);
 
-				weaponState.Cooldown -= (FP)deltaTime;
+				weaponState.Cooldown -= deltaTime.ToFP();
 				if (weaponState.Cooldown > FP.Zero)
 				{
 					continue;
 				}
 
-				weaponState.Cooldown = (FP)_cooldown;
+				weaponState.Cooldown = _cooldown.ToFP();
 
 				var bulletId = _registry.Create(new BulletState
 				{

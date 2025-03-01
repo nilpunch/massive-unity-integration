@@ -1,25 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Massive.Unity
 {
-	public class EntityView : ComponentsView
+	public class EntityView : MonoBehaviour
 	{
-		[SerializeField] private List<MonoBehaviour> _viewBehaviours = new List<MonoBehaviour>();
+		[SerializeField] private List<ViewBehaviour> _viewBehaviours = new List<ViewBehaviour>();
+		[SerializeField] private List<ViewComponent> _viewComponents = new List<ViewComponent>();
 
-		private readonly List<IViewBehaviour> _cachedViewBehaviours = new List<IViewBehaviour>();
+		public Registry Registry { get; protected set; }
 
-		private void Awake()
+		public Entity Entity  { get; protected set; }
+
+		public void Register(Registry registry, Entity viewEntity)
 		{
-			gameObject.SetActive(false);
-
-			foreach (MonoBehaviour monoBehaviour in _viewBehaviours)
+			registry.Assign(viewEntity, this);
+			foreach (var viewComponent in _viewComponents)
 			{
-				if (monoBehaviour is IViewBehaviour viewBehaviour)
-				{
-					_cachedViewBehaviours.Add(viewBehaviour);
-				}
+				viewComponent.Register(registry, viewEntity);
 			}
 		}
 
@@ -27,9 +25,8 @@ namespace Massive.Unity
 		{
 			Entity = entity;
 			Registry = registry;
-			gameObject.SetActive(true);
 
-			foreach (IViewBehaviour viewBehaviour in _cachedViewBehaviours)
+			foreach (var viewBehaviour in _viewBehaviours)
 			{
 				viewBehaviour.OnEntityAssigned(registry, entity);
 			}
@@ -37,7 +34,7 @@ namespace Massive.Unity
 
 		public void UnassignEntity()
 		{
-			foreach (IViewBehaviour viewBehaviour in _cachedViewBehaviours)
+			foreach (var viewBehaviour in _viewBehaviours)
 			{
 				viewBehaviour.OnEntityUnassigned();
 			}
@@ -46,19 +43,23 @@ namespace Massive.Unity
 		}
 
 #if UNITY_EDITOR
-		[ContextMenu("Find behaviours")]
-		private void FindBehaviours()
+		[ContextMenu("Find Behaviours and Components")]
+		private void FindBehavioursAndComponents()
 		{
 			UnityEditor.Undo.RecordObject(this, "Find behaviours");
-			IViewBehaviour[] behaviours = GetComponentsInChildren<IViewBehaviour>(true);
+			var behaviours = GetComponentsInChildren<ViewBehaviour>(true);
+			var components = GetComponentsInChildren<ViewComponent>(true);
 
 			_viewBehaviours.Clear();
-			foreach (IViewBehaviour behaviour in behaviours)
+			foreach (var behaviour in behaviours)
 			{
-				if (behaviour is MonoBehaviour monoBehaviour)
-				{
-					_viewBehaviours.Add(monoBehaviour);
-				}
+				_viewBehaviours.Add(behaviour);
+			}
+
+			_viewComponents.Clear();
+			foreach (var component in components)
+			{
+				_viewComponents.Add(component);
 			}
 
 			UnityEditor.EditorUtility.SetDirty(this);

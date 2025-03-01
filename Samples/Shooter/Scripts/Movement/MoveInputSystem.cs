@@ -44,7 +44,8 @@ namespace Massive.Unity.Samples.Shooter
 
 			input.Normalize();
 
-			_input.SetAt(targetTick, _clientId, new MoveInput() { Direction = input });
+			_input.SetAt(Mathf.Max(0, targetTick - 120), _clientId, new MoveInput() { Direction = input });
+			// _input.SetAt(targetTick, _clientId, new MoveInput() { Direction = input });
 		}
 	}
 }
