@@ -15,6 +15,11 @@ namespace Massive.Unity.Samples.Physics
 
 		public bool Apply(int id, ref Body body)
 		{
+			if (body.InvMass == 0)
+			{
+				return true;
+			}
+
 			// Linear velocity update.
 			body.Velocity = (body.Position - body.PrevPosition) * _invDeltaTime;
 

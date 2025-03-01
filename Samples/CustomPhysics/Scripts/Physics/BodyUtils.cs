@@ -31,7 +31,7 @@ namespace Massive.Unity.Samples.Physics
 				return FP.Zero;
 			}
 
-			var leverArm = body.Position - applicationPoint;
+			var leverArm = applicationPoint - body.Position;
 			var angularInfluence = FVector3.Cross(leverArm, constraintDirection);
 			angularInfluence = FQuaternion.Inverse(body.Rotation) * angularInfluence;
 
@@ -55,7 +55,7 @@ namespace Massive.Unity.Samples.Physics
 
 			body.Position += impulse * body.InvMass;
 
-			var leverArm = body.Position - applicationPoint;
+			var leverArm = applicationPoint - body.Position;
 			var angularImpulse = FVector3.Cross(leverArm, impulse);
 			angularImpulse = FQuaternion.Inverse(body.Rotation) * angularImpulse;
 			angularImpulse *= body.InvInertiaTensor;

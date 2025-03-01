@@ -30,12 +30,19 @@ namespace Massive.Unity
 			_registry = _session.Registry;
 			_session.Services.Assign(_viewDataBase);
 
-			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
-				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
+			var entityProviders = SceneManager.GetActiveScene().GetRootGameObjects()
+				.SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
+				.Where(monoEntity => monoEntity.gameObject.activeInHierarchy).ToArray();
+			
+			foreach (var entityProvider in entityProviders)
 			{
-				monoEntity.ApplyToRegistry(_session.Services);
-				Destroy(monoEntity.gameObject);
+				entityProvider.ApplyEntity(_session.Services);
+			}
+			
+			foreach (var entityProvider in entityProviders)
+			{
+				entityProvider.ApplyComponents(_session.Services);
+				Destroy(entityProvider.gameObject);
 			}
 
 			_updateSystems = FindObjectsOfType<UpdateSystem>();

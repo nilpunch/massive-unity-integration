@@ -78,11 +78,19 @@ namespace Massive.Unity
 			serviceLocator.Assign(registry);
 
 			var activeScene = SceneManager.GetActiveScene();
-			foreach (var monoEntity in SceneManager.GetActiveScene().GetRootGameObjects()
-				         .SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
-				         .Where(monoEntity => monoEntity.gameObject.activeInHierarchy))
+			var entityProviders = SceneManager.GetActiveScene().GetRootGameObjects()
+				.SelectMany(root => root.GetComponentsInChildren<EntityProvider>())
+				.Where(monoEntity => monoEntity.gameObject.activeInHierarchy).ToArray();
+			
+			foreach (var entityProvider in entityProviders)
 			{
-				monoEntity.ApplyToRegistry(serviceLocator);
+				entityProvider.ApplyEntity(serviceLocator);
+			}
+			
+			foreach (var entityProvider in entityProviders)
+			{
+				entityProvider.ApplyComponents(serviceLocator);
+				Destroy(entityProvider.gameObject);
 			}
 
 			RegistryFileUtils.WriteToFile(FileSceneRegistryUtils.GetPathToSceneRegistry(activeScene), registry, registrySerializer);

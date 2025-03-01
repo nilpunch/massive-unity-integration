@@ -33,7 +33,7 @@ namespace Massive.Unity.Samples.Physics
 			var velocityRotation = new FQuaternion(
 				angularVelocity.X,
 				angularVelocity.Y,
-				angularVelocity.Y,
+				angularVelocity.Z,
 				FP.Zero);
 			body.Rotation = FQuaternion.Normalize(body.Rotation + _halfDeltaTime * (velocityRotation * body.Rotation));
 

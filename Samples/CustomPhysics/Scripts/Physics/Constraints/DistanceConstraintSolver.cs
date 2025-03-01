@@ -25,7 +25,7 @@ namespace Massive.Unity.Samples.Physics
 			var distance = FVector3.Length(difference);
 			var normal = difference / distance;
 
-			if (distance >= constraint.Distance)
+			if (distance <= constraint.Distance)
 			{
 				return true;
 			}
