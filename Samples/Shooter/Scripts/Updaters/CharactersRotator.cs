@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mathematics.Fixed;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
@@ -13,12 +14,12 @@ namespace Massive.Unity.Samples.Shooter
 			_registry = serviceLocator.Find<Registry>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 			_registry.View().Include<Weapon>().ForEachExtra((deltaTime, _rotation),
-				(int id, ref LocalTransform characterTransform, (float DeltaTime, float RotationSpeed) args) =>
+				(int id, ref LocalTransform characterTransform, (FP DeltaTime, float RotationSpeed) args) =>
 			{
-				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime, Vector3.forward);
+				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime.ToFloat(), Vector3.forward);
 			});
 		}
 	}

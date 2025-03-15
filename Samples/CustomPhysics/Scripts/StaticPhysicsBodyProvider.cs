@@ -16,15 +16,15 @@ namespace Massive.Unity.Samples.Physics
 				transform.rotation.z.ToFP(),
 				transform.rotation.w.ToFP());
 
-			serviceLocator.Find<Registry>().Assign(entity, new Body()
-			{
-				Position = position,
-				PrevPosition = position,
-				Rotation = rotation,
-				PrevRotation = rotation,
-				InvMass = FP.Zero,
-				InvInertiaTensor = FVector3.Zero
-			});
+			// serviceLocator.Find<Registry>().Assign(entity, new Body()
+			// {
+			// 	Position = position,
+			// 	PrevPosition = position,
+			// 	Rotation = rotation,
+			// 	PrevRotation = rotation,
+			// 	InvMass = FP.Zero,
+			// 	InvInertiaTensor = FVector3.Zero
+			// });
 		}
 	}
 }

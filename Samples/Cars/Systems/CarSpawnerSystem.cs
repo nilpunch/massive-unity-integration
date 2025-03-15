@@ -1,3 +1,4 @@
+using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Cars
@@ -16,7 +17,7 @@ namespace Massive.Unity.Samples.Cars
 			_registry = serviceLocator.Find<Registry>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 			if (_registry.Set<Car>().Count == _carsLimit)
 			{

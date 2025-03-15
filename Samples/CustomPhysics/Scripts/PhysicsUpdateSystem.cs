@@ -1,4 +1,5 @@
-﻿using Mathematics.Fixed;
+﻿using Massive.Physics;
+using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Physics
@@ -15,23 +16,22 @@ namespace Massive.Unity.Samples.Physics
 			_registry = serviceLocator.Find<Registry>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
-			var substeppedDeltaTime = deltaTime.ToFP() / _substeps;
+			var subDeltaTime = deltaTime / _substeps;
 
 			for (var i = 0; i < _substeps; i++)
 			{
-				Simulation.Integrate(_registry, substeppedDeltaTime, _gravity);
-				Simulation.SolveDistanceConstraints(_registry, substeppedDeltaTime);
-				Simulation.UpdateVelocities(_registry, substeppedDeltaTime);
+				Simulation.IntegrateVelocities(_registry, subDeltaTime, _gravity);
+				Simulation.IntegratePositions(_registry, subDeltaTime);
 			}
 
 			_registry.View().ForEach(static (ref LocalTransform transform, ref Body body) =>
 			{
 				transform.Position = new Vector3(
-					body.Position.X.ToFloat(),
-					body.Position.Y.ToFloat(),
-					body.Position.Z.ToFloat());
+					body.Center.X.ToFloat(),
+					body.Center.Y.ToFloat(),
+					body.Center.Z.ToFloat());
 				transform.Rotation = new Quaternion(
 					body.Rotation.X.ToFloat(),
 					body.Rotation.Y.ToFloat(),

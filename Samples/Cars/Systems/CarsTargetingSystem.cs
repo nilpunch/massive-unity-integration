@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mathematics.Fixed;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Cars
 {
@@ -18,7 +19,7 @@ namespace Massive.Unity.Samples.Cars
 			_registry = serviceLocator.Find<Registry>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 			foreach (int entityId in _registry.View().Include<Car>())
 			{
@@ -47,7 +48,7 @@ namespace Massive.Unity.Samples.Cars
 					-_maxSteeringAngle * Mathf.Deg2Rad,
 					_maxSteeringAngle * Mathf.Deg2Rad);
 
-				car.SteerinAngleRadians = Mathf.MoveTowards(car.SteerinAngleRadians, targetSteering, car.SteerinChangeSpeed * deltaTime);
+				car.SteerinAngleRadians = Mathf.MoveTowards(car.SteerinAngleRadians, targetSteering, car.SteerinChangeSpeed * deltaTime.ToFloat());
 			}
 		}
 	}

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
@@ -27,7 +28,7 @@ namespace Massive.Unity.Samples.Shooter
 			Destroy(_materialCopy);
 		}
 		
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 		}
 

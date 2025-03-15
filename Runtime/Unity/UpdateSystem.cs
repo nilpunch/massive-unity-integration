@@ -1,4 +1,5 @@
 ﻿using Massive.Netcode;
+using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity
@@ -6,6 +7,6 @@ namespace Massive.Unity
 	public abstract class UpdateSystem : MonoBehaviour
 	{
 		public abstract void Init(ServiceLocator serviceLocator);
-		public abstract void UpdateFrame(float deltaTime);
+		public abstract void UpdateFrame(FP deltaTime);
 	}
 }

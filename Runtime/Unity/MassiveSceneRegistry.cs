@@ -56,7 +56,6 @@ namespace Massive.Unity
 				Destroy(entityProvider.gameObject);
 			}
 
-			_registry.SaveFrame();
 
 			_inputSystems = FindObjectsOfType<InputSystem>();
 			foreach (var inputSystem in _inputSystems)
@@ -69,6 +68,8 @@ namespace Massive.Unity
 				_adapter.Systems.Add(updateSystem);
 			}
 
+			_registry.SaveFrame();
+			
 			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
 
 			if (_synchronizeViews)

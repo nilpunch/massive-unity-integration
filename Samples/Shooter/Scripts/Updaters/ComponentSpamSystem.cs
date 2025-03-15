@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mathematics.Fixed;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
@@ -67,7 +68,7 @@ namespace Massive.Unity.Samples.Shooter
 			registry.Set<TestState64<ushort, double, int>>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 		}
 	}

@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using Massive.Netcode;
+using Mathematics.Fixed;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Time = UnityEngine.Time;
@@ -76,8 +77,8 @@ namespace Massive.Unity
 			if (_fixedTimeStep)
 			{
 				int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
-				float deltaTime = 1f / _simulationFrequency;
-			
+				FP deltaTime = FP.One / _simulationFrequency;
+
 				while (_currentFrame < targetFrame)
 				{
 					foreach (var updateSystem in _updateSystems)
@@ -92,7 +93,7 @@ namespace Massive.Unity
 			{
 				foreach (var updateSystem in _updateSystems)
 				{
-					updateSystem.UpdateFrame(Time.deltaTime);
+					updateSystem.UpdateFrame(Time.deltaTime.ToFP());
 				}
 			}
 

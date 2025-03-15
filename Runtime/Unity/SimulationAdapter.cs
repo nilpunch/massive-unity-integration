@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Massive.Netcode;
+using Mathematics.Fixed;
 
 namespace Massive.Unity
 {
@@ -18,7 +19,7 @@ namespace Massive.Unity
 		{
 			foreach (var system in Systems)
 			{
-				system.UpdateFrame(_time.DeltaTime);
+				system.UpdateFrame(FP.One / _time.FPS);
 			}
 		}
 	}

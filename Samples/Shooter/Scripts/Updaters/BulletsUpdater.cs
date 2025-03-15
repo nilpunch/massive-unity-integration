@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Mathematics.Fixed;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
@@ -11,19 +12,19 @@ namespace Massive.Unity.Samples.Shooter
 			_registry = serviceLocator.Find<Registry>();
 		}
 
-		public override void UpdateFrame(float deltaTime)
+		public override void UpdateFrame(FP deltaTime)
 		{
 			_registry.View().ForEachExtra((_registry, deltaTime),
-				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (Registry Registry, float DeltaTime) args) =>
+				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (Registry Registry, FP DeltaTime) args) =>
 				{
-					bullet.Lifetime -= args.DeltaTime;
+					bullet.Lifetime -= args.DeltaTime.ToFloat();
 					if (bullet.IsDestroyed)
 					{
 						args.Registry.Destroy(entityId);
 						return;
 					}
 
-					bulletTransform.Position += bullet.Velocity * args.DeltaTime;
+					bulletTransform.Position += bullet.Velocity * args.DeltaTime.ToFloat();
 				});
 		}
 
