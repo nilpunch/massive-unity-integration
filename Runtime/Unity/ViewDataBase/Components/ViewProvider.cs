@@ -6,13 +6,13 @@ namespace Massive.Unity
 	{
 		[SerializeField] private EntityView _viewPrefab;
 
-		private Registry _registry;
+		private World _world;
 		private Entity _entity;
 
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
 			var viewAsset = serviceLocator.Find<ViewDataBase>().GetViewAsset(_viewPrefab);
-			serviceLocator.Find<Registry>().Assign(entity, viewAsset);
+			serviceLocator.Find<World>().Set(entity, viewAsset);
 		}
 	}
 }

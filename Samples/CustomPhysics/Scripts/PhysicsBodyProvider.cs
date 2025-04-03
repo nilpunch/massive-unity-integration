@@ -23,7 +23,7 @@ namespace Massive.Unity.Samples.Physics
 
 			body.ApplyLinearImpulse(_impulse, body.Position + _impulsePosition);
 
-			serviceLocator.Find<Registry>().Assign(entity, body);
+			serviceLocator.Find<World>().Set(entity, body);
 		}
 	}
 }

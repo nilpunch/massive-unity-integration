@@ -23,16 +23,16 @@ namespace Massive.Unity
 		private InputSystem[] _inputSystems;
 		private UnityEntitySynchronization _unityEntitySynchronization;
 		private Session _session;
-		private MassiveRegistry _registry;
+		private MassiveWorld _world;
 		private float _elapsedTime;
 		private Stopwatch _stopwatch;
 		private SimulationTicksTracker _simulationTicksTracker = new SimulationTicksTracker();
 
 		private void Awake()
 		{
-			_session = new Session(new SessionConfig(_simulationFrequency, _saveEachNthTick, registryConfig: new MassiveRegistryConfig(framesCapacity: _framesCapacity + 1)));
+			_session = new Session(new SessionConfig(_simulationFrequency, _saveEachNthTick, worldConfig: new MassiveWorldConfig(framesCapacity: _framesCapacity + 1)));
 
-			_registry = _session.Registry;
+			_world = _session.World;
 			_session.Services.Assign(_viewDataBase);
 
 			_adapter = new SimulationAdapter(_session.Time);
@@ -68,9 +68,9 @@ namespace Massive.Unity
 				_adapter.Systems.Add(updateSystem);
 			}
 
-			_registry.SaveFrame();
+			_world.SaveFrame();
 			
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
+			_unityEntitySynchronization = new UnityEntitySynchronization(_world, new EntityViewPool(_viewDataBase));
 
 			if (_synchronizeViews)
 			{

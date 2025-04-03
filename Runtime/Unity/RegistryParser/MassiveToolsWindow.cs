@@ -73,7 +73,7 @@ namespace Massive.Unity
 		{
 			var registrySerializer = new RegistrySerializer();
 
-			var registry = new Registry();
+			var registry = new World();
 			var serviceLocator = new ServiceLocator();
 			serviceLocator.Assign(registry);
 

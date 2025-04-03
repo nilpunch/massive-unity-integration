@@ -6,12 +6,12 @@ namespace Massive.Unity
 	[DisallowMultipleComponent]
 	public class TagProvider<TComponent> : ComponentProvider
 	{
-		private Registry _registry;
+		private World _world;
 		private Entity _entity;
 
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			serviceLocator.Find<Registry>().Assign<TComponent>(entity);
+			serviceLocator.Find<World>().Add<TComponent>(entity);
 		}
 	}
 }

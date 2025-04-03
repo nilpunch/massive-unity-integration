@@ -3,18 +3,18 @@
 	public class EntityViewSynchronizer
 	{
 		private readonly DataSet<ViewInstance> _viewInstances = new DataSet<ViewInstance>();
-		private readonly Registry _registry;
+		private readonly World _world;
 		private readonly EntityViewPool _viewPool;
 
-		public EntityViewSynchronizer(Registry registry, EntityViewPool viewPool)
+		public EntityViewSynchronizer(World world, EntityViewPool viewPool)
 		{
-			_registry = registry;
+			_world = world;
 			_viewPool = viewPool;
 		}
 
 		public void SynchronizeAll()
 		{
-			var viewAssets = _registry.DataSet<ViewAsset>();
+			var viewAssets = _world.DataSet<ViewAsset>();
 
 			// Remove to pool all invalid views
 			var monoViewsData = _viewInstances.Data;
@@ -31,9 +31,9 @@
 
 					var id = _viewInstances.Packed[page.Offset + index];
 					var viewInstance = dataPage[index];
-					if (!viewAssets.IsAssigned(id) || !viewAssets.Get(id).Equals(viewInstance.Asset))
+					if (!viewAssets.Has(id) || !viewAssets.Get(id).Equals(viewInstance.Asset))
 					{
-						UnassignViewInstance(id, viewInstance);
+						RemoveViewInstance(id, viewInstance);
 					}
 				}
 			}
@@ -53,7 +53,7 @@
 
 					var id = viewAssets.Packed[page.Offset + index];
 					var viewAsset = dataPage[index];
-					if (!_viewInstances.IsAssigned(id))
+					if (!_viewInstances.Has(id))
 					{
 						AssignViewInstance(viewAsset, id);
 					}
@@ -63,9 +63,9 @@
 
 		public void SynchronizeView(int entityId)
 		{
-			var viewAsset = _registry.Get<ViewAsset>(entityId);
+			var viewAsset = _world.Get<ViewAsset>(entityId);
 
-			if (_viewInstances.IsAssigned(entityId))
+			if (_viewInstances.Has(entityId))
 			{
 				var viewInstance = _viewInstances.Get(entityId);
 
@@ -76,7 +76,7 @@
 				}
 				else
 				{
-					UnassignViewInstance(entityId, viewInstance);
+					RemoveViewInstance(entityId, viewInstance);
 				}
 			}
 
@@ -85,9 +85,9 @@
 
 		public void DestroyView(int entityId)
 		{
-			if (_viewInstances.IsAssigned(entityId))
+			if (_viewInstances.Has(entityId))
 			{
-				UnassignViewInstance(entityId, _viewInstances.Get(entityId));
+				RemoveViewInstance(entityId, _viewInstances.Get(entityId));
 			}
 		}
 
@@ -96,18 +96,18 @@
 			var view = _viewPool.CreateView(viewAsset);
 
 			view.transform.SetParent(null);
-			view.AssignEntity(_registry, _registry.GetEntity(entityId));
+			view.AssignEntity(_world, _world.GetEntity(entityId));
 
-			_viewInstances.Assign(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
+			_viewInstances.Set(entityId, new ViewInstance() { Instance = view, Asset = viewAsset });
 		}
 
-		private void UnassignViewInstance(int entityId, ViewInstance viewInstance)
+		private void RemoveViewInstance(int entityId, ViewInstance viewInstance)
 		{
-			viewInstance.Instance.UnassignEntity();
+			viewInstance.Instance.RemoveEntity();
 
 			_viewPool.ReturnView(viewInstance.Instance);
 
-			_viewInstances.Unassign(entityId);
+			_viewInstances.Remove(entityId);
 		}
 	}
 }

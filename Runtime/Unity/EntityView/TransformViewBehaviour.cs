@@ -9,13 +9,13 @@ namespace Massive.Unity
 		private DataSet<LocalTransform> _localTransforms;
 		private Entity _entity;
 
-		public override void OnEntityAssigned(Registry registry, Entity entity)
+		public override void OnEntityAssigned(World world, Entity entity)
 		{
 			_entity = entity;
-			_localTransforms = registry.DataSet<LocalTransform>();
+			_localTransforms = world.DataSet<LocalTransform>();
 		}
 
-		public override void OnEntityUnassigned()
+		public override void OnEntityRemoved()
 		{
 			_localTransforms = null;
 			_entity = Entity.Dead;
@@ -23,7 +23,7 @@ namespace Massive.Unity
 
 		private void LateUpdate()
 		{
-			if (!_localTransforms.IsAssigned(_entity.Id))
+			if (!_localTransforms.Has(_entity.Id))
 			{
 				return;
 			}

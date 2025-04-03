@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Massive.Serialization;
 using UnityEngine;
 using UnityEngine.Profiling;
@@ -8,6 +9,25 @@ namespace Massive.Unity
 {
 	public class FileRegistry : SceneRegistry
 	{
+		private void Start()
+		{
+			var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
+
+			if (File.Exists(pathToSceneRegistry))
+			{
+				Profiler.BeginSample("Deserialize from file.");
+				RegistryFileUtils.ReadFromFile(pathToSceneRegistry, World, new RegistrySerializer());
+				Profiler.EndSample();
+
+				Profiler.BeginSample("Synchronize entities.");
+				if (_synchronizeViews)
+				{
+					_unityEntitySynchronization.SynchronizeViews();
+				}
+				Profiler.EndSample();
+			}
+		}
+
 		private void OnGUI()
 		{
 			float fontScaling = Screen.height / (float)1080;
@@ -19,7 +39,7 @@ namespace Massive.Unity
 				var pathToSceneRegistry = FileSceneRegistryUtils.GetPathToSceneRegistry(SceneManager.GetActiveScene());
 
 				Profiler.BeginSample("Serialize to file.");
-				RegistryFileUtils.WriteToFile(pathToSceneRegistry, _registry, new RegistrySerializer());
+				RegistryFileUtils.WriteToFile(pathToSceneRegistry, World, new RegistrySerializer());
 				Profiler.EndSample();
 			}
 
@@ -30,7 +50,7 @@ namespace Massive.Unity
 				if (File.Exists(pathToSceneRegistry))
 				{
 					Profiler.BeginSample("Deserialize from file.");
-					RegistryFileUtils.ReadFromFile(pathToSceneRegistry, _registry, new RegistrySerializer());
+					RegistryFileUtils.ReadFromFile(pathToSceneRegistry, World, new RegistrySerializer());
 					Profiler.EndSample();
 
 					Profiler.BeginSample("Synchronize entities.");

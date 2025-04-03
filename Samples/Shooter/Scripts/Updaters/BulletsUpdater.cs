@@ -5,17 +5,17 @@ namespace Massive.Unity.Samples.Shooter
 {
 	public class BulletsUpdater : UpdateSystem
 	{
-		private Registry _registry;
+		private World _world;
 
 		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 		}
 
 		public override void UpdateFrame(FP deltaTime)
 		{
-			_registry.View().ForEachExtra((_registry, deltaTime),
-				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (Registry Registry, FP DeltaTime) args) =>
+			_world.View().ForEachExtra((_registry: _world, deltaTime),
+				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (World Registry, FP DeltaTime) args) =>
 				{
 					bullet.Lifetime -= args.DeltaTime.ToFloat();
 					if (bullet.IsDestroyed)
@@ -38,7 +38,7 @@ namespace Massive.Unity.Samples.Shooter
 
 			GUILayout.FlexibleSpace();
 
-			GUILayout.TextField($"{_registry.View().Include<BulletState>().Count()} Bullets",
+			GUILayout.TextField($"{_world.View().Include<BulletState>().Count()} Bullets",
 				new GUIStyle() { fontSize = Mathf.RoundToInt(70 * fontScaling), normal = new GUIStyleState() { textColor = Color.white } });
 
 			GUILayout.EndVertical();

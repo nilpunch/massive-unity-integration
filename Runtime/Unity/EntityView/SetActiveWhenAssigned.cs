@@ -11,12 +11,12 @@ namespace Massive.Unity
 			gameObject.SetActive(false);
 		}
 
-		public override void OnEntityAssigned(Registry registry, Entity entity)
+		public override void OnEntityAssigned(World world, Entity entity)
 		{
 			_rootObject.SetActive(true);
 		}
 
-		public override void OnEntityUnassigned()
+		public override void OnEntityRemoved()
 		{
 			_rootObject.SetActive(false);
 		}

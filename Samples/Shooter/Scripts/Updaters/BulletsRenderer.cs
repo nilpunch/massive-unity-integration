@@ -9,7 +9,7 @@ namespace Massive.Unity.Samples.Shooter
 		[SerializeField] private Texture _texture;
 		[SerializeField] private Material _spriteMaterial;
 
-		private Registry _registry;
+		private World _world;
 		private Mesh _quadMesh;
 		private List<Matrix4x4> _matrices;
 		private Material _materialCopy;
@@ -17,7 +17,7 @@ namespace Massive.Unity.Samples.Shooter
 		public override void Init(ServiceLocator serviceLocator)
 		{
 			_matrices = new List<Matrix4x4>();
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 			_quadMesh = CreateQuadMesh();
 			_materialCopy = Instantiate(_spriteMaterial);
 			_materialCopy.mainTexture = _texture;
@@ -34,7 +34,7 @@ namespace Massive.Unity.Samples.Shooter
 
 		private void Update()
 		{
-			_registry.View().ForEachExtra(_matrices,
+			_world.View().ForEachExtra(_matrices,
 				(ref BulletState _, ref LocalTransform bulletTransform, List<Matrix4x4> matrices) =>
 				{
 					matrices.Add(Matrix4x4.Translate(bulletTransform.Position));

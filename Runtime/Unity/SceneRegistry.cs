@@ -21,14 +21,14 @@ namespace Massive.Unity
 		private Session _session;
 		private UpdateSystem[] _updateSystems;
 		protected UnityEntitySynchronization _unityEntitySynchronization;
-		protected Registry _registry;
+		protected World World;
 		private int _currentFrame;
 
 		private void Awake()
 		{
 			_session = new Session();
 			
-			_registry = _session.Registry;
+			World = _session.World;
 			_session.Services.Assign(_viewDataBase);
 
 			var entityProviders = SceneManager.GetActiveScene().GetRootGameObjects()
@@ -52,7 +52,7 @@ namespace Massive.Unity
 				updateSystem.Init(_session.Services);
 			}
 			
-			_unityEntitySynchronization = new UnityEntitySynchronization(_registry, new EntityViewPool(_viewDataBase));
+			_unityEntitySynchronization = new UnityEntitySynchronization(World, new EntityViewPool(_viewDataBase));
 
 			if (_synchronizeViews)
 			{

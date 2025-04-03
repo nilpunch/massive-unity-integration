@@ -25,7 +25,7 @@ namespace Massive.Unity
 				var viewPrefab = _config.GetViewPrefab(viewAsset);
 				var poolRoot = new GameObject(viewPrefab.name + " Pool").transform;
 				_viewPool.AddVariant(viewAsset, new Pool<EntityView>(new PrefabFactory<EntityView>(viewPrefab, poolRoot)));
-				_poolRoots.Assign(viewAsset.Id, poolRoot);
+				_poolRoots.Set(viewAsset.Id, poolRoot);
 			}
 
 			var view = _viewPool.Get(viewAsset);

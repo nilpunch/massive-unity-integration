@@ -16,7 +16,7 @@ namespace Massive.Unity
 
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			serviceLocator.Find<Registry>().Assign(entity, _data);
+			serviceLocator.Find<World>().Set(entity, _data);
 		}
 	}
 
@@ -28,7 +28,7 @@ namespace Massive.Unity
 
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			serviceLocator.Find<Registry>().Assign(entity, _data);
+			serviceLocator.Find<World>().Set(entity, _data);
 		}
 	}
 }

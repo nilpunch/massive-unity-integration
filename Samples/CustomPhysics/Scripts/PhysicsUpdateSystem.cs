@@ -9,11 +9,11 @@ namespace Massive.Unity.Samples.Physics
 		[SerializeField] private int _substeps = 20;
 		[SerializeField] private FVector3 _gravity = new FVector3(0f.ToFP(), -9.8f.ToFP(), 0f.ToFP());
 
-		private Registry _registry;
+		private World _world;
 
 		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 		}
 
 		public override void UpdateFrame(FP deltaTime)
@@ -22,11 +22,12 @@ namespace Massive.Unity.Samples.Physics
 
 			for (var i = 0; i < _substeps; i++)
 			{
-				Simulation.IntegrateVelocities(_registry, subDeltaTime, _gravity);
-				Simulation.IntegratePositions(_registry, subDeltaTime);
+				Simulation.IntegrateVelocities(_world, subDeltaTime, _gravity);
+				Simulation.IntegratePositions(_world, subDeltaTime);
+				Simulation.UpdateWorldProperties(_world);
 			}
 
-			_registry.View().ForEach(static (ref LocalTransform transform, ref Body body) =>
+			_world.View().ForEach(static (ref LocalTransform transform, ref Body body) =>
 			{
 				transform.Position = new Vector3(
 					body.Center.X.ToFloat(),

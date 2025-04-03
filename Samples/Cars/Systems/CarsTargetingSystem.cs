@@ -9,22 +9,22 @@ namespace Massive.Unity.Samples.Cars
 		[SerializeField] private float _maxSteeringAngle = 40f;
 		[SerializeField] private WaypointsRoute _waypointsRoute;
 		
-		private Registry _registry;
+		private World _world;
 
 		public const float HalfPI = Mathf.PI / 2f;
 		public const float TwoPI = Mathf.PI * 2f;
 		
 		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 		}
 
 		public override void UpdateFrame(FP deltaTime)
 		{
-			foreach (int entityId in _registry.View().Include<Car>())
+			foreach (int entityId in _world.View().Include<Car>())
 			{
-				ref var car = ref _registry.Get<Car>(entityId);
-				ref var carTransform = ref _registry.Get<LocalTransform>(entityId);
+				ref var car = ref _world.Get<Car>(entityId);
+				ref var carTransform = ref _world.Get<LocalTransform>(entityId);
 
 				var lookaheadPosition = _waypointsRoute.GetLookaheadPosition(carTransform.Position.ToXZ(), _lookaheadRadius).FromXZ();
 

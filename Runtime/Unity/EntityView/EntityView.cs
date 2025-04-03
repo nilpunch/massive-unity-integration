@@ -8,35 +8,35 @@ namespace Massive.Unity
 		[SerializeField] private List<ViewBehaviour> _viewBehaviours = new List<ViewBehaviour>();
 		[SerializeField] private List<ViewComponent> _viewComponents = new List<ViewComponent>();
 
-		public Registry Registry { get; protected set; }
+		public World World { get; protected set; }
 
 		public Entity Entity  { get; protected set; }
 
-		public void Register(Registry registry, Entity viewEntity)
+		public void Register(World world, Entity viewEntity)
 		{
-			registry.Assign(viewEntity, this);
+			world.Set(viewEntity, this);
 			foreach (var viewComponent in _viewComponents)
 			{
-				viewComponent.Register(registry, viewEntity);
+				viewComponent.Register(world, viewEntity);
 			}
 		}
 
-		public void AssignEntity(Registry registry, Entity entity)
+		public void AssignEntity(World world, Entity entity)
 		{
 			Entity = entity;
-			Registry = registry;
+			World = world;
 
 			foreach (var viewBehaviour in _viewBehaviours)
 			{
-				viewBehaviour.OnEntityAssigned(registry, entity);
+				viewBehaviour.OnEntityAssigned(world, entity);
 			}
 		}
 
-		public void UnassignEntity()
+		public void RemoveEntity()
 		{
 			foreach (var viewBehaviour in _viewBehaviours)
 			{
-				viewBehaviour.OnEntityUnassigned();
+				viewBehaviour.OnEntityRemoved();
 			}
 
 			gameObject.SetActive(false);

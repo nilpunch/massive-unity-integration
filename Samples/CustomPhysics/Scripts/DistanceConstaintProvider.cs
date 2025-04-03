@@ -15,7 +15,7 @@ namespace Massive.Unity.Samples.Physics
 
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			serviceLocator.Find<Registry>().Assign(entity, new DistanceConstraint()
+			serviceLocator.Find<World>().Set(entity, new DistanceConstraint()
 			{
 				Body = _body.Entity,
 				OtherBody = _otherBody.Entity,

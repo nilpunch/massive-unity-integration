@@ -12,19 +12,19 @@ namespace Massive.Unity.Samples.Shooter
 		[SerializeField] private float _bulletLifetime = 2f;
 		[SerializeField] private Vector3 _bulletScale = Vector3.one * 2f;
 
-		private Registry _registry;
+		private World _world;
 
 		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 		}
 
 		public override void UpdateFrame(FP deltaTime)
 		{
-			var weapons = _registry.DataSet<Weapon>();
-			var transforms = _registry.DataSet<LocalTransform>();
+			var weapons = _world.DataSet<Weapon>();
+			var transforms = _world.DataSet<LocalTransform>();
 			
-			foreach (var entityId in _registry.View().Filter<Include<Weapon, LocalTransform>>())
+			foreach (var entityId in _world.View().Filter<Include<Weapon, LocalTransform>>())
 			{
 				ref var weaponState = ref weapons.Get(entityId);
 				ref var characterTransform = ref transforms.Get(entityId);
@@ -37,7 +37,7 @@ namespace Massive.Unity.Samples.Shooter
 
 				weaponState.Cooldown = _cooldown.ToFP();
 
-				var bulletId = _registry.Create(new BulletState
+				var bulletId = _world.Create(new BulletState
 				{
 					Velocity = characterTransform.Rotation * Vector3.up * _bulletVelocity,
 					Lifetime = _bulletLifetime,
@@ -47,7 +47,7 @@ namespace Massive.Unity.Samples.Shooter
 				// _registry.Assign(bulletId, _bulletViewPrefab.ViewAsset);
 				var bulletTransform = characterTransform;
 				bulletTransform.Scale = _bulletScale;
-				_registry.Assign(bulletId, bulletTransform);
+				_world.Set(bulletId, bulletTransform);
 			}
 		}
 	}

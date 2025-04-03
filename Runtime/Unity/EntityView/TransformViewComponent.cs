@@ -6,9 +6,9 @@ namespace Massive.Unity
 	{
 		[SerializeField] private Transform _rootTransform;
 
-		public override void Register(Registry registry, Entity viewEntity)
+		public override void Register(World world, Entity viewEntity)
 		{
-			registry.Assign(viewEntity, _rootTransform);
+			world.Set(viewEntity, _rootTransform);
 		}
 	}
 }

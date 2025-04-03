@@ -4,25 +4,25 @@ namespace Massive.Unity
 {
 	public class UnityEntitySynchronization : IDisposable
 	{
-		private readonly Registry _registry;
+		private readonly World _world;
 		private readonly EntityViewSynchronizer _entityViewSynchronizer;
 
-		public UnityEntitySynchronization(Registry registry, EntityViewPool entityViewPool)
+		public UnityEntitySynchronization(World world, EntityViewPool entityViewPool)
 		{
-			_registry = registry;
-			_entityViewSynchronizer = new EntityViewSynchronizer(registry, entityViewPool);
+			_world = world;
+			_entityViewSynchronizer = new EntityViewSynchronizer(world, entityViewPool);
 		}
 
 		public void SubscribeViews()
 		{
-			_registry.Set<ViewAsset>().AfterAssigned += OnAfterViewAssigned;
-			_registry.Set<ViewAsset>().BeforeUnassigned += OnBeforeViewUnassigned;
+			_world.SparseSet<ViewAsset>().AfterAdded += OnAfterViewAdded;
+			_world.SparseSet<ViewAsset>().BeforeRemoved += OnBeforeViewRemoved;
 		}
 
 		public void UnsubscribeViews()
 		{
-			_registry.Set<ViewAsset>().AfterAssigned -= OnAfterViewAssigned;
-			_registry.Set<ViewAsset>().BeforeUnassigned -= OnBeforeViewUnassigned;
+			_world.SparseSet<ViewAsset>().AfterAdded -= OnAfterViewAdded;
+			_world.SparseSet<ViewAsset>().BeforeRemoved -= OnBeforeViewRemoved;
 		}
 
 		public void SynchronizeViews()
@@ -30,12 +30,12 @@ namespace Massive.Unity
 			_entityViewSynchronizer.SynchronizeAll();
 		}
 
-		private void OnAfterViewAssigned(int entityId)
+		private void OnAfterViewAdded(int entityId)
 		{
 			_entityViewSynchronizer.SynchronizeView(entityId);
 		}
 
-		private void OnBeforeViewUnassigned(int entityId)
+		private void OnBeforeViewRemoved(int entityId)
 		{
 			_entityViewSynchronizer.DestroyView(entityId);
 		}

@@ -9,7 +9,7 @@ namespace Massive.Unity
 
 		public void ApplyEntity(ServiceLocator serviceLocator)
 		{
-			Entity = serviceLocator.Find<Registry>().CreateEntity();
+			Entity = serviceLocator.Find<World>().CreateEntity();
 		}
 
 		public void ApplyComponents(ServiceLocator serviceLocator)

@@ -7,16 +7,16 @@ namespace Massive.Unity.Samples.Shooter
 	{
 		[SerializeField] private float _rotation = 400f;
 
-		private Registry _registry;
+		private World _world;
 
 		public override void Init(ServiceLocator serviceLocator)
 		{
-			_registry = serviceLocator.Find<Registry>();
+			_world = serviceLocator.Find<World>();
 		}
 
 		public override void UpdateFrame(FP deltaTime)
 		{
-			_registry.View().Include<Weapon>().ForEachExtra((deltaTime, _rotation),
+			_world.View().Include<Weapon>().ForEachExtra((deltaTime, _rotation),
 				(int id, ref LocalTransform characterTransform, (FP DeltaTime, float RotationSpeed) args) =>
 			{
 				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime.ToFloat(), Vector3.forward);

@@ -4,7 +4,7 @@
 	{
 		public override void ApplyToEntity(ServiceLocator serviceLocator, Entity entity)
 		{
-			serviceLocator.Find<Registry>().Assign(entity, GetTransformData());
+			serviceLocator.Find<World>().Set(entity, GetTransformData());
 		}
 
 		private LocalTransform GetTransformData()
