@@ -1,10 +1,8 @@
-﻿using System;
-using Mathematics.Fixed;
+﻿using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {
-	[Serializable]
 	public struct TestState64<T1, T2, T3>
 	{
 		public Quaternion Bytes16_1;
