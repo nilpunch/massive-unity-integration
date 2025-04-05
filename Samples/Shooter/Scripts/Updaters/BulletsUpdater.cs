@@ -14,7 +14,7 @@ namespace Massive.Unity.Samples.Shooter
 
 		public override void UpdateFrame(FP deltaTime)
 		{
-			_world.View().ForEachExtra((_registry: _world, deltaTime),
+			_world.View().ForEachExtra((_world, deltaTime),
 				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (World Registry, FP DeltaTime) args) =>
 				{
 					bullet.Lifetime -= args.DeltaTime.ToFloat();
