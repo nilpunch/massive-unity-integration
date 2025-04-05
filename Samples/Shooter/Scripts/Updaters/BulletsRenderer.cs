@@ -28,7 +28,7 @@ namespace Massive.Unity.Samples.Shooter
 			Destroy(_materialCopy);
 		}
 		
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 		}
 

@@ -14,12 +14,12 @@ namespace Massive.Unity.Samples.Shooter
 			_world = serviceLocator.Find<World>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			_world.View().Include<Weapon>().ForEachExtra((deltaTime, _rotation),
-				(int id, ref LocalTransform characterTransform, (FP DeltaTime, float RotationSpeed) args) =>
+				(int id, ref LocalTransform characterTransform, (float DeltaTime, float RotationSpeed) args) =>
 			{
-				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime.ToFloat(), Vector3.forward);
+				characterTransform.Rotation *= Quaternion.AngleAxis(args.RotationSpeed * args.DeltaTime, Vector3.forward);
 			});
 		}
 	}

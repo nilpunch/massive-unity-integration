@@ -19,7 +19,7 @@ namespace Massive.Unity.Samples.Cars
 			_world = serviceLocator.Find<World>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			foreach (int entityId in _world.View().Include<Car>())
 			{
@@ -48,7 +48,7 @@ namespace Massive.Unity.Samples.Cars
 					-_maxSteeringAngle * Mathf.Deg2Rad,
 					_maxSteeringAngle * Mathf.Deg2Rad);
 
-				car.SteerinAngleRadians = Mathf.MoveTowards(car.SteerinAngleRadians, targetSteering, car.SteerinChangeSpeed * deltaTime.ToFloat());
+				car.SteerinAngleRadians = Mathf.MoveTowards(car.SteerinAngleRadians, targetSteering, car.SteerinChangeSpeed * deltaTime);
 			}
 		}
 	}

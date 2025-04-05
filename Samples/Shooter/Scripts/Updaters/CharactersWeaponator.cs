@@ -19,7 +19,7 @@ namespace Massive.Unity.Samples.Shooter
 			_world = serviceLocator.Find<World>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			var weapons = _world.DataSet<Weapon>();
 			var transforms = _world.DataSet<LocalTransform>();
@@ -30,12 +30,12 @@ namespace Massive.Unity.Samples.Shooter
 				ref var characterTransform = ref transforms.Get(entityId);
 
 				weaponState.Cooldown -= deltaTime;
-				if (weaponState.Cooldown > FP.Zero)
+				if (weaponState.Cooldown > 0f)
 				{
 					continue;
 				}
 
-				weaponState.Cooldown = _cooldown.ToFP();
+				weaponState.Cooldown = _cooldown;
 
 				var bulletId = _world.Create(new BulletState
 				{

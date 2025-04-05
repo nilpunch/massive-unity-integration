@@ -75,8 +75,8 @@ namespace Massive.Unity
 
 			if (_fixedTimeStep)
 			{
-				int targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
-				FP deltaTime = FP.One / _simulationFrequency;
+				var targetFrame = Mathf.RoundToInt(Time.time * _simulationFrequency);
+				var deltaTime = 1f / _simulationFrequency;
 
 				while (_currentFrame < targetFrame)
 				{
@@ -92,7 +92,7 @@ namespace Massive.Unity
 			{
 				foreach (var updateSystem in _updateSystems)
 				{
-					updateSystem.UpdateFrame(Time.deltaTime.ToFP());
+					updateSystem.UpdateFrame(Time.deltaTime);
 				}
 			}
 

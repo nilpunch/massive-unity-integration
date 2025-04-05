@@ -68,7 +68,7 @@ namespace Massive.Unity.Samples.Shooter
 			registry.SparseSet<TestState64<ushort, double, int>>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 		}
 	}

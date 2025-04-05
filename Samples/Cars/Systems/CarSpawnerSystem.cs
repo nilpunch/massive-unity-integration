@@ -17,7 +17,7 @@ namespace Massive.Unity.Samples.Cars
 			_world = serviceLocator.Find<World>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			if (_world.SparseSet<Car>().Count == _carsLimit)
 			{

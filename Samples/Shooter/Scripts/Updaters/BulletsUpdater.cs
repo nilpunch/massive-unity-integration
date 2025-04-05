@@ -12,19 +12,19 @@ namespace Massive.Unity.Samples.Shooter
 			_world = serviceLocator.Find<World>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			_world.View().ForEachExtra((_world, deltaTime),
-				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (World Registry, FP DeltaTime) args) =>
+				(int entityId, ref BulletState bullet, ref LocalTransform bulletTransform, (World Registry, float DeltaTime) args) =>
 				{
-					bullet.Lifetime -= args.DeltaTime.ToFloat();
+					bullet.Lifetime -= args.DeltaTime;
 					if (bullet.IsDestroyed)
 					{
 						args.Registry.Destroy(entityId);
 						return;
 					}
 
-					bulletTransform.Position += bullet.Velocity * args.DeltaTime.ToFloat();
+					bulletTransform.Position += bullet.Velocity * args.DeltaTime;
 				});
 		}
 

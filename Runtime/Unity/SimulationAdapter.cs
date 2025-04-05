@@ -19,7 +19,7 @@ namespace Massive.Unity
 		{
 			foreach (var system in Systems)
 			{
-				system.UpdateFrame(FP.One / _time.FPS);
+				system.UpdateFrame(1f / _time.FPS);
 			}
 		}
 	}

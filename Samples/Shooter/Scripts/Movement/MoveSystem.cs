@@ -18,7 +18,7 @@ namespace Massive.Unity.Samples.Shooter
 			_inputs = serviceLocator.Find<Inputs>();
 		}
 
-		public override void UpdateFrame(FP deltaTime)
+		public override void UpdateFrame(float deltaTime)
 		{
 			var transforms = _world.DataSet<LocalTransform>();
 			var players = _world.DataSet<Player>();
@@ -27,7 +27,7 @@ namespace Massive.Unity.Samples.Shooter
 				var clientId = players.Get(entity).ClientId;
 				var input = _inputs.Get<MoveInput>(clientId).FadeOut(_inputFadeOut);
 
-				transforms.Get(entity).Position += input.Direction * deltaTime.ToFloat() * _speed;
+				transforms.Get(entity).Position += input.Direction * deltaTime * _speed;
 			}
 		}
 	}
