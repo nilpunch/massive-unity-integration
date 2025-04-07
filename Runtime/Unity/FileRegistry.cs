@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using Massive.Serialization;
 using UnityEngine;
 using UnityEngine.Profiling;

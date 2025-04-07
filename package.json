@@ -1,15 +1,14 @@
 ﻿{
   "name": "massive-unity-integration",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "displayName": "Massive ECS for Unity",
   "unity": "2021.2",
   "description": "Deterministic prediction-rollback netcode library for Unity.",
   "dependencies":
   {
-    "massive-ecs": "https://github.com/nilpunch/massive-ecs",
-    "massive-netcode": "https://github.com/nilpunch/massive-netcode",
-    "massive-serialization": "https://github.com/nilpunch/massive-serialization",
-    "fixed-point": "https://github.com/nilpunch/fixed-point"
+    "massive-ecs": "https://github.com/nilpunch/massive-ecs#19.0.2",
+    "massive-netcode": "https://github.com/nilpunch/massive-netcode#0.2.0",
+    "massive-serialization": "https://github.com/nilpunch/massive-serialization#0.2.0"
   },
   "author": "nilpunch"
 }

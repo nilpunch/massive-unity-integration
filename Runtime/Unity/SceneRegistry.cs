@@ -1,7 +1,6 @@
 using System.Diagnostics;
 using System.Linq;
 using Massive.Netcode;
-using Mathematics.Fixed;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Time = UnityEngine.Time;

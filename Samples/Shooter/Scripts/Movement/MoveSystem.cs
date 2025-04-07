@@ -1,5 +1,4 @@
 ﻿using Massive.Netcode;
-using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter

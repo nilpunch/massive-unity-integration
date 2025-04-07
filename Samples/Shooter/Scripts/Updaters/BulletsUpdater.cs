@@ -1,5 +1,4 @@
-﻿using Mathematics.Fixed;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Massive.Unity.Samples.Shooter
 {

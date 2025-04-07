@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Massive.Netcode;
-using Mathematics.Fixed;
 
 namespace Massive.Unity
 {

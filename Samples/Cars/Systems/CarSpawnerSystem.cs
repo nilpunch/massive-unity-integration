@@ -1,4 +1,3 @@
-using Mathematics.Fixed;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Cars

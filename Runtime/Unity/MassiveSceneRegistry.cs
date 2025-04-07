@@ -12,7 +12,7 @@ namespace Massive.Unity
 		[SerializeField] private ViewDataBase _viewDataBase;
 		[SerializeField] private bool _synchronizeViews = true;
 
-		[SerializeField, Min(0)] private int _framesCapacity = 120;
+		[SerializeField, Min(0)] private int _framesCapacity = 24;
 		[SerializeField, Min(0)] private int _resimulations = 120;
 		[SerializeField, Min(1)] private int _simulationFrequency = 60;
 		[SerializeField, Min(1)] private int _saveEachNthTick = 5;
