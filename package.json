@@ -1,6 +1,6 @@
 ﻿{
   "name": "massive-unity-integration",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "displayName": "Massive ECS for Unity",
   "unity": "2021.2",
   "description": "Deterministic prediction-rollback netcode library for Unity.",
