@@ -1,0 +1,19 @@
+{
+    "name": "Massive.Unity.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cf2e24c64a0d02f4690b9be74f35390f",
+        "GUID:b44f81531abb7c044bad319f285fba1b"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
