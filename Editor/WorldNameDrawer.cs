@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace Massive.Unity.Editor
 {
-	[CustomPropertyDrawer(typeof(WorldNameAttribute))]
+	[CustomPropertyDrawer(typeof(WorldSelectorAttribute))]
 	public class WorldNameDrawer : PropertyDrawer
 	{
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
@@ -17,8 +17,7 @@ namespace Massive.Unity.Editor
 				return;
 			}
 
-			var worldNames = EditorCache.WorldNames;
-			if (worldNames.Length == 0)
+			if (EditorCache.WorldNames.Length == 0)
 			{
 				EditorGUI.LabelField(position, label.text, "<No Worlds>");
 				return;
@@ -27,20 +26,17 @@ namespace Massive.Unity.Editor
 			// Show mixed if multiedit and different values.
 			EditorGUI.showMixedValue = property.hasMultipleDifferentValues;
 
-			var currentIndex = Array.IndexOf(worldNames, property.stringValue);
-			if (currentIndex < 0)
-			{
-				currentIndex = 0;
-			}
+			var worldIndex = Array.BinarySearch(EditorCache.WorldNames, property.stringValue);
+			var worldFound = worldIndex >= 0;
 
 			// Draw label with short name.
 			var fieldRect = EditorGUI.PrefixLabel(position, label);
 
 			EditorGUI.BeginChangeCheck();
-			var selectedIndex = EditorGUI.Popup(fieldRect, currentIndex, worldNames);
+			var selectedIndex = EditorGUI.Popup(fieldRect, worldIndex, EditorCache.FormatedWorldNames);
 			if (EditorGUI.EndChangeCheck())
 			{
-				property.stringValue = worldNames[selectedIndex];
+				property.stringValue = EditorCache.WorldNames[selectedIndex];
 			}
 
 			EditorGUI.showMixedValue = false;
@@ -48,7 +44,11 @@ namespace Massive.Unity.Editor
 			// Overlay short name if not mixed.
 			if (!property.hasMultipleDifferentValues)
 			{
-				EditorGUI.LabelField(fieldRect, GetShortName(worldNames[selectedIndex]), EditorStyles.popup);
+				var displayText = worldFound
+					? GetShortName(EditorCache.WorldNames[selectedIndex])
+					: $"<Missing: {property.stringValue}>";
+
+				EditorGUI.LabelField(fieldRect, displayText, EditorStyles.popup);
 			}
 		}
 

@@ -16,6 +16,12 @@ namespace Massive.Unity
 		private static readonly FastList<World> s_worlds = new FastList<World>();
 		private static bool _warmedUpAll;
 
+		public static ReadOnlySpan<string> AllWorldsNames
+		{
+			[MethodImpl(MethodImplOptions.AggressiveInlining)]
+			get => s_worldTypeNames.ReadOnlySpan;
+		}
+
 		public static ReadOnlySpan<World> AllWorlds
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]

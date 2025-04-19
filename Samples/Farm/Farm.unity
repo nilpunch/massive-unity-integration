@@ -349,7 +349,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _worldTypeName: Massive.Unity.Samples.Logic
+  _world: Massive.Unity.Samples.Logic
+  _components:
+  - rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &938545825
 Transform:
   m_ObjectHideFlags: 0
@@ -394,7 +401,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _worldTypeName: Massive.Unity.Samples.Logic
+  _world: Massive.Unity.Samples.Logic
+  _components:
+  - rid: -2
+  references:
+    version: 2
+    RefIds:
+    - rid: -2
+      type: {class: , ns: , asm: }
 --- !u!4 &1835460055
 Transform:
   m_ObjectHideFlags: 0

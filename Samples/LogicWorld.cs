@@ -8,13 +8,4 @@ namespace Massive.Unity.Samples
 	public abstract class LogicWorld : World<Logic>
 	{
 	}
-
-	[WorldType]
-	public struct View
-	{
-	}
-
-	public abstract class ViewWorld : World<View>
-	{
-	}
 }
