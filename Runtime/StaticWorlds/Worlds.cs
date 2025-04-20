@@ -110,7 +110,7 @@ namespace Massive.Unity
 		internal static void Register(Type worldType, World world)
 		{
 			var worldTypeName = worldType.GetFullGenericName();
-			var worldIndex = s_worldTypeNames.BinarySearch(worldType.GetFullGenericName());
+			var worldIndex = s_worldTypeNames.BinarySearch(worldTypeName);
 			var insertionIndex = ~worldIndex;
 			s_worldTypeNames.Insert(insertionIndex, worldTypeName);
 			s_worlds.Insert(insertionIndex, world);

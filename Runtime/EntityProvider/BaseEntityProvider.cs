@@ -3,7 +3,7 @@
 namespace Massive.Unity
 {
 	[DisallowMultipleComponent]
-	public class BaseEntityProvider : MonoBehaviour
+	public abstract class BaseEntityProvider : MonoBehaviour
 	{
 		[SerializeField, WorldSelector] private string _world;
 
