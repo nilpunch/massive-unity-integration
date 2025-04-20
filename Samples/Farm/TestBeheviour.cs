@@ -6,5 +6,6 @@ namespace Massive.Unity.Samples.Farm
 	{
 		[SerializeField] private int[] _values;
 		[SerializeField] private Color _color;
+		[SerializeReference, ComponentSelector] private object _component;
 	}
 }

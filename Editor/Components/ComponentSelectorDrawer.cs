@@ -6,16 +6,35 @@ using UnityEngine;
 
 namespace Massive.Unity.Editor
 {
-	[CustomPropertyDrawer(typeof(ComponentPeekerAttribute), false)]
+	[CustomPropertyDrawer(typeof(ComponentSelectorAttribute), false)]
 	public class ComponentSelectorDrawer : PropertyDrawer
 	{
 		private const float PopupLeftPadding = 8f;
-		private const int FoldoutOffset = 5;
-		private const int WarningIconOffset = -9;
+
+		private const int FoldoutOffset = 3;
+		private const int WarningIconOffset = 17;
+
+		private const int FoldoutOffsetSingle = 14;
+		private const int WarningIconOffsetSingle = 17;
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			EditorGUI.BeginProperty(position, label, property);
+
+			var popupLeftPadding = PopupLeftPadding;
+
+			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
+
+			// Reserve label space only if not part of array.
+			if (!insideArray)
+			{
+				var labelContent = EditorGUIUtility.TrTextContent(label.text);
+				var labelSize = EditorStyles.label.CalcSize(labelContent);
+
+				var labelRect = new Rect(position.x, position.y, labelSize.x, EditorGUIUtility.singleLineHeight);
+				popupLeftPadding = labelSize.x + 18f;
+				EditorGUI.PrefixLabel(labelRect, label);
+			}
 
 			var lineHeight = EditorGUIUtility.singleLineHeight;
 			var y = position.y;
@@ -23,49 +42,55 @@ namespace Massive.Unity.Editor
 			var isTypeMixed = IsTypeMixed(property);
 
 			// Draw popup
-			var popupRect = new Rect(position.x + PopupLeftPadding, y, position.width - PopupLeftPadding, lineHeight);
+			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
 
 			var displayName = GetShortTypeName(property, isTypeMixed);
 			if (GUI.Button(popupRect, displayName, EditorStyles.popup))
 			{
-				var popup = new ComponentSelectorPopup(property.Copy(), position.width - PopupLeftPadding);
+				var popup = new ComponentSelectorPopup(property.Copy(), position.width - popupLeftPadding);
 				PopupWindow.Show(popupRect, popup);
 			}
 			EditorGUI.showMixedValue = false;
 
 			if (property.managedReferenceValue == null)
 			{
-				DrawWarningIcon("This component is null or missing. You must remove it or select new one.");
+				DrawWarningIcon("This component is null or missing.");
 				EditorGUI.EndProperty();
 				return;
 			}
 
+			var popupOffset = popupLeftPadding - (insideArray ? FoldoutOffset : FoldoutOffsetSingle);
 			if (!isTypeMixed && HasDuplicateType(property))
 			{
 				// Draw warning.
 				DrawWarningIcon("This component type is already added. Only one is allowed per entity.");
 			}
-			else if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
+			else
 			{
-				// Draw property.
-				var fieldRect = new Rect(position.x + FoldoutOffset, y, position.width - FoldoutOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
-				EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
-			}
-			else if (!isTypeMixed)
-			{
-				// Draw foldout.
-				var foldoutRect = new Rect(position.x + FoldoutOffset, y, position.width - FoldoutOffset, lineHeight);
-				property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
+				if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
+				{
+					// Draw property.
+					var fieldRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
+					EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
+				}
+				else if (!isTypeMixed)
+				{
+					// Draw foldout.
+					var foldoutRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, lineHeight);
+					property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
+				}
 			}
 
 			EditorGUI.EndProperty();
 
 			void DrawWarningIcon(string tooltip)
 			{
+				var iconOffset = popupLeftPadding - (insideArray ? WarningIconOffset : WarningIconOffsetSingle);
+
 				var icon = EditorGUIUtility.IconContent("console.warnicon");
 				icon.tooltip = tooltip;
-				var iconRect = new Rect(position.x + WarningIconOffset, y, lineHeight, lineHeight);
+				var iconRect = new Rect(position.x + iconOffset, y, lineHeight, lineHeight);
 				GUI.Label(iconRect, icon);
 			}
 		}
