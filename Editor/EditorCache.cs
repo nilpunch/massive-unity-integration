@@ -28,7 +28,7 @@ namespace Massive.Unity.Editor
 				if (s_formatedWorldNames == null || s_formatedWorldNames.Length != Worlds.AllWorldsNames.Length)
 				{
 					s_formatedWorldNames = Worlds.AllWorldsNames.ToArray();
-					for (int i = 0; i < s_formatedWorldNames.Length; i++)
+					for (var i = 0; i < s_formatedWorldNames.Length; i++)
 					{
 						var name = s_formatedWorldNames[i];
 						var lastDot = name.LastIndexOf('.');

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {
-	[Serializable]
+	[Serializable, Component]
 	public struct Position
 	{
 		public Vector3 Value;

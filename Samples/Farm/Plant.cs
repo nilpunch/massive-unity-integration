@@ -1,9 +1,11 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {
-	[Serializable]
+	[Serializable, Component]
 	public struct Plant
 	{
+		public string Name;
 	}
 }

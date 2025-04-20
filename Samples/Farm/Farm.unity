@@ -351,12 +351,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _world: Massive.Unity.Samples.Logic
   _components:
-  - rid: -2
+  - rid: 5313247468324126745
+  - rid: 5313247468324126746
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5313247468324126745
+      type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        Name: 
+    - rid: 5313247468324126746
+      type: {class: Position, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        Value: {x: 2.31, y: 0, z: 0}
 --- !u!4 &938545825
 Transform:
   m_ObjectHideFlags: 0
@@ -364,6 +371,96 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 938545823}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1370134555
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1370134557}
+  - component: {fileID: 1370134556}
+  m_Layer: 0
+  m_Name: Test
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1370134556
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370134555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf06965d9f346608b7c2440e54a63aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _values: 0000000001000000
+--- !u!4 &1370134557
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1370134555}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1420304609
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1420304611}
+  - component: {fileID: 1420304610}
+  m_Layer: 0
+  m_Name: Test (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1420304610
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420304609}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf06965d9f346608b7c2440e54a63aa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _values: 0200000001000000
+--- !u!4 &1420304611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1420304609}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -401,14 +498,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _world: Massive.Unity.Samples.Logic
+  _world: Massive.Unity.Samples.Visual
   _components:
-  - rid: -2
+  - rid: 5313247468324126744
+  - rid: 5313247468324126742
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 5313247468324126742
+      type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        Name: 
+    - rid: 5313247468324126744
+      type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        Name: Wasd
 --- !u!4 &1835460055
 Transform:
   m_ObjectHideFlags: 0
@@ -527,3 +631,5 @@ SceneRoots:
   - {fileID: 438797377}
   - {fileID: 1835460055}
   - {fileID: 938545825}
+  - {fileID: 1370134557}
+  - {fileID: 1420304611}

@@ -5,7 +5,8 @@ namespace Massive.Unity.Samples
 	{
 	}
 
-	public abstract class LogicWorld : World<Logic>
+	[WorldType]
+	public struct Visual
 	{
 	}
 }

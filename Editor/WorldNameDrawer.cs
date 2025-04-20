@@ -46,7 +46,9 @@ namespace Massive.Unity.Editor
 			{
 				var displayText = worldFound
 					? GetShortName(EditorCache.WorldNames[selectedIndex])
-					: $"<Missing: {property.stringValue}>";
+					: string.IsNullOrWhiteSpace(property.stringValue)
+						? $"<Missing>"
+						: $"<Missing: {property.stringValue}>";
 
 				EditorGUI.LabelField(fieldRect, displayText, EditorStyles.popup);
 			}
