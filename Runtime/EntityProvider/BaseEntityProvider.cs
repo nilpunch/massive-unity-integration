@@ -5,7 +5,7 @@ namespace Massive.Unity
 	[DisallowMultipleComponent]
 	public abstract class BaseEntityProvider : MonoBehaviour
 	{
-		[SerializeField, WorldSelector] private string _world;
+		[SerializeField, StaticWorldSelector] private string _world;
 
 		private World _cachedWorld;
 
@@ -15,7 +15,7 @@ namespace Massive.Unity
 			{
 				if (_cachedWorld == null)
 				{
-					Worlds.TryGetWorldByName(_world, out _cachedWorld);
+					StaticWorlds.TryGetWorldByName(_world, out _cachedWorld);
 				}
 
 				return _cachedWorld;
@@ -24,14 +24,7 @@ namespace Massive.Unity
 
 		protected virtual void Reset()
 		{
-			if (Worlds.AllWorlds.Length == 0)
-			{
-				_world = null;
-			}
-			else
-			{
-				Worlds.TryGetWorldName(Worlds.AllWorlds[0], out _world);
-			}
+			_world = StaticWorlds.WorldNames.Length == 0 ? null : StaticWorlds.WorldNames[0];
 		}
 	}
 }

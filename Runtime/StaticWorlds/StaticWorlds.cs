@@ -8,7 +8,7 @@ using Unity.IL2CPP.CompilerServices;
 namespace Massive.Unity
 {
 	[Il2CppEagerStaticClassConstruction]
-	public static class Worlds
+	public static class StaticWorlds
 	{
 		private static readonly Dictionary<Type, World> s_worldByType = new Dictionary<Type, World>();
 		private static readonly Dictionary<string, World> s_worldByTypeName = new Dictionary<string, World>();
@@ -16,13 +16,13 @@ namespace Massive.Unity
 		private static readonly FastList<World> s_worlds = new FastList<World>();
 		private static bool _warmedUpAll;
 
-		public static ReadOnlySpan<string> AllWorldsNames
+		public static ReadOnlySpan<string> WorldNames
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => s_worldTypeNames.ReadOnlySpan;
 		}
 
-		public static ReadOnlySpan<World> AllWorlds
+		public static ReadOnlySpan<World> Worlds
 		{
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get => s_worlds.ReadOnlySpan;
@@ -83,7 +83,7 @@ namespace Massive.Unity
 
 				foreach (var type in types)
 				{
-					if (type.IsDefined(typeof(WorldTypeAttribute), false))
+					if (type.IsDefined(typeof(StaticWorldTypeAttribute), false))
 					{
 						WarmupWorld(type);
 					}
@@ -96,7 +96,7 @@ namespace Massive.Unity
 		{
 			try
 			{
-				var concreteWorld = typeof(World<>).MakeGenericType(worldType);
+				var concreteWorld = typeof(StaticWorld<>).MakeGenericType(worldType);
 				RuntimeHelpers.RunClassConstructor(concreteWorld.TypeHandle);
 			}
 			catch

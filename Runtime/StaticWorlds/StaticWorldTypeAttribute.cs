@@ -3,7 +3,7 @@
 namespace Massive.Unity
 {
 	[AttributeUsage(AttributeTargets.Struct)]
-	public class WorldTypeAttribute : Attribute
+	public class StaticWorldTypeAttribute : Attribute
 	{
 		public readonly int PageSize;
 
@@ -13,7 +13,7 @@ namespace Massive.Unity
 
 		public readonly Packing PackingWhenIterating;
 
-		public WorldTypeAttribute(int pageSize = Constants.DefaultPageSize, bool storeEmptyTypesAsDataSets = false,
+		public StaticWorldTypeAttribute(int pageSize = Constants.DefaultPageSize, bool storeEmptyTypesAsDataSets = false,
 			bool fullStability = false, Packing packingWhenIterating = Packing.WithHoles)
 		{
 			PageSize = pageSize;

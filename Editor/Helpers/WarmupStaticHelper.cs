@@ -8,7 +8,7 @@ namespace Massive.Unity.Editor
 	{
 		static WarmupStaticHelper()
 		{
-			Worlds.WarmupAll();
+			StaticWorlds.WarmupAll();
 			Components.Warmup();
 		}
 	}

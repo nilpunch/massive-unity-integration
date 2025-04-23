@@ -1,6 +1,4 @@
 ﻿#if UNITY_EDITOR
-using System.Linq;
-
 namespace Massive.Unity.Editor
 {
 	internal static class EditorCache
@@ -12,9 +10,9 @@ namespace Massive.Unity.Editor
 		{
 			get
 			{
-				if (s_worldNames == null || s_worldNames.Length != Worlds.AllWorldsNames.Length)
+				if (s_worldNames == null || s_worldNames.Length != StaticWorlds.WorldNames.Length)
 				{
-					s_worldNames = Worlds.AllWorldsNames.ToArray();
+					s_worldNames = StaticWorlds.WorldNames.ToArray();
 				}
 
 				return s_worldNames;
@@ -25,9 +23,9 @@ namespace Massive.Unity.Editor
 		{
 			get
 			{
-				if (s_formatedWorldNames == null || s_formatedWorldNames.Length != Worlds.AllWorldsNames.Length)
+				if (s_formatedWorldNames == null || s_formatedWorldNames.Length != StaticWorlds.WorldNames.Length)
 				{
-					s_formatedWorldNames = Worlds.AllWorldsNames.ToArray();
+					s_formatedWorldNames = StaticWorlds.WorldNames.ToArray();
 					for (var i = 0; i < s_formatedWorldNames.Length; i++)
 					{
 						var name = s_formatedWorldNames[i];

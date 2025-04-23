@@ -16,7 +16,7 @@ namespace Massive.Unity.Editor
 		{
 			if (state == PlayModeStateChange.EnteredEditMode)
 			{
-				foreach (var world in Worlds.AllWorlds)
+				foreach (var world in StaticWorlds.Worlds)
 				{
 					world.Clear();
 				}

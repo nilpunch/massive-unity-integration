@@ -2,12 +2,12 @@
 
 namespace Massive.Unity
 {
-	internal static class WarmupStaticHelper
+	internal static class StaticWorldsWarmupHelper
 	{
 		[RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
 		private static void WarmupStaticWorlds()
 		{
-			Worlds.WarmupAll();
+			StaticWorlds.WarmupAll();
 		}
 	}
 }

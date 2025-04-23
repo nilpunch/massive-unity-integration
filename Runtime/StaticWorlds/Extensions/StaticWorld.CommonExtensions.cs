@@ -6,7 +6,7 @@ namespace Massive.Unity
 	[Il2CppSetOption(Option.NullChecks, false)]
 	[Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 	[Il2CppSetOption(Option.DivideByZeroChecks, false)]
-	public partial class World<TWorldType>
+	public partial class StaticWorld<TWorldType>
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static void Clear()

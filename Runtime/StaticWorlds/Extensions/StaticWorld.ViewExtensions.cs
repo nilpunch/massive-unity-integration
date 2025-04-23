@@ -6,21 +6,18 @@ namespace Massive.Unity
 	[Il2CppSetOption(Option.NullChecks, false)]
 	[Il2CppSetOption(Option.ArrayBoundsChecks, false)]
 	[Il2CppSetOption(Option.DivideByZeroChecks, false)]
-	public partial class World<TWorldType>
+	public partial class StaticWorld<TWorldType>
 	{
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Filter Filter<TInclude>()
-			where TInclude : IIncludeSelector, new()
+		public static View View()
 		{
-			return Instance.FilterRegistry.Get<TInclude, None>();
+			return new View(Instance, Instance.Config.PackingWhenIterating);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public static Filter Filter<TInclude, TExclude>()
-			where TInclude : IIncludeSelector, new()
-			where TExclude : IExcludeSelector, new()
+		public static View View(Packing packingWhenIterating)
 		{
-			return Instance.FilterRegistry.Get<TInclude, TExclude>();
+			return new View(Instance, packingWhenIterating);
 		}
 	}
 }

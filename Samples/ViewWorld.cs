@@ -1,4 +1,0 @@
-﻿namespace Massive.Unity.Samples
-{
-	
-}

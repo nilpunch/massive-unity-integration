@@ -1,6 +1,5 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -21,8 +20,9 @@ namespace Massive.Unity.Editor
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
-			var popupLeftPadding = PopupLeftPadding;
+			var propertyType = property.managedReferenceValue?.GetType();
 
+			var popupLeftPadding = PopupLeftPadding;
 			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
 
 			// Reserve label space only if not part of array.
@@ -41,11 +41,10 @@ namespace Massive.Unity.Editor
 
 			var isTypeMixed = IsTypeMixed(property);
 
-			// Draw popup
+			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-
-			var displayName = GetShortTypeName(property, isTypeMixed);
+			var displayName = GetShortTypeName(propertyType, isTypeMixed);
 			if (GUI.Button(popupRect, displayName, EditorStyles.popup))
 			{
 				var popup = new ComponentSelectorPopup(property.Copy(), position.width - popupLeftPadding);
@@ -53,6 +52,15 @@ namespace Massive.Unity.Editor
 			}
 			EditorGUI.showMixedValue = false;
 
+			// Check for null.
+			if (property.managedReferenceValue == null)
+			{
+				DrawWarningIcon("This component is null or missing.");
+				EditorGUI.EndProperty();
+				return;
+			}
+			
+			// Check for duplicates.
 			if (property.managedReferenceValue == null)
 			{
 				DrawWarningIcon("This component is null or missing.");
@@ -60,13 +68,16 @@ namespace Massive.Unity.Editor
 				return;
 			}
 
-			var popupOffset = popupLeftPadding - (insideArray ? FoldoutOffset : FoldoutOffsetSingle);
 			if (!isTypeMixed && HasDuplicateType(property))
 			{
-				// Draw warning.
 				DrawWarningIcon("This component type is already added. Only one is allowed per entity.");
+				EditorGUI.EndProperty();
+				return;
 			}
-			else
+
+			// Draw the property.
+			var popupOffset = popupLeftPadding - (insideArray ? FoldoutOffset : FoldoutOffsetSingle);
+			if (ReflectionUtils.HasAnyFields(propertyType))
 			{
 				if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
 				{
@@ -81,7 +92,6 @@ namespace Massive.Unity.Editor
 					property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
 				}
 			}
-
 			EditorGUI.EndProperty();
 
 			void DrawWarningIcon(string tooltip)
@@ -105,21 +115,19 @@ namespace Massive.Unity.Editor
 			return height;
 		}
 
-		private static string GetShortTypeName(SerializedProperty property, bool isTypeMixed)
+		private static string GetShortTypeName(Type propertyType, bool isTypeMixed)
 		{
 			if (isTypeMixed)
 			{
 				return "\u2014"; // Dash.
 			}
 
-			if (property.managedReferenceValue == null)
+			if (propertyType == null)
 			{
 				return "<Select Component>";
 			}
 
-			var fullName = property.managedReferenceValue.GetType().FullName;
-			var lastDot = fullName.LastIndexOf('.');
-			return lastDot >= 0 ? fullName.Substring(lastDot + 1) : fullName;
+			return Components.GetShortName(propertyType);
 		}
 
 		public static bool IsTypeMixed(SerializedProperty property)

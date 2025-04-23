@@ -4,14 +4,14 @@ using Unity.IL2CPP.CompilerServices;
 namespace Massive.Unity
 {
 	[Il2CppEagerStaticClassConstruction]
-	public partial class World<TWorldType>
+	public partial class StaticWorld<TWorldType>
 	{
 		// ReSharper disable once StaticMemberInGenericType
 		public static readonly World Instance;
 
-		static World()
+		static StaticWorld()
 		{
-			if (Attribute.GetCustomAttribute(typeof(TWorldType), typeof(WorldTypeAttribute)) is WorldTypeAttribute worldAttribute)
+			if (Attribute.GetCustomAttribute(typeof(TWorldType), typeof(StaticWorldTypeAttribute)) is StaticWorldTypeAttribute worldAttribute)
 			{
 				Instance = new World(new WorldConfig(
 					worldAttribute.PageSize,
@@ -24,7 +24,7 @@ namespace Massive.Unity
 				Instance = new World(new WorldConfig());
 			}
 
-			Worlds.Register(typeof(TWorldType), Instance);
+			StaticWorlds.Register(typeof(TWorldType), Instance);
 		}
 	}
 }
