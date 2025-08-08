@@ -13,7 +13,7 @@ namespace Massive.Unity.Editor
 		private const int FoldoutOffset = 3;
 		private const int WarningIconOffset = 17;
 
-		private const int FoldoutOffsetSingle = 14;
+		private const int FoldoutOffsetSingle = 2;
 		private const int WarningIconOffsetSingle = 17;
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

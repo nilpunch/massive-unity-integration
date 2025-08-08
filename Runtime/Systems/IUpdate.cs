@@ -1,6 +1,6 @@
 ﻿namespace Massive.Unity
 {
-	public interface IUpdate : ISystem
+	public interface IUpdate
 	{
 		void Update();
 	}

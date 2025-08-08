@@ -8,16 +8,12 @@ namespace Massive.Unity
 	{
 		[SerializeField] private ScriptableSystem[] _scriptableSystems;
 
-		public Feature CreateFeature(World world)
+		public void PopulateFeature(Feature feature)
 		{
-			var feature = new Feature(world);
-
 			foreach (var scriptableSystem in _scriptableSystems)
 			{
 				feature.AddSystem(scriptableSystem);
 			}
-
-			return feature;
 		}
 	}
 }

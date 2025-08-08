@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Massive.Unity
@@ -14,7 +15,7 @@ namespace Massive.Unity
 
 			foreach (var component in _components)
 			{
-				var sparseSet = World.SetRegistry.GetReflected(component.GetType());
+				var sparseSet = World.Sets.GetReflected(component.GetType());
 				sparseSet.Add(i);
 				if (sparseSet is IDataSet dataSet)
 				{

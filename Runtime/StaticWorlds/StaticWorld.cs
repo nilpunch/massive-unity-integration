@@ -4,7 +4,7 @@ using Unity.IL2CPP.CompilerServices;
 namespace Massive.Unity
 {
 	[Il2CppEagerStaticClassConstruction]
-	public partial class StaticWorld<TWorldType>
+	public class StaticWorld<TWorldType>
 	{
 		// ReSharper disable once StaticMemberInGenericType
 		public static readonly World Instance;

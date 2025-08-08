@@ -3,19 +3,19 @@
 	public class Feature
 	{
 		private readonly FastList<IInitialize> _initializeSystems = new FastList<IInitialize>();
-		private readonly FastList<ICleanup> _cleanupSystems = new FastList<ICleanup>();
 		private readonly FastList<IUpdate> _updateSystems = new FastList<IUpdate>();
+		private readonly FastList<ICleanup> _cleanupSystems = new FastList<ICleanup>();
 
-		private readonly World _world;
+		public World World { get; }
 
 		public Feature(World world)
 		{
-			_world = world;
+			World = world;
 		}
 
 		public void AddSystem(ISystem system)
 		{
-			system.World = _world;
+			system.World = World;
 
 			if (system is IInitialize initializeSystem)
 			{
@@ -29,6 +29,8 @@
 			{
 				_cleanupSystems.Add(cleanupSystem);
 			}
+
+			OnSystemAdded(system);
 		}
 
 		public void Initialize()
@@ -53,6 +55,10 @@
 			{
 				cleanupSystem.Cleanup();
 			}
+		}
+
+		protected virtual void OnSystemAdded(ISystem system)
+		{
 		}
 	}
 }

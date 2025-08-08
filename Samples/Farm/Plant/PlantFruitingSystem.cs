@@ -2,12 +2,12 @@
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class PlantGrowthFeature : Feature
+	public class PlantGrowthFeatureFactory : FeatureFactory
 	{
-		public PlantGrowthFeature(World world) : base(world)
+		public PlantGrowthFeatureFactory()
 		{
-			AddSystem(new SeedGrowingSystem());
-			AddSystem(new PlantFruitingSystem());
+			AddNew<SeedGrowingSystem>();
+			AddNew<PlantFruitingSystem>();
 		}
 	}
 
