@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Massive.QoL;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {
@@ -11,14 +12,14 @@ namespace Massive.Unity.Samples.Farm
 		}
 	}
 
-	public class PlantFruitingSystem : System, IUpdate
+	public class PlantFruitingSystem : QoL.System, IUpdate, IDrawGizmos
 	{
 		public void Update()
 		{
 			var plants = World.DataSet<Plant>();
 			var matures = World.DataSet<Mature>();
 
-			foreach (var i in View.Include<Plant, Mature>())
+			foreach (var i in World.Include<Plant, Mature>())
 			{
 				ref var plant = ref plants.Get(i);
 				ref var mature = ref matures.Get(i);
@@ -31,6 +32,11 @@ namespace Massive.Unity.Samples.Farm
 					mature.Fruits += 1;
 				}
 			}
+		}
+
+		public void OnDrawGizmos()
+		{
+			
 		}
 	}
 }

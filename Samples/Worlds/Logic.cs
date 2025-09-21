@@ -1,3 +1,5 @@
+using Massive.QoL;
+
 namespace Massive.Unity.Samples
 {
 	[StaticWorldType]

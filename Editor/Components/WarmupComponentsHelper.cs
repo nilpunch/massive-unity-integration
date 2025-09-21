@@ -4,11 +4,10 @@ using UnityEditor;
 namespace Massive.Unity.Editor
 {
 	[InitializeOnLoad]
-	internal static class WarmupStaticHelper
+	internal static class WarmupComponentsHelper
 	{
-		static WarmupStaticHelper()
+		static WarmupComponentsHelper()
 		{
-			StaticWorlds.WarmupAll();
 			Components.Warmup();
 		}
 	}

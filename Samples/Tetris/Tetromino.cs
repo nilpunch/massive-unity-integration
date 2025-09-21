@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Massive.QoL;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Tetris
 {
@@ -19,6 +20,7 @@ namespace Massive.Unity.Samples.Tetris
 		private DataSet<Tetromino> _tetrominos;
 		private AutoAllocator<Block> _blocks;
 		private World _world;
+		private Feature _feature;
 
 		public void Initialize(World world)
 		{
@@ -48,10 +50,12 @@ namespace Massive.Unity.Samples.Tetris
 		}
 	}
 
-	public struct FallSystem
+	public struct FallSystem : IUpdate
 	{
 		private AutoAllocator<Block> _blocks;
 		private DataSet<Tetromino> _tetrominos;
+
+		public World World { get; set; }
 
 		public void Initialize(World world)
 		{
@@ -85,15 +89,14 @@ namespace Massive.Unity.Samples.Tetris
 		}
 	}
 
-	public struct DestroyTetrominosSystem
+	public struct DestroyTetrominosSystem : IUpdate
 	{
 		private DataSet<Tetromino> _tetrominos;
 		private AutoAllocator<Block> _blocks;
-		private World _world;
 
 		public void Initialize(World world)
 		{
-			_world = world;
+			World = world;
 			_tetrominos = world.DataSet<Tetromino>();
 			_blocks = world.AutoAllocator<Block>();
 		}
@@ -106,8 +109,10 @@ namespace Massive.Unity.Samples.Tetris
 				//
 				// _blocks.Free(tetromino.Shape);
 
-				_world.Destroy(id);
+				World.Destroy(id);
 			}
 		}
+
+		public World World { get; set; }
 	}
 }

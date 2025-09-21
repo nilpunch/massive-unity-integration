@@ -1,4 +1,4 @@
-﻿using System.Runtime.CompilerServices;
+﻿using Massive.QoL;
 using UnityEngine;
 
 namespace Massive.Unity
@@ -6,11 +6,5 @@ namespace Massive.Unity
 	public abstract class ScriptableSystem : ScriptableObject, ISystem
 	{
 		public World World { get; set; }
-
-		public View View
-		{
-			[MethodImpl(MethodImplOptions.AggressiveInlining)]
-			get => World.View();
-		}
 	}
 }

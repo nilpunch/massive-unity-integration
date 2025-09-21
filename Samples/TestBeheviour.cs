@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Massive.QoL;
+using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {

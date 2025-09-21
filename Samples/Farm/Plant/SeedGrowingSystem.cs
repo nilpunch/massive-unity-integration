@@ -1,8 +1,10 @@
-﻿using UnityEngine;
+﻿using Massive.QoL;
+using UnityEngine;
+using NotImplementedException = System.NotImplementedException;
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class SeedGrowingSystem : System, IUpdate
+	public class SeedGrowingSystem : QoL.System, IUpdate, IInitialize
 	{
 		public void Update()
 		{
@@ -10,7 +12,7 @@ namespace Massive.Unity.Samples.Farm
 			var seeds = World.DataSet<Seed>();
 			var matures = World.DataSet<Mature>();
 			
-			foreach (var i in View.Include<Plant, Seed>())
+			foreach (var i in World.Include<Plant, Seed>())
 			{
 				ref var plant = ref plants.Get(i);
 				ref var seed = ref seeds.Get(i);
@@ -23,6 +25,11 @@ namespace Massive.Unity.Samples.Farm
 					matures.Add(i);
 				}
 			}
+		}
+
+		public void Initialize()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
