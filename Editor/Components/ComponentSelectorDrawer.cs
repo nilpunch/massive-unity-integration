@@ -9,40 +9,26 @@ namespace Massive.Unity.Editor
 	[CustomPropertyDrawer(typeof(ComponentSelectorAttribute), false)]
 	public class ComponentSelectorDrawer : PropertyDrawer
 	{
-		private const float PopupLeftPadding = 8f;
-
-		private const int WarningIconOffset = 17;
-
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
 			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
-
-			var popupLeftPadding = PopupLeftPadding;
-			var lineHeight = EditorGUIUtility.singleLineHeight;
-			var y = position.y;
-			if (!insideArray)
-			{
-				var labelContent = EditorGUIUtility.TrTextContent(label.text);
-				var labelSize = EditorStyles.label.CalcSize(labelContent);
-				popupLeftPadding = labelSize.x + 18f;
-			}
 
 			CollectPresentTypes(property);
 
 			var optionalLabel = insideArray ? GUIContent.none : label;
 			if (property.managedReferenceValue == null)
 			{
-				SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
-				DrawWarningIcon("This component is null or missing.");
+				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
+				EditorUtils.DrawWarningIcon(iconRect, "This component is null or missing.");
 				return;
 			}
 
 			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
-			
+
 			if (!isTypeMixed && HasDuplicateType(property))
 			{
-				SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
-				DrawWarningIcon("This component type is already added. Only one is allowed per entity.");
+				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
+				EditorUtils.DrawWarningIcon(iconRect, "This component type is already added. Only one is allowed per entity.");
 				return;
 			}
 
@@ -51,16 +37,6 @@ namespace Massive.Unity.Editor
 			bool ComponentTypeFilter(Type type)
 			{
 				return type.IsDefined(typeof(ComponentAttribute), false) && !_presentTypes.Contains(type);
-			}
-
-			void DrawWarningIcon(string tooltip)
-			{
-				var iconOffset = popupLeftPadding - WarningIconOffset;
-
-				var icon = EditorGUIUtility.IconContent("console.warnicon");
-				icon.tooltip = tooltip;
-				var iconRect = new Rect(position.x + iconOffset, y, lineHeight, lineHeight);
-				GUI.Label(iconRect, icon);
 			}
 		}
 
@@ -109,29 +85,35 @@ namespace Massive.Unity.Editor
 
 		private static HashSet<Type> _presentTypes = new HashSet<Type>();
 
-		public static void CollectPresentTypes(SerializedProperty elementProperty)
+		public static void CollectPresentTypes(SerializedProperty listOrValueProperty)
 		{
 			_presentTypes.Clear();
-			if (elementProperty == null || elementProperty.managedReferenceValue == null)
-			{
-				return;
-			}
 
-			_presentTypes.Add(elementProperty.managedReferenceValue.GetType());
+			var path = listOrValueProperty.propertyPath;
 
-			var listProperty = SerializedPropertyUtils.GetOwningList(elementProperty);
-			if (listProperty == null || !listProperty.isArray)
+			foreach (var target in listOrValueProperty.serializedObject.targetObjects)
 			{
-				return;
-			}
-			
-			for (int i = 0; i < listProperty.arraySize; i++)
-			{
-				var sibling = listProperty.GetArrayElementAtIndex(i);
+				var so = new SerializedObject(target);
+				var property = so.FindProperty(path);
 
-				if (sibling.managedReferenceValue != null)
+				var listProperty = SerializedPropertyUtils.GetOwningList(property);
+				if (listProperty != null && listProperty.isArray)
 				{
-					_presentTypes.Add(sibling.managedReferenceValue.GetType());
+					for (int i = 0; i < listProperty.arraySize; i++)
+					{
+						var sibling = listProperty.GetArrayElementAtIndex(i);
+
+						if (sibling.managedReferenceValue != null)
+						{
+							_presentTypes.Add(sibling.managedReferenceValue.GetType());
+						}
+					}
+					continue;
+				}
+
+				if (property != null && property.managedReferenceValue != null)
+				{
+					_presentTypes.Add(property.managedReferenceValue.GetType());
 				}
 			}
 		}

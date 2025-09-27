@@ -12,8 +12,12 @@ namespace Massive.Unity.Editor
 	{
 		private const float PopupLeftPadding = 8f;
 		private const int FoldoutOffsetSingle = 2;
+		private const int IconOffset = 17;
 
-		public static void DrawPropertyWithFoldout(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		/// <summary>
+		/// Returns the icon rect for additional indication.
+		/// </summary>
+		public static Rect DrawPropertyWithFoldout(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
@@ -46,7 +50,7 @@ namespace Massive.Unity.Editor
 			if (property.managedReferenceValue == null)
 			{
 				EditorGUI.EndProperty();
-				return;
+				return new Rect(position.x + popupLeftPadding - IconOffset, position.y, lineHeight, lineHeight);
 			}
 
 			// Draw the property.
@@ -67,9 +71,14 @@ namespace Massive.Unity.Editor
 				}
 			}
 			EditorGUI.EndProperty();
+
+			return new Rect(position.x + popupLeftPadding - IconOffset, position.y, lineHeight, lineHeight);
 		}
-		
-		public static void DrawPropertySelectorOnly(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+
+		/// <summary>
+		/// Returns the icon rect for additional indication.
+		/// </summary>
+		public static Rect DrawPropertySelectorOnly(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
@@ -86,19 +95,20 @@ namespace Massive.Unity.Editor
 			}
 
 			var lineHeight = EditorGUIUtility.singleLineHeight;
-			var y = position.y;
 
 			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
 
 			// Draw popup.
-			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
+			var popupRect = new Rect(position.x + popupLeftPadding, position.y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
 			SerializeReferenceGui.DrawTypeSelector(popupRect, property, typeMatch, nullOptionText);
 			EditorGUI.showMixedValue = false;
 
 			EditorGUI.EndProperty();
+
+			return new Rect(position.x + popupLeftPadding - IconOffset, position.y, lineHeight, lineHeight);
 		}
-		
+
 		public static float GetHeightWithFoldout(SerializedProperty property)
 		{
 			var height = EditorGUIUtility.singleLineHeight;
@@ -112,7 +122,7 @@ namespace Massive.Unity.Editor
 		public static void DrawTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
 		{
 			var propertyType = property.managedReferenceValue?.GetType();
-			var typeName = GetShortTypeName(propertyType);
+			var typeName = propertyType == null ? nullOptionText : TypeUtils.GetShortName(propertyType);
 			var typeNameContent = new GUIContent(typeName);
 
 			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
@@ -142,7 +152,7 @@ namespace Massive.Unity.Editor
 				_property = property;
 				_typeMatch = typeMatch;
 				_nullOptionText = nullOptionText;
-				minimumSize = new Vector2(0, 30);
+				minimumSize = new Vector2(0, 60);
 			}
 
 			protected override AdvancedDropdownItem BuildRoot()
@@ -258,7 +268,7 @@ namespace Massive.Unity.Editor
 				private readonly GUIContent NamespaceContent;
 
 				public ReferenceTypeItem(Type type, Texture2D preview = null, string nullOptionText = "<Select>")
-					: base(string.Empty, GetFullTypeName(type))
+					: base(string.Empty, type == null ? string.Empty : TypeUtils.GetFullName(type))
 				{
 					Type = type;
 					icon = preview;
@@ -295,26 +305,6 @@ namespace Massive.Unity.Editor
 					}
 				}
 			}
-		}
-
-		private static string GetShortTypeName(Type propertyType)
-		{
-			if (propertyType == null)
-			{
-				return "<Select Component>";
-			}
-
-			return TypeUtils.GetShortName(propertyType);
-		}
-
-		private static string GetFullTypeName(Type propertyType)
-		{
-			if (propertyType == null)
-			{
-				return "<Select Component>";
-			}
-
-			return TypeUtils.GetFullName(propertyType);
 		}
 	}
 }
