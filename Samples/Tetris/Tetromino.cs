@@ -20,7 +20,7 @@ namespace Massive.Unity.Samples.Tetris
 		private DataSet<Tetromino> _tetrominos;
 		private AutoAllocator<Block> _blocks;
 		private World _world;
-		private Feature _feature;
+		private Systems _systems;
 
 		public void Initialize(World world)
 		{

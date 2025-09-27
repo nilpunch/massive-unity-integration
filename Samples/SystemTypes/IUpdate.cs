@@ -2,10 +2,10 @@
 
 namespace Massive.Unity
 {
-	public interface IUpdate : IRunMethod<IUpdate>
+	public interface IUpdate : ISystemMethod<IUpdate>
 	{
 		void Update();
 
-		void IRunMethod<IUpdate>.Run() => Update();
+		void ISystemMethod<IUpdate>.Run() => Update();
 	}
 }

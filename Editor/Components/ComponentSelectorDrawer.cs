@@ -44,12 +44,14 @@ namespace Massive.Unity.Editor
 			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			var displayName = GetShortTypeName(propertyType, isTypeMixed);
-			if (GUI.Button(popupRect, displayName, EditorStyles.popup))
-			{
-				var popup = new ComponentSelectorPopup(property.Copy(), position.width - popupLeftPadding);
-				PopupWindow.Show(popupRect, popup);
-			}
+			ComponentsGui.DrawTypeSelector(popupRect, property);
+
+			// var displayName = GetShortTypeName(propertyType, isTypeMixed);
+			// if (GUI.Button(popupRect, displayName, EditorStyles.popup))
+			// {
+			// 	var popup = new ComponentSelectorPopup(property.Copy(), position.width - popupLeftPadding);
+			// 	PopupWindow.Show(popupRect, popup);
+			// }
 			EditorGUI.showMixedValue = false;
 
 			// Check for null.

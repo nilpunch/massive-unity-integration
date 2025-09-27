@@ -3,16 +3,16 @@ using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class PlantGrowthFeatureFactory : FeatureFactory
+	public class PlantGrowthSystemsBuilder : SystemsBuilder
 	{
-		public PlantGrowthFeatureFactory()
+		public PlantGrowthSystemsBuilder()
 		{
-			AddNew<SeedGrowingSystem>();
-			AddNew<PlantFruitingSystem>();
+			New<SeedGrowingSystem>();
+			New<PlantFruitingSystem>();
 		}
 	}
 
-	public class PlantFruitingSystem : QoL.System, IUpdate, IDrawGizmos
+	public class PlantFruitingSystem : QoL.SystemBase, IUpdate, IDrawGizmos
 	{
 		public void Update()
 		{

@@ -2,10 +2,10 @@
 
 namespace Massive.Unity
 {
-	public interface ICleanup : IRunMethod<ICleanup>
+	public interface ICleanup : ISystemMethod<ICleanup>
 	{
 		void Cleanup();
 
-		void IRunMethod<ICleanup>.Run() => Cleanup();
+		void ISystemMethod<ICleanup>.Run() => Cleanup();
 	}
 }

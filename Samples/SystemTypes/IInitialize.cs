@@ -2,10 +2,10 @@
 
 namespace Massive.Unity
 {
-	public interface IInitialize : IRunMethod<IInitialize>
+	public interface IInitialize : ISystemMethod<IInitialize>
 	{
 		void Initialize();
 
-		void IRunMethod<IInitialize>.Run() => Initialize();
+		void ISystemMethod<IInitialize>.Run() => Initialize();
 	}
 }

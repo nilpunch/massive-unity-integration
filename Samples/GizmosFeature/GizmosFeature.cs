@@ -2,10 +2,10 @@
 
 namespace Massive.Unity.Samples.Farm
 {
-	public interface IDrawGizmos : IRunMethod<IDrawGizmos>
+	public interface IDrawGizmos : ISystemMethod<IDrawGizmos>
 	{
 		void OnDrawGizmos();
 
-		void IRunMethod<IDrawGizmos>.Run() => OnDrawGizmos();
+		void ISystemMethod<IDrawGizmos>.Run() => OnDrawGizmos();
 	}
 }

@@ -56,7 +56,7 @@ namespace Massive.Unity.Editor
 
 				foreach (var type in types)
 				{
-					if ((type.IsValueType || type.IsClass)
+					if ((type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null)
 						&& type.IsDefined(typeof(SerializableAttribute), false)
 						&& type.IsDefined(typeof(ComponentAttribute), false)
 						&& !type.Name.Contains("<")
