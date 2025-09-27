@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -10,89 +11,51 @@ namespace Massive.Unity.Editor
 	{
 		private const float PopupLeftPadding = 8f;
 
-		private const int FoldoutOffset = 3;
 		private const int WarningIconOffset = 17;
-
-		private const int FoldoutOffsetSingle = 2;
-		private const int WarningIconOffsetSingle = 17;
 
 		public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
 		{
-			EditorGUI.BeginProperty(position, label, property);
-
-			var propertyType = property.managedReferenceValue?.GetType();
-
-			var popupLeftPadding = PopupLeftPadding;
 			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
 
-			// Reserve label space only if not part of array.
+			var popupLeftPadding = PopupLeftPadding;
+			var lineHeight = EditorGUIUtility.singleLineHeight;
+			var y = position.y;
 			if (!insideArray)
 			{
 				var labelContent = EditorGUIUtility.TrTextContent(label.text);
 				var labelSize = EditorStyles.label.CalcSize(labelContent);
-
-				var labelRect = new Rect(position.x, position.y, labelSize.x, EditorGUIUtility.singleLineHeight);
 				popupLeftPadding = labelSize.x + 18f;
-				EditorGUI.PrefixLabel(labelRect, label);
 			}
 
-			var lineHeight = EditorGUIUtility.singleLineHeight;
-			var y = position.y;
+			CollectPresentTypes(property);
 
-			var isTypeMixed = IsTypeMixed(property);
-
-			// Draw popup.
-			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
-			EditorGUI.showMixedValue = isTypeMixed;
-			SerializeReferenceGui.DrawTypeSelector(popupRect, property,
-				type => type.IsDefined(typeof(ComponentAttribute), false));
-			EditorGUI.showMixedValue = false;
-
-			// Check for null.
+			var optionalLabel = insideArray ? GUIContent.none : label;
 			if (property.managedReferenceValue == null)
 			{
+				SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
 				DrawWarningIcon("This component is null or missing.");
-				EditorGUI.EndProperty();
 				return;
 			}
+
+			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
 			
-			// Check for duplicates.
-			if (property.managedReferenceValue == null)
-			{
-				DrawWarningIcon("This component is null or missing.");
-				EditorGUI.EndProperty();
-				return;
-			}
-
 			if (!isTypeMixed && HasDuplicateType(property))
 			{
+				SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
 				DrawWarningIcon("This component type is already added. Only one is allowed per entity.");
-				EditorGUI.EndProperty();
 				return;
 			}
 
-			// Draw the property.
-			var popupOffset = popupLeftPadding - (insideArray ? FoldoutOffset : FoldoutOffsetSingle);
-			if (ReflectionUtils.HasAnyFields(propertyType))
+			SerializeReferenceGui.DrawPropertyWithFoldout(position, optionalLabel, property, ComponentTypeFilter);
+
+			bool ComponentTypeFilter(Type type)
 			{
-				if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
-				{
-					// Draw property.
-					var fieldRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
-					EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
-				}
-				else if (!isTypeMixed)
-				{
-					// Draw foldout.
-					var foldoutRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, lineHeight);
-					property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
-				}
+				return type.IsDefined(typeof(ComponentAttribute), false) && !_presentTypes.Contains(type);
 			}
-			EditorGUI.EndProperty();
 
 			void DrawWarningIcon(string tooltip)
 			{
-				var iconOffset = popupLeftPadding - (insideArray ? WarningIconOffset : WarningIconOffsetSingle);
+				var iconOffset = popupLeftPadding - WarningIconOffset;
 
 				var icon = EditorGUIUtility.IconContent("console.warnicon");
 				icon.tooltip = tooltip;
@@ -104,66 +67,11 @@ namespace Massive.Unity.Editor
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
 			var height = EditorGUIUtility.singleLineHeight;
-			if (!IsTypeMixed(property) && !HasDuplicateType(property) && property.managedReferenceValue != null)
+			if (!SerializedPropertyUtils.IsTypeMixed(property) && !HasDuplicateType(property) && property.managedReferenceValue != null)
 			{
 				height = EditorGUI.GetPropertyHeight(property, true);
 			}
 			return height;
-		}
-
-		private static string GetShortTypeName(Type propertyType, bool isTypeMixed)
-		{
-			if (isTypeMixed)
-			{
-				return "\u2014"; // Dash.
-			}
-
-			if (propertyType == null)
-			{
-				return "<Select Component>";
-			}
-
-			return TypeUtils.GetShortName(propertyType);
-		}
-
-		public static bool IsTypeMixed(SerializedProperty property)
-		{
-			var path = property.propertyPath;
-			Type firstType = null;
-			var initialized = false;
-
-			foreach (var target in property.serializedObject.targetObjects)
-			{
-				var so = new SerializedObject(target);
-				var p = so.FindProperty(path);
-				var value = p.managedReferenceValue;
-
-				if (value == null)
-				{
-					if (initialized && firstType != null)
-					{
-						return true;
-					}
-
-					firstType = null;
-					initialized = true;
-					continue;
-				}
-
-				var type = value.GetType();
-
-				if (!initialized)
-				{
-					firstType = type;
-					initialized = true;
-				}
-				else if (type != firstType)
-				{
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		public static bool HasDuplicateType(SerializedProperty elementProperty)
@@ -197,6 +105,35 @@ namespace Massive.Unity.Editor
 			}
 
 			return false;
+		}
+
+		private static HashSet<Type> _presentTypes = new HashSet<Type>();
+
+		public static void CollectPresentTypes(SerializedProperty elementProperty)
+		{
+			_presentTypes.Clear();
+			if (elementProperty == null || elementProperty.managedReferenceValue == null)
+			{
+				return;
+			}
+
+			_presentTypes.Add(elementProperty.managedReferenceValue.GetType());
+
+			var listProperty = SerializedPropertyUtils.GetOwningList(elementProperty);
+			if (listProperty == null || !listProperty.isArray)
+			{
+				return;
+			}
+			
+			for (int i = 0; i < listProperty.arraySize; i++)
+			{
+				var sibling = listProperty.GetArrayElementAtIndex(i);
+
+				if (sibling.managedReferenceValue != null)
+				{
+					_presentTypes.Add(sibling.managedReferenceValue.GetType());
+				}
+			}
 		}
 	}
 }

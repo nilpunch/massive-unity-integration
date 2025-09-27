@@ -10,6 +10,105 @@ namespace Massive.Unity.Editor
 {
 	public static class SerializeReferenceGui
 	{
+		private const float PopupLeftPadding = 8f;
+		private const int FoldoutOffsetSingle = 2;
+
+		public static void DrawPropertyWithFoldout(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		{
+			EditorGUI.BeginProperty(position, label, property);
+
+			var propertyType = property.managedReferenceValue?.GetType();
+
+			var popupLeftPadding = PopupLeftPadding;
+
+			if (!string.IsNullOrWhiteSpace(label.text))
+			{
+				var labelContent = EditorGUIUtility.TrTextContent(label.text);
+				var labelSize = EditorStyles.label.CalcSize(labelContent);
+
+				var labelRect = new Rect(position.x, position.y, labelSize.x, EditorGUIUtility.singleLineHeight);
+				popupLeftPadding = labelSize.x + 18f;
+				EditorGUI.PrefixLabel(labelRect, label);
+			}
+
+			var lineHeight = EditorGUIUtility.singleLineHeight;
+			var y = position.y;
+
+			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
+
+			// Draw popup.
+			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
+			EditorGUI.showMixedValue = isTypeMixed;
+			SerializeReferenceGui.DrawTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			EditorGUI.showMixedValue = false;
+
+			// Check for null.
+			if (property.managedReferenceValue == null)
+			{
+				EditorGUI.EndProperty();
+				return;
+			}
+
+			// Draw the property.
+			var popupOffset = popupLeftPadding - FoldoutOffsetSingle;
+			if (ReflectionUtils.HasAnyFields(propertyType))
+			{
+				if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
+				{
+					// Draw property.
+					var fieldRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
+					EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
+				}
+				else if (!isTypeMixed)
+				{
+					// Draw foldout.
+					var foldoutRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, lineHeight);
+					property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
+				}
+			}
+			EditorGUI.EndProperty();
+		}
+		
+		public static void DrawPropertySelectorOnly(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		{
+			EditorGUI.BeginProperty(position, label, property);
+
+			var popupLeftPadding = PopupLeftPadding;
+
+			if (!string.IsNullOrWhiteSpace(label.text))
+			{
+				var labelContent = EditorGUIUtility.TrTextContent(label.text);
+				var labelSize = EditorStyles.label.CalcSize(labelContent);
+
+				var labelRect = new Rect(position.x, position.y, labelSize.x, EditorGUIUtility.singleLineHeight);
+				popupLeftPadding = labelSize.x + 18f;
+				EditorGUI.PrefixLabel(labelRect, label);
+			}
+
+			var lineHeight = EditorGUIUtility.singleLineHeight;
+			var y = position.y;
+
+			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
+
+			// Draw popup.
+			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
+			EditorGUI.showMixedValue = isTypeMixed;
+			SerializeReferenceGui.DrawTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			EditorGUI.showMixedValue = false;
+
+			EditorGUI.EndProperty();
+		}
+		
+		public static float GetHeightWithFoldout(SerializedProperty property)
+		{
+			var height = EditorGUIUtility.singleLineHeight;
+			if (!SerializedPropertyUtils.IsTypeMixed(property) && property.managedReferenceValue != null)
+			{
+				height = EditorGUI.GetPropertyHeight(property, true);
+			}
+			return height;
+		}
+
 		public static void DrawTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
 		{
 			var propertyType = property.managedReferenceValue?.GetType();
@@ -21,10 +120,10 @@ namespace Massive.Unity.Editor
 				var dropdown = new ReferenceTypeDropDown(property, new AdvancedDropdownState(), typeMatch, nullOptionText);
 				dropdown.Show(rect);
 
-				// if (dropdown.CanHideHeader)
-				// {
-				// 	AdvancedDropdownProxy.SetShowHeader(dropdown, false);
-				// }
+				if (dropdown.CanHideHeader)
+				{
+					AdvancedDropdownProxy.SetShowHeader(dropdown, false);
+				}
 
 				Event.current.Use();
 			}

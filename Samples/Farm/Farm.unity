@@ -409,7 +409,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ecf06965d9f346608b7c2440e54a63aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _values: 000000000000000000000000
+  _values:
+  - FruitElapsedTime: 0
+    Fruits: 0
+  - FruitElapsedTime: 0
+    Fruits: 0
+  - FruitElapsedTime: 0
+    Fruits: 0
   _color: {r: 0, g: 0, b: 0, a: 0}
   _component:
     rid: 2073587191488970775
@@ -467,7 +473,7 @@ MonoBehaviour:
   _world: Massive.Unity.Samples.Visual
   _components:
   - rid: 2073587177716187136
-  - rid: 2073587191488970786
+  - rid: 2073587191488970788
   references:
     version: 2
     RefIds:
@@ -476,10 +482,11 @@ MonoBehaviour:
       data:
         GrowTime: 0
         TimePerFruit: 0
-    - rid: 2073587191488970786
-      type: {class: Position, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+    - rid: 2073587191488970788
+      type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
-        Value: {x: 0, y: 0, z: 0}
+        FruitElapsedTime: 2.04
+        Fruits: 55
 --- !u!4 &1835460055
 Transform:
   m_ObjectHideFlags: 0

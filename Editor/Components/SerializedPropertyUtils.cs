@@ -47,6 +47,45 @@ namespace Massive.Unity.Editor
 			return a.propertyPath == b.propertyPath &&
 				a.serializedObject.targetObject == b.serializedObject.targetObject;
 		}
+
+		public static bool IsTypeMixed(SerializedProperty property)
+		{
+			var path = property.propertyPath;
+			Type firstType = null;
+			var initialized = false;
+
+			foreach (var target in property.serializedObject.targetObjects)
+			{
+				var so = new SerializedObject(target);
+				var p = so.FindProperty(path);
+				var value = p.managedReferenceValue;
+
+				if (value == null)
+				{
+					if (initialized && firstType != null)
+					{
+						return true;
+					}
+
+					initialized = true;
+					continue;
+				}
+
+				var type = value.GetType();
+
+				if (!initialized)
+				{
+					firstType = type;
+					initialized = true;
+				}
+				else if (type != firstType)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
 	}
 }
 #endif
