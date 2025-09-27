@@ -44,14 +44,8 @@ namespace Massive.Unity.Editor
 			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			ComponentsGui.DrawTypeSelector(popupRect, property);
-
-			// var displayName = GetShortTypeName(propertyType, isTypeMixed);
-			// if (GUI.Button(popupRect, displayName, EditorStyles.popup))
-			// {
-			// 	var popup = new ComponentSelectorPopup(property.Copy(), position.width - popupLeftPadding);
-			// 	PopupWindow.Show(popupRect, popup);
-			// }
+			SerializeReferenceGui.DrawTypeSelector(popupRect, property,
+				type => type.IsDefined(typeof(ComponentAttribute), false));
 			EditorGUI.showMixedValue = false;
 
 			// Check for null.
@@ -129,7 +123,7 @@ namespace Massive.Unity.Editor
 				return "<Select Component>";
 			}
 
-			return Components.GetShortName(propertyType);
+			return TypeUtils.GetShortName(propertyType);
 		}
 
 		public static bool IsTypeMixed(SerializedProperty property)

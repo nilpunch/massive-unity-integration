@@ -8,9 +8,9 @@ using UnityEngine;
 
 namespace Massive.Unity.Editor
 {
-	public static class ComponentsGui
+	public static class SerializeReferenceGui
 	{
-		public static void DrawTypeSelector(Rect rect, SerializedProperty property)
+		public static void DrawTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
 		{
 			var propertyType = property.managedReferenceValue?.GetType();
 			var typeName = GetShortTypeName(propertyType);
@@ -18,13 +18,13 @@ namespace Massive.Unity.Editor
 
 			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
 			{
-				var dropdown = new ReferenceTypeDropDown(property, new AdvancedDropdownState());
+				var dropdown = new ReferenceTypeDropDown(property, new AdvancedDropdownState(), typeMatch, nullOptionText);
 				dropdown.Show(rect);
 
-				if (dropdown.CanHideHeader)
-				{
-					AdvancedDropdownProxy.SetShowHeader(dropdown, false);
-				}
+				// if (dropdown.CanHideHeader)
+				// {
+				// 	AdvancedDropdownProxy.SetShowHeader(dropdown, false);
+				// }
 
 				Event.current.Use();
 			}
@@ -33,26 +33,37 @@ namespace Massive.Unity.Editor
 		private class ReferenceTypeDropDown : CustomAdvancedDropdown
 		{
 			private readonly SerializedProperty _property;
-			private readonly Type _propertyType;
+			private readonly Func<Type, bool> _typeMatch;
+			private readonly string _nullOptionText;
 
 			public bool CanHideHeader { get; private set; }
 
-			public ReferenceTypeDropDown(SerializedProperty property, AdvancedDropdownState state) : base(state)
+			public ReferenceTypeDropDown(SerializedProperty property, AdvancedDropdownState state, Func<Type, bool> typeMatch, string nullOptionText = "<Select>") : base(state)
 			{
 				_property = property;
-				_propertyType = _property.managedReferenceValue?.GetType();
-				minimumSize = new Vector2(5, 5);
+				_typeMatch = typeMatch;
+				_nullOptionText = nullOptionText;
+				minimumSize = new Vector2(0, 30);
 			}
 
 			protected override AdvancedDropdownItem BuildRoot()
 			{
-				var types = Components.AllComponentTypes;
+				var types = TypeUtils
+					.AllNonAbstractTypes
+					.Where(type =>
+						!typeof(UnityEngine.Object).IsAssignableFrom(type)
+						&& type.IsDefined(typeof(SerializableAttribute), false)
+						&& !type.Name.Contains("<")
+						&& !type.IsGenericTypeDefinition
+						&& _typeMatch.Invoke(type))
+					.Where(type => type.IsValueType || type.GetConstructor(Type.EmptyTypes) != null)
+					.ToList();
 
-				var groupByNamespace = types.Length > 20;
+				var groupByNamespace = types.Count > 20;
 
 				CanHideHeader = !groupByNamespace;
 
-				var root = new ReferenceTypeGroupItem("Type");
+				var root = new ReferenceTypeGroupItem("Type", _nullOptionText);
 
 				foreach (var type in types)
 				{
@@ -97,20 +108,22 @@ namespace Massive.Unity.Editor
 			{
 				private static readonly Texture2D ScriptIcon = EditorGUIUtility.FindTexture("cs Script Icon");
 
+				private readonly string _nullOptionText;
 				private readonly List<ReferenceTypeItem> _childItems = new List<ReferenceTypeItem>();
 
 				private readonly Dictionary<string, ReferenceTypeGroupItem> _childGroups =
 					new Dictionary<string, ReferenceTypeGroupItem>();
 
-				public ReferenceTypeGroupItem(string name) : base(name)
+				public ReferenceTypeGroupItem(string name, string nullOptionText = "<Select>") : base(name)
 				{
+					_nullOptionText = nullOptionText;
 				}
 
 				public void AddTypeChild(Type type, IEnumerator<string> namespaceRemaining)
 				{
 					if (!namespaceRemaining.MoveNext())
 					{
-						_childItems.Add(new ReferenceTypeItem(type, ScriptIcon));
+						_childItems.Add(new ReferenceTypeItem(type, ScriptIcon, _nullOptionText));
 						return;
 					}
 
@@ -118,7 +131,7 @@ namespace Massive.Unity.Editor
 
 					if (!_childGroups.TryGetValue(ns, out var child))
 					{
-						_childGroups[ns] = child = new ReferenceTypeGroupItem(ns);
+						_childGroups[ns] = child = new ReferenceTypeGroupItem(ns, _nullOptionText);
 					}
 
 					child.AddTypeChild(type, namespaceRemaining);
@@ -133,8 +146,6 @@ namespace Massive.Unity.Editor
 						child.Build();
 					}
 
-					AddSeparator();
-
 					foreach (var child in _childItems)
 					{
 						AddChild(child);
@@ -147,15 +158,15 @@ namespace Massive.Unity.Editor
 				private readonly GUIContent TypeContent;
 				private readonly GUIContent NamespaceContent;
 
-				public ReferenceTypeItem(Type type, Texture2D preview = null)
+				public ReferenceTypeItem(Type type, Texture2D preview = null, string nullOptionText = "<Select>")
 					: base(string.Empty, GetFullTypeName(type))
 				{
 					Type = type;
 					icon = preview;
 
-					TypeContent = new GUIContent(GetShortTypeName(type), preview);
+					TypeContent = new GUIContent(type == null ? nullOptionText : TypeUtils.GetShortName(type), preview);
 
-					var ns = type == null ? string.Empty : Components.GetNamespace(type);
+					var ns = type == null ? string.Empty : TypeUtils.GetNamespace(type);
 					NamespaceContent = string.IsNullOrWhiteSpace(ns) ? GUIContent.none : new GUIContent(" (" + ns + ")");
 				}
 
@@ -194,7 +205,7 @@ namespace Massive.Unity.Editor
 				return "<Select Component>";
 			}
 
-			return Components.GetShortName(propertyType);
+			return TypeUtils.GetShortName(propertyType);
 		}
 
 		private static string GetFullTypeName(Type propertyType)
@@ -204,7 +215,7 @@ namespace Massive.Unity.Editor
 				return "<Select Component>";
 			}
 
-			return Components.GetFullName(propertyType);
+			return TypeUtils.GetFullName(propertyType);
 		}
 	}
 }
