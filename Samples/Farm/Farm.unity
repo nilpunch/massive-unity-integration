@@ -372,6 +372,8 @@ MonoBehaviour:
     - rid: 2073587191488970794
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
+        Seed:
+          ElapsedTime: 0
         FruitElapsedTime: 0
         Fruits: 0
 --- !u!4 &938545825
@@ -420,11 +422,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _values:
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
   _color: {r: 0, g: 0, b: 0, a: 0}
   _component:
@@ -523,11 +531,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _values:
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
-  - FruitElapsedTime: 0
+  - Seed:
+      ElapsedTime: 0
+    FruitElapsedTime: 0
     Fruits: 0
   _color: {r: 0, g: 0, b: 0, a: 0}
   _component:
@@ -538,6 +552,8 @@ MonoBehaviour:
     - rid: 2073587191488970804
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
+        Seed:
+          ElapsedTime: 0
         FruitElapsedTime: 0
         Fruits: 0
 --- !u!4 &1283868391
@@ -599,6 +615,8 @@ MonoBehaviour:
     - rid: 2073587191488970788
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
+        Seed:
+          ElapsedTime: -0.25
         FruitElapsedTime: 2.04
         Fruits: 55
 --- !u!4 &1835460055

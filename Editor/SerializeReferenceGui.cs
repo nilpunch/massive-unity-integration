@@ -205,7 +205,11 @@ namespace Massive.Unity.Editor
 					var p = so.FindProperty(propertyPath);
 					var currentType = p.managedReferenceValue?.GetType();
 
-					if (currentType != newType)
+					if (currentType == null)
+					{
+						SerializedPropertyUtils.MigrateType(p, newType);
+					}
+					else if (currentType != newType)
 					{
 						p.managedReferenceValue = Activator.CreateInstance(newType!);
 						so.ApplyModifiedProperties();
