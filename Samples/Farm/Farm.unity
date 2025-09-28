@@ -157,8 +157,8 @@ Camera:
   m_GameObject: {fileID: 431694350}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -187,7 +187,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -352,14 +352,10 @@ MonoBehaviour:
   _world: Massive.Unity.Samples.Logic
   _components:
   - rid: 2073587191488970753
-  - rid: 2073587191488970794
   - rid: 2073587191488970785
-  - rid: -2
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
     - rid: 2073587191488970753
       type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
@@ -369,13 +365,6 @@ MonoBehaviour:
       type: {class: Seed, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
         ElapsedTime: 0
-    - rid: 2073587191488970794
-      type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
-      data:
-        Seed:
-          ElapsedTime: 0
-        FruitElapsedTime: 0
-        Fruits: 0
 --- !u!4 &938545825
 Transform:
   m_ObjectHideFlags: 0
@@ -603,22 +592,31 @@ MonoBehaviour:
   _world: Massive.Unity.Samples.Visual
   _components:
   - rid: 2073587177716187136
-  - rid: 2073587191488970788
+  - rid: 2073587216941318150
+  - rid: 2073587216941318151
+  - rid: 2073587216941318152
   references:
     version: 2
     RefIds:
     - rid: 2073587177716187136
       type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
-        GrowTime: 0
-        TimePerFruit: 0
-    - rid: 2073587191488970788
+        GrowTime: 0.29
+        TimePerFruit: 0.45
+    - rid: 2073587216941318150
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
         Seed:
-          ElapsedTime: -0.25
-        FruitElapsedTime: 2.04
-        Fruits: 55
+          ElapsedTime: 1.05
+        FruitElapsedTime: 0.48
+        Fruits: 20
+    - rid: 2073587216941318151
+      type: {class: SomeTag, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data: 
+    - rid: 2073587216941318152
+      type: {class: Position, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        Value: {x: 0.59, y: 0, z: 0}
 --- !u!4 &1835460055
 Transform:
   m_ObjectHideFlags: 0

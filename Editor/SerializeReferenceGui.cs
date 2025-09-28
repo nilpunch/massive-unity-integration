@@ -127,7 +127,45 @@ namespace Massive.Unity.Editor
 
 			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
 			{
-				var dropdown = new ReferenceTypeDropDown(property, new AdvancedDropdownState(), typeMatch, nullOptionText);
+				var dropdown = new ReferenceTypeDropDown((selectedType =>
+				{
+					var serializedObject = property.serializedObject;
+					var propertyPath = property.propertyPath;
+					var newType = selectedType;
+
+					foreach (var target in serializedObject.targetObjects)
+					{
+						var so = new SerializedObject(target);
+						var p = so.FindProperty(propertyPath);
+						var currentType = p.managedReferenceValue?.GetType();
+
+						if (currentType != newType)
+						{
+							p.managedReferenceValue = Activator.CreateInstance(newType!);
+							so.ApplyModifiedProperties();
+						}
+					}
+				}), new AdvancedDropdownState(), typeMatch, nullOptionText);
+				dropdown.Show(rect);
+
+				if (dropdown.CanHideHeader)
+				{
+					AdvancedDropdownProxy.SetShowHeader(dropdown, false);
+				}
+
+				Event.current.Use();
+			}
+		}
+
+		public static void DrawTypeSelector(Rect rect, Type current, Action<Type> typeCallback, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		{
+			var propertyType = current;
+			var typeName = propertyType == null ? nullOptionText : TypeUtils.GetShortName(propertyType);
+			var typeNameContent = new GUIContent(typeName);
+
+			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
+			{
+				var dropdown = new ReferenceTypeDropDown(typeCallback, new AdvancedDropdownState(), typeMatch, nullOptionText);
 				dropdown.Show(rect);
 
 				if (dropdown.CanHideHeader)
@@ -141,16 +179,16 @@ namespace Massive.Unity.Editor
 
 		private class ReferenceTypeDropDown : CustomAdvancedDropdown
 		{
-			private readonly SerializedProperty _property;
+			private readonly Action<Type> _itemSelected;
 			private readonly Func<Type, bool> _typeMatch;
 			private readonly string _nullOptionText;
 
 			public bool CanHideHeader { get; private set; }
 
-			public ReferenceTypeDropDown(SerializedProperty property, AdvancedDropdownState state, Func<Type, bool> typeMatch, string nullOptionText = "<Select>") : base(state)
+			public ReferenceTypeDropDown(Action<Type> itemSelected, AdvancedDropdownState state, Func<Type, bool> typeMatch, string nullOptionText = "<Select>") : base(state)
 			{
-				_property = property;
 				_typeMatch = typeMatch;
+				_itemSelected = itemSelected;
 				_nullOptionText = nullOptionText;
 				minimumSize = new Vector2(0, 60);
 			}
@@ -195,26 +233,7 @@ namespace Massive.Unity.Editor
 					return;
 				}
 
-				var serializedObject = _property.serializedObject;
-				var propertyPath = _property.propertyPath;
-				var newType = referenceTypeItem.Type;
-
-				foreach (var target in serializedObject.targetObjects)
-				{
-					var so = new SerializedObject(target);
-					var p = so.FindProperty(propertyPath);
-					var currentType = p.managedReferenceValue?.GetType();
-
-					if (currentType == null)
-					{
-						SerializedPropertyUtils.MigrateType(p, newType);
-					}
-					else if (currentType != newType)
-					{
-						p.managedReferenceValue = Activator.CreateInstance(newType!);
-						so.ApplyModifiedProperties();
-					}
-				}
+				_itemSelected?.Invoke(referenceTypeItem.Type);
 			}
 
 			private class ReferenceTypeGroupItem : CustomAdvancedDropdownItem
@@ -266,7 +285,7 @@ namespace Massive.Unity.Editor
 				}
 			}
 
-			private class ReferenceTypeItem : CustomAdvancedDropdownItem
+			public class ReferenceTypeItem : CustomAdvancedDropdownItem
 			{
 				private readonly GUIContent TypeContent;
 				private readonly GUIContent NamespaceContent;
