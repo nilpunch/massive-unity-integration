@@ -20,6 +20,7 @@ namespace Massive.Unity.Editor
 			window.maxSize = new Vector2(1000, 120);
 			window.minSize = new Vector2(400, 120);
 			window.position = new Rect(Screen.width / 2f - window.minSize.x / 2, Screen.height / 2f - window.minSize.y / 2, window.minSize.x, window.minSize.y);
+			window.wantsMouseMove = true;
 			window.Focus();
 			window.ShowModalUtility();
 		}
@@ -33,7 +34,7 @@ namespace Massive.Unity.Editor
 			GUILayout.Space(5);
 
 			GUILayout.Label("Select type to replace:");
-			GUILayout.Label($"{missingTypeName}", EditorStyles.boldLabel);
+			GUILayout.Label($"{missingTypeName}", EditorStyles.toolbarDropDown);
 
 			GUILayout.Space(5);
 

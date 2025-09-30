@@ -36,14 +36,13 @@ namespace Massive.Unity.Editor
 			}
 
 			var lineHeight = EditorGUIUtility.singleLineHeight;
-			var y = position.y;
 
 			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
 
 			// Draw popup.
-			var popupRect = new Rect(position.x + popupLeftPadding, y, position.width - popupLeftPadding, lineHeight);
+			var popupRect = new Rect(position.x + popupLeftPadding, position.y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			SerializeReferenceGui.DrawTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, nullOptionText);
 			EditorGUI.showMixedValue = false;
 
 			// Check for null.
@@ -60,13 +59,13 @@ namespace Massive.Unity.Editor
 				if (property.isExpanded && !isTypeMixed && property.managedReferenceValue != null)
 				{
 					// Draw property.
-					var fieldRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
+					var fieldRect = new Rect(position.x + popupOffset, position.y, position.width - popupOffset, EditorGUI.GetPropertyHeight(property, true) - lineHeight);
 					EditorGUI.PropertyField(fieldRect, property, GUIContent.none, true);
 				}
 				else if (!isTypeMixed)
 				{
 					// Draw foldout.
-					var foldoutRect = new Rect(position.x + popupOffset, y, position.width - popupOffset, lineHeight);
+					var foldoutRect = new Rect(position.x + popupOffset, position.y, position.width - popupOffset, lineHeight);
 					property.isExpanded = EditorGUI.Foldout(foldoutRect, property.isExpanded, GUIContent.none, false);
 				}
 			}
@@ -101,7 +100,7 @@ namespace Massive.Unity.Editor
 			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, position.y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			SerializeReferenceGui.DrawTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, nullOptionText);
 			EditorGUI.showMixedValue = false;
 
 			EditorGUI.EndProperty();
@@ -119,14 +118,29 @@ namespace Massive.Unity.Editor
 			return height;
 		}
 
-		public static void DrawTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		private const int ClosedDropdown = -1;
+		private static int s_openedDropdown = ClosedDropdown;
+
+		public static void DrawPropertyTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string selectionName = "Type")
 		{
 			var propertyType = property.managedReferenceValue?.GetType();
-			var typeName = propertyType == null ? nullOptionText : TypeUtils.GetShortName(propertyType);
-			var typeNameContent = new GUIContent(typeName);
+			var typeName = propertyType == null ? $"<Select + {selectionName}>" : TypeUtils.GetShortName(propertyType);
+			var fullTypeName = propertyType == null ? string.Empty : TypeUtils.GetFullName(propertyType);
+			var typeNameContent = new GUIContent(typeName, fullTypeName);
+
+			var dropdownKey = HashCode.Combine(
+				property.serializedObject.targetObject.GetInstanceID(),
+				property.propertyPath.GetHashCode());
 
 			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
 			{
+				if (s_openedDropdown == dropdownKey)
+				{
+					s_openedDropdown = ClosedDropdown;
+					Event.current.Use();
+					return;
+				}
+
 				var dropdown = new ReferenceTypeDropDown((selectedType =>
 				{
 					var serializedObject = property.serializedObject;
@@ -145,33 +159,44 @@ namespace Massive.Unity.Editor
 							so.ApplyModifiedProperties();
 						}
 					}
-				}), new AdvancedDropdownState(), typeMatch, nullOptionText);
+				}), new AdvancedDropdownState(), typeMatch, selectionName);
 				dropdown.Show(rect);
 
 				if (dropdown.CanHideHeader)
 				{
 					AdvancedDropdownProxy.SetShowHeader(dropdown, false);
 				}
+
+				s_openedDropdown = dropdownKey;
 
 				Event.current.Use();
 			}
 		}
 
-		public static void DrawTypeSelector(Rect rect, Type current, Action<Type> typeCallback, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		public static void DrawTypeSelector(Rect rect, Type currentType, Action<Type> typeCallback, Func<Type, bool> typeMatch, string selectionName = "<Select>")
 		{
-			var propertyType = current;
-			var typeName = propertyType == null ? nullOptionText : TypeUtils.GetShortName(propertyType);
-			var typeNameContent = new GUIContent(typeName);
+			var typeName = currentType == null ? $"<Select + {selectionName}>" : TypeUtils.GetShortName(currentType);
+			var fullTypeName = currentType == null ? string.Empty : TypeUtils.GetFullName(currentType);
+			var typeNameContent = new GUIContent(typeName, fullTypeName);
 
 			if (EditorGUI.DropdownButton(rect, typeNameContent, FocusType.Passive))
 			{
-				var dropdown = new ReferenceTypeDropDown(typeCallback, new AdvancedDropdownState(), typeMatch, nullOptionText);
+				if (s_openedDropdown != ClosedDropdown)
+				{
+					s_openedDropdown = ClosedDropdown;
+					Event.current.Use();
+					return;
+				}
+
+				var dropdown = new ReferenceTypeDropDown(typeCallback, new AdvancedDropdownState(), typeMatch, selectionName);
 				dropdown.Show(rect);
 
 				if (dropdown.CanHideHeader)
 				{
 					AdvancedDropdownProxy.SetShowHeader(dropdown, false);
 				}
+
+				s_openedDropdown = 1;
 
 				Event.current.Use();
 			}
@@ -181,15 +206,17 @@ namespace Massive.Unity.Editor
 		{
 			private readonly Action<Type> _itemSelected;
 			private readonly Func<Type, bool> _typeMatch;
-			private readonly string _nullOptionText;
+			private readonly string _selectionName;
+			private readonly string _nullOptionName;
 
 			public bool CanHideHeader { get; private set; }
 
-			public ReferenceTypeDropDown(Action<Type> itemSelected, AdvancedDropdownState state, Func<Type, bool> typeMatch, string nullOptionText = "<Select>") : base(state)
+			public ReferenceTypeDropDown(Action<Type> itemSelected, AdvancedDropdownState state, Func<Type, bool> typeMatch, string selectionName = "Type") : base(state)
 			{
 				_typeMatch = typeMatch;
 				_itemSelected = itemSelected;
-				_nullOptionText = nullOptionText;
+				_selectionName = selectionName;
+				_nullOptionName = $"<Select + {_selectionName}>";
 				minimumSize = new Vector2(0, 60);
 			}
 
@@ -210,7 +237,7 @@ namespace Massive.Unity.Editor
 
 				CanHideHeader = !groupByNamespace;
 
-				var root = new ReferenceTypeGroupItem("Type", _nullOptionText);
+				var root = new ReferenceTypeGroupItem(_selectionName, _nullOptionName);
 
 				foreach (var type in types)
 				{
@@ -228,6 +255,8 @@ namespace Massive.Unity.Editor
 
 			protected override void ItemSelected(AdvancedDropdownItem item)
 			{
+				s_openedDropdown = ClosedDropdown;
+
 				if (!(item is ReferenceTypeItem referenceTypeItem))
 				{
 					return;
@@ -246,7 +275,7 @@ namespace Massive.Unity.Editor
 				private readonly Dictionary<string, ReferenceTypeGroupItem> _childGroups =
 					new Dictionary<string, ReferenceTypeGroupItem>();
 
-				public ReferenceTypeGroupItem(string name, string nullOptionText = "<Select>") : base(name)
+				public ReferenceTypeGroupItem(string name, string nullOptionText) : base(name)
 				{
 					_nullOptionText = nullOptionText;
 				}
@@ -255,7 +284,7 @@ namespace Massive.Unity.Editor
 				{
 					if (!namespaceRemaining.MoveNext())
 					{
-						_childItems.Add(new ReferenceTypeItem(type, ScriptIcon, _nullOptionText));
+						_childItems.Add(new ReferenceTypeItem(type, _nullOptionText, ScriptIcon));
 						return;
 					}
 
@@ -290,7 +319,7 @@ namespace Massive.Unity.Editor
 				private readonly GUIContent TypeContent;
 				private readonly GUIContent NamespaceContent;
 
-				public ReferenceTypeItem(Type type, Texture2D preview = null, string nullOptionText = "<Select>")
+				public ReferenceTypeItem(Type type, string nullOptionText, Texture2D preview = null)
 					: base(string.Empty, type == null ? string.Empty : TypeUtils.GetFullName(type))
 				{
 					Type = type;

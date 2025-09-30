@@ -3,14 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using UnityEditor;
 using UnityEngine;
 
 namespace Massive.Unity.Editor
 {
-	public static class EditorTools
+	public static class ReferenceRepairTool
 	{
 		[MenuItem("Assets/Fix Missing Serialize References")]
 		public static void FixMissingSerializeReferences()

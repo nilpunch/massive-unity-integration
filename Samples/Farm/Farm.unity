@@ -389,8 +389,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1021016996}
-  - component: {fileID: 1021016995}
   - component: {fileID: 1021016997}
+  - component: {fileID: 1021016998}
+  - component: {fileID: 1021016995}
   m_Layer: 0
   m_Name: Test (1)
   m_TagString: Untagged
@@ -490,6 +491,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &1021016998
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1021016994}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 0
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 0}
 --- !u!1 &1283868389
 GameObject:
   m_ObjectHideFlags: 0
@@ -593,8 +616,6 @@ MonoBehaviour:
   _components:
   - rid: 2073587177716187136
   - rid: 2073587216941318150
-  - rid: 2073587216941318151
-  - rid: 2073587216941318152
   references:
     version: 2
     RefIds:
@@ -610,13 +631,6 @@ MonoBehaviour:
           ElapsedTime: 1.05
         FruitElapsedTime: 0.48
         Fruits: 20
-    - rid: 2073587216941318151
-      type: {class: SomeTag, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
-      data: 
-    - rid: 2073587216941318152
-      type: {class: Position, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
-      data:
-        Value: {x: 0.59, y: 0, z: 0}
 --- !u!4 &1835460055
 Transform:
   m_ObjectHideFlags: 0
