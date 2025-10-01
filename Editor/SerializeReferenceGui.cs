@@ -17,12 +17,11 @@ namespace Massive.Unity.Editor
 		/// <summary>
 		/// Returns the icon rect for additional indication.
 		/// </summary>
-		public static Rect DrawPropertyWithFoldout(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		public static Rect DrawPropertyWithFoldout(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string selectionName = "Type")
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
 			var propertyType = property.managedReferenceValue?.GetType();
-
 			var popupLeftPadding = PopupLeftPadding;
 
 			if (!string.IsNullOrWhiteSpace(label.text))
@@ -42,7 +41,7 @@ namespace Massive.Unity.Editor
 			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, position.y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, selectionName);
 			EditorGUI.showMixedValue = false;
 
 			// Check for null.
@@ -77,7 +76,7 @@ namespace Massive.Unity.Editor
 		/// <summary>
 		/// Returns the icon rect for additional indication.
 		/// </summary>
-		public static Rect DrawPropertySelectorOnly(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string nullOptionText = "<Select>")
+		public static Rect DrawPropertySelectorOnly(Rect position, GUIContent label, SerializedProperty property, Func<Type, bool> typeMatch, string selectionName = "Type")
 		{
 			EditorGUI.BeginProperty(position, label, property);
 
@@ -100,7 +99,7 @@ namespace Massive.Unity.Editor
 			// Draw popup.
 			var popupRect = new Rect(position.x + popupLeftPadding, position.y, position.width - popupLeftPadding, lineHeight);
 			EditorGUI.showMixedValue = isTypeMixed;
-			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, nullOptionText);
+			SerializeReferenceGui.DrawPropertyTypeSelector(popupRect, property, typeMatch, selectionName);
 			EditorGUI.showMixedValue = false;
 
 			EditorGUI.EndProperty();
@@ -124,7 +123,7 @@ namespace Massive.Unity.Editor
 		public static void DrawPropertyTypeSelector(Rect rect, SerializedProperty property, Func<Type, bool> typeMatch, string selectionName = "Type")
 		{
 			var propertyType = property.managedReferenceValue?.GetType();
-			var typeName = propertyType == null ? $"<Select + {selectionName}>" : TypeUtils.GetShortName(propertyType);
+			var typeName = propertyType == null ? $"<Select {selectionName}>" : TypeUtils.GetShortName(propertyType);
 			var fullTypeName = propertyType == null ? string.Empty : TypeUtils.GetFullName(propertyType);
 			var typeNameContent = new GUIContent(typeName, fullTypeName);
 
@@ -173,9 +172,9 @@ namespace Massive.Unity.Editor
 			}
 		}
 
-		public static void DrawTypeSelector(Rect rect, Type currentType, Action<Type> typeCallback, Func<Type, bool> typeMatch, string selectionName = "<Select>")
+		public static void DrawTypeSelector(Rect rect, Type currentType, Action<Type> typeCallback, Func<Type, bool> typeMatch, string selectionName = "Type")
 		{
-			var typeName = currentType == null ? $"<Select + {selectionName}>" : TypeUtils.GetShortName(currentType);
+			var typeName = currentType == null ? $"<Select {selectionName}>" : TypeUtils.GetShortName(currentType);
 			var fullTypeName = currentType == null ? string.Empty : TypeUtils.GetFullName(currentType);
 			var typeNameContent = new GUIContent(typeName, fullTypeName);
 
@@ -216,7 +215,7 @@ namespace Massive.Unity.Editor
 				_typeMatch = typeMatch;
 				_itemSelected = itemSelected;
 				_selectionName = selectionName;
-				_nullOptionName = $"<Select + {_selectionName}>";
+				_nullOptionName = $"<Select {_selectionName}>";
 				minimumSize = new Vector2(0, 60);
 			}
 
@@ -343,7 +342,7 @@ namespace Massive.Unity.Editor
 						focused = { textColor = Color.white },
 					};
 
-					var namespaceStyle = UnityStyles.lineStyleFaint;
+					var namespaceStyle = UnityStyles.LineFaint;
 
 					Vector2 typeSize = typeStyle.CalcSize(TypeContent);
 

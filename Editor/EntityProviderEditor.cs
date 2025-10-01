@@ -7,7 +7,6 @@ namespace Massive.Unity.Editor
 	[CustomEditor(typeof(EntityProvider))]
 	internal class EntityProviderEditor : UnityEditor.Editor
 	{
-		
 	}
 }
 #endif

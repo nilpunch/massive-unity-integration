@@ -28,7 +28,7 @@ namespace Massive.Unity.Editor
 						.Where(assembly => IsUserAssembly(assembly.GetName().Name))
 						.ToList();
 				}
-
+				
 				return s_assemblies;
 			}
 		}
@@ -219,10 +219,12 @@ namespace Massive.Unity.Editor
 				!assemblyName.StartsWith("UnityEngine") &&
 				!assemblyName.StartsWith("UnityEditor") &&
 				!assemblyName.StartsWith("System") &&
+				!assemblyName.StartsWith("ReportGeneratorMerged") &&
 				!assemblyName.StartsWith("mscorlib") &&
 				!assemblyName.StartsWith("Mono.") &&
 				!assemblyName.StartsWith("JetBrains.") &&
 				!assemblyName.StartsWith("log4net") &&
+				!assemblyName.StartsWith("nunit.framework") &&
 				!assemblyName.StartsWith("unityplastic");
 		}
 	}

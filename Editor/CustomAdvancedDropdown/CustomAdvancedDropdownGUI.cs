@@ -5,7 +5,7 @@ namespace Massive.Unity.Editor.UnityInternalBridge
 {
 	internal class CustomAdvancedDropdownGUI : AdvancedDropdownGUI
 	{
-		internal override GUIStyle lineStyle => UnityStyles.itemStyle;
+		internal override GUIStyle lineStyle => UnityStyles.LargeItem;
 
 		public CustomAdvancedDropdownGUI(AdvancedDropdownDataSource dataSource) : base(dataSource)
 		{

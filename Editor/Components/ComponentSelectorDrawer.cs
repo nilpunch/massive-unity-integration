@@ -18,7 +18,7 @@ namespace Massive.Unity.Editor
 			var optionalLabel = insideArray ? GUIContent.none : label;
 			if (property.managedReferenceValue == null)
 			{
-				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
+				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter, "Component");
 				EditorUtils.DrawWarningIcon(iconRect, "This component is null or missing.");
 				return;
 			}
@@ -27,12 +27,12 @@ namespace Massive.Unity.Editor
 
 			if (!isTypeMixed && HasDuplicateType(property))
 			{
-				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter);
+				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter, "Component");
 				EditorUtils.DrawWarningIcon(iconRect, "This component type is already added. Only one is allowed per entity.");
 				return;
 			}
 
-			SerializeReferenceGui.DrawPropertyWithFoldout(position, optionalLabel, property, ComponentTypeFilter);
+			SerializeReferenceGui.DrawPropertyWithFoldout(position, optionalLabel, property, ComponentTypeFilter, "Component");
 
 			bool ComponentTypeFilter(Type type)
 			{
