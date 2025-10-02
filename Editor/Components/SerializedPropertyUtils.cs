@@ -1,5 +1,6 @@
 ﻿#if UNITY_EDITOR
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using UnityEditor;
@@ -91,87 +92,71 @@ namespace Massive.Unity.Editor
 			return false;
 		}
 
-		public static string GetContainerPath(UnityEngine.Object target)
+		public static bool HasDuplicateType(SerializedProperty elementProperty)
 		{
-			if (target == null)
-				return null;
-
-			var path = AssetDatabase.GetAssetPath(target);
-
-			if (!string.IsNullOrEmpty(path))
-				return path;
-
-			if (target is Component comp)
-				return comp.gameObject.scene.path;
-			if (target is GameObject go)
-				return go.scene.path;
-
-			return null;
-		}
-
-		public static void MigrateType(SerializedProperty property, Type newType)
-		{
-			if (property == null) return;
-			if (newType == null) return;
-
-			var assetPath = GetContainerPath(property.serializedObject.targetObject);
-			if (string.IsNullOrEmpty(assetPath))
-				return;
-
-			// Build the replacement YAML type string
-			var typeString =
-				$"type: {{class: {newType.Name}, ns: {newType.Namespace ?? ""}, asm: {newType.Assembly.GetName().Name}}}";
-
-			SerializedObject serializedObject = property.serializedObject;
-
-			var fileID = GlobalObjectId.GetGlobalObjectIdSlow(serializedObject.targetObject).targetObjectId;
-
-			var yaml = File.ReadAllText(assetPath);
-
-			var startIndex = yaml.IndexOf(fileID.ToString(), StringComparison.Ordinal);
-
-			var splitPath = property.propertyPath.Split('.');
-			var fieldName = splitPath[0];
-			startIndex = yaml.IndexOf(fieldName, startIndex, StringComparison.Ordinal);
-
-			var arrayIndex = int.Parse(splitPath[2].Split('[', ']')[1]);
-
-			for (int i = 0; i <= arrayIndex; i++)
+			if (elementProperty == null || elementProperty.managedReferenceValue == null)
 			{
-				startIndex = yaml.IndexOf("rid:", startIndex, StringComparison.Ordinal);
-				startIndex += 5;
+				return false;
 			}
 
-			var end = yaml.IndexOf('\n', startIndex);
-			var ridLength = end - startIndex;
-			var rid = yaml.Substring(startIndex, ridLength);
+			var listProperty = SerializedPropertyUtils.GetOwningList(elementProperty);
+			if (listProperty == null || !listProperty.isArray)
+			{
+				return false;
+			}
 
-			startIndex += ridLength;
-			startIndex = yaml.IndexOf(rid, startIndex, StringComparison.Ordinal);
+			var targetType = elementProperty.managedReferenceValue.GetType();
 
-			var typeIndex = yaml.IndexOf("type:", startIndex, StringComparison.Ordinal);
-			var endOfType = yaml.IndexOf('\n', typeIndex);
+			for (int i = 0; i < listProperty.arraySize; i++)
+			{
+				var sibling = listProperty.GetArrayElementAtIndex(i);
 
-			yaml = yaml.Remove(typeIndex, endOfType - typeIndex);
-			yaml = yaml.Insert(typeIndex, typeString);
-			
-			File.WriteAllText(assetPath, yaml);
+				if (SerializedPropertyUtils.IsSameProperty(sibling, elementProperty))
+				{
+					continue;
+				}
 
-			AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-			AssetDatabase.SaveAssets();
+				if (sibling.managedReferenceValue?.GetType() == targetType)
+				{
+					return true;
+				}
+			}
+
+			return false;
 		}
 
-		// Extract RID from property.managedReferenceId
-		private static string GetRID(SerializedProperty property)
+		public static readonly HashSet<Type> PresentTypesBuffer = new HashSet<Type>();
+
+		public static void CollectPresentTypes(SerializedProperty listOrValueProperty)
 		{
-			// Unity 2020.2+ exposes managedReferenceId directly
-			try
+			PresentTypesBuffer.Clear();
+
+			var path = listOrValueProperty.propertyPath;
+
+			foreach (var target in listOrValueProperty.serializedObject.targetObjects)
 			{
-				return property.managedReferenceId.ToString();
-			}
-			catch
-			{
-				return null;
+				var so = new SerializedObject(target);
+				var property = so.FindProperty(path);
+
+				var listProperty = SerializedPropertyUtils.GetOwningList(property);
+				if (listProperty != null && listProperty.isArray)
+				{
+					for (int i = 0; i < listProperty.arraySize; i++)
+					{
+						var sibling = listProperty.GetArrayElementAtIndex(i);
+
+						if (sibling.managedReferenceValue != null)
+						{
+							PresentTypesBuffer.Add(sibling.managedReferenceValue.GetType());
+						}
+					}
+					continue;
+				}
+
+				if (property != null && property.managedReferenceValue != null)
+				{
+					PresentTypesBuffer.Add(property.managedReferenceValue.GetType());
+				}
 			}
 		}
 	}

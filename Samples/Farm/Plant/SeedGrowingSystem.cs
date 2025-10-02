@@ -4,7 +4,7 @@ using NotImplementedException = System.NotImplementedException;
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class SeedGrowingSystem : QoL.SystemBase, IUpdate, IInitialize
+	public class SeedGrowingSystem : SystemBase, IUpdate, IInitialize
 	{
 		public void Update()
 		{

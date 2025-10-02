@@ -1,19 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using Massive.QoL;
 using UnityEngine;
 
 namespace Massive.Unity
 {
-	[CreateAssetMenu(fileName = "Systems", menuName = "Massive")]
+	[CreateAssetMenu(fileName = "Systems", menuName = "Massive/Systems")]
 	public class ScriptableSystems : ScriptableObject
 	{
-		[SerializeField] private ScriptableSystem[] _scriptableSystems = Array.Empty<ScriptableSystem>();
+		[SerializeReference, SystemSelector] private List<ISystem> _systems = new List<ISystem>();
 
 		public void Register(SystemsBuilder builder)
 		{
-			foreach (var scriptableSystem in _scriptableSystems)
+			foreach (var system in _systems)
 			{
-				builder.Instance(scriptableSystem);
+				builder.Instance(system);
 			}
 		}
 	}

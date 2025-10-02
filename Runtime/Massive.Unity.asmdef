@@ -3,7 +3,6 @@
     "rootNamespace": "Massive.Unity",
     "references": [
         "GUID:cf2e24c64a0d02f4690b9be74f35390f",
-        "GUID:324caed91501a9c47a04ebfd87b68794",
         "GUID:94bf3779025536c48b3ac6ad9628555b"
     ],
     "includePlatforms": [],

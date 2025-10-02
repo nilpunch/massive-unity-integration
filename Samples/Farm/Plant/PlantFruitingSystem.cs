@@ -1,4 +1,5 @@
-﻿using Massive.QoL;
+﻿using System;
+using Massive.QoL;
 using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
@@ -12,7 +13,8 @@ namespace Massive.Unity.Samples.Farm
 		}
 	}
 
-	public class PlantFruitingSystem : QoL.SystemBase, IUpdate, IDrawGizmos
+	[Serializable]
+	public class PlantFruitingSystem : SystemBase, IUpdate, IDrawGizmos
 	{
 		public void Update()
 		{

@@ -13,7 +13,7 @@ namespace Massive.Unity.Editor
 		{
 			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
 
-			CollectPresentTypes(property);
+			SerializedPropertyUtils.CollectPresentTypes(property);
 
 			var optionalLabel = insideArray ? GUIContent.none : label;
 			if (property.managedReferenceValue == null)
@@ -25,7 +25,7 @@ namespace Massive.Unity.Editor
 
 			var isTypeMixed = SerializedPropertyUtils.IsTypeMixed(property);
 
-			if (!isTypeMixed && HasDuplicateType(property))
+			if (!isTypeMixed && SerializedPropertyUtils.HasDuplicateType(property))
 			{
 				var iconRect = SerializeReferenceGui.DrawPropertySelectorOnly(position, optionalLabel, property, ComponentTypeFilter, "Component");
 				EditorUtils.DrawWarningIcon(iconRect, "This component type is already added. Only one is allowed per entity.");
@@ -36,86 +36,18 @@ namespace Massive.Unity.Editor
 
 			bool ComponentTypeFilter(Type type)
 			{
-				return type.IsDefined(typeof(ComponentAttribute), false) && !_presentTypes.Contains(type);
+				return type.IsDefined(typeof(ComponentAttribute), false) && !SerializedPropertyUtils.PresentTypesBuffer.Contains(type);
 			}
 		}
 
 		public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
 		{
 			var height = EditorGUIUtility.singleLineHeight;
-			if (!SerializedPropertyUtils.IsTypeMixed(property) && !HasDuplicateType(property) && property.managedReferenceValue != null)
+			if (!SerializedPropertyUtils.IsTypeMixed(property) && !SerializedPropertyUtils.HasDuplicateType(property) && property.managedReferenceValue != null)
 			{
 				height = EditorGUI.GetPropertyHeight(property, true);
 			}
 			return height;
-		}
-
-		public static bool HasDuplicateType(SerializedProperty elementProperty)
-		{
-			if (elementProperty == null || elementProperty.managedReferenceValue == null)
-			{
-				return false;
-			}
-
-			var listProperty = SerializedPropertyUtils.GetOwningList(elementProperty);
-			if (listProperty == null || !listProperty.isArray)
-			{
-				return false;
-			}
-
-			var targetType = elementProperty.managedReferenceValue.GetType();
-
-			for (int i = 0; i < listProperty.arraySize; i++)
-			{
-				var sibling = listProperty.GetArrayElementAtIndex(i);
-
-				if (SerializedPropertyUtils.IsSameProperty(sibling, elementProperty))
-				{
-					continue;
-				}
-
-				if (sibling.managedReferenceValue?.GetType() == targetType)
-				{
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private static HashSet<Type> _presentTypes = new HashSet<Type>();
-
-		public static void CollectPresentTypes(SerializedProperty listOrValueProperty)
-		{
-			_presentTypes.Clear();
-
-			var path = listOrValueProperty.propertyPath;
-
-			foreach (var target in listOrValueProperty.serializedObject.targetObjects)
-			{
-				var so = new SerializedObject(target);
-				var property = so.FindProperty(path);
-
-				var listProperty = SerializedPropertyUtils.GetOwningList(property);
-				if (listProperty != null && listProperty.isArray)
-				{
-					for (int i = 0; i < listProperty.arraySize; i++)
-					{
-						var sibling = listProperty.GetArrayElementAtIndex(i);
-
-						if (sibling.managedReferenceValue != null)
-						{
-							_presentTypes.Add(sibling.managedReferenceValue.GetType());
-						}
-					}
-					continue;
-				}
-
-				if (property != null && property.managedReferenceValue != null)
-				{
-					_presentTypes.Add(property.managedReferenceValue.GetType());
-				}
-			}
 		}
 	}
 }
