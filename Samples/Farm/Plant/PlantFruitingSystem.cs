@@ -4,15 +4,6 @@ using UnityEngine;
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class PlantGrowthSystemsBuilder : SystemsBuilder
-	{
-		public PlantGrowthSystemsBuilder()
-		{
-			New<SeedGrowingSystem>();
-			New<PlantFruitingSystem>();
-		}
-	}
-
 	[Serializable]
 	public class PlantFruitingSystem : SystemBase, IUpdate, IDrawGizmos
 	{

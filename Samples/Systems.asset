@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Systems
   m_EditorClassIdentifier: 
   _systems:
-  - rid: -2
+  - rid: 8696235438269792256
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 8696235438269792256
+      type: {class: PlantFruitingSystem, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data: 

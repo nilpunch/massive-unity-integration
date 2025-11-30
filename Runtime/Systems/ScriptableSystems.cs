@@ -10,11 +10,11 @@ namespace Massive.Unity
 	{
 		[SerializeReference, SystemSelector] private List<ISystem> _systems = new List<ISystem>();
 
-		public void Register(SystemsBuilder builder)
+		public void Register(Systems systems)
 		{
 			foreach (var system in _systems)
 			{
-				builder.Instance(system);
+				systems.Instance(system);
 			}
 		}
 	}
