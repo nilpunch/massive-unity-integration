@@ -1,6 +1,4 @@
-﻿using Massive.QoL;
-
-namespace Massive.Unity
+﻿namespace Massive.Unity
 {
 	public interface IInitialize : ISystemMethod<IInitialize>
 	{

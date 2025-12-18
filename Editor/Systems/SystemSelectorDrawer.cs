@@ -13,8 +13,6 @@ namespace Massive.Unity.Editor
 		{
 			var insideArray = SerializedPropertyUtils.IsArrayElement(property);
 
-			SerializedPropertyUtils.CollectPresentTypes(property);
-
 			var optionalLabel = insideArray ? GUIContent.none : label;
 			if (property.managedReferenceValue == null)
 			{
@@ -27,7 +25,7 @@ namespace Massive.Unity.Editor
 
 			bool SystemTypeFilter(Type type)
 			{
-				return typeof(ISystem).IsAssignableFrom(type) &&  !SerializedPropertyUtils.PresentTypesBuffer.Contains(type);
+				return typeof(ISystem).IsAssignableFrom(type);
 			}
 		}
 

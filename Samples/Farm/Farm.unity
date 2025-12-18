@@ -412,15 +412,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _values:
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
@@ -543,15 +543,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _values:
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
-  - Seed:
+  - _seed:
       ElapsedTime: 0
     FruitElapsedTime: 0
     Fruits: 0
@@ -564,7 +564,7 @@ MonoBehaviour:
     - rid: 2073587191488970804
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
-        Seed:
+        _seed:
           ElapsedTime: 0
         FruitElapsedTime: 0
         Fruits: 0
@@ -627,8 +627,8 @@ MonoBehaviour:
     - rid: 2073587216941318150
       type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
-        Seed:
-          ElapsedTime: 1.05
+        _seed:
+          ElapsedTime: 0
         FruitElapsedTime: 0.48
         Fruits: 20
 --- !u!4 &1835460055

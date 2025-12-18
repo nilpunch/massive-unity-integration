@@ -1,5 +1,4 @@
-﻿using Massive.QoL;
-using UnityEngine;
+﻿using UnityEngine;
 using NotImplementedException = System.NotImplementedException;
 
 namespace Massive.Unity.Samples.Farm

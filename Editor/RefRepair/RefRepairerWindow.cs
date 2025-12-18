@@ -17,7 +17,7 @@ namespace Massive.Unity.Editor
 		private static bool _isNoFound;
 		private Vector2 _scrollPosition;
 
-		[MenuItem("Tools/" + Constants.LibraryName + "/" + Title)]
+		[MenuItem("Window/" + Constants.LibraryName + "/" + Title)]
 		public static void Open()
 		{
 			var wnd = GetWindow<RefRepairerWindow>();
