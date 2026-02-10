@@ -3,7 +3,7 @@ using NotImplementedException = System.NotImplementedException;
 
 namespace Massive.Unity.Samples.Farm
 {
-	public class SeedGrowingSystem : SystemBase, IUpdate, IInitialize
+	public class SeedGrowingSystem : WorldSystem, IUpdate, IInitialize
 	{
 		public void Update()
 		{

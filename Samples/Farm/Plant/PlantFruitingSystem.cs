@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Massive.Unity.Samples.Farm
 {
 	[Serializable]
-	public class PlantFruitingSystem : SystemBase, IUpdate, IDrawGizmos
+	public class PlantFruitingSystem : WorldSystem, IUpdate, IDrawGizmos
 	{
 		public void Update()
 		{
