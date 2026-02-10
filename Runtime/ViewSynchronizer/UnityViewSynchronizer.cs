@@ -4,7 +4,11 @@ namespace Massive.Unity
 {
 	public class UnityViewSynchronizer : ViewSynchronizer<EntityView>
 	{
-		public UnityViewSynchronizer(World world, IViewFactory<EntityView> viewFactory) : base(world, viewFactory)
+		public UnityViewSynchronizer() : this(new EntityViewFactory())
+		{
+		}
+
+		public UnityViewSynchronizer(IViewFactory<EntityView> viewFactory) : base(viewFactory)
 		{
 		}
 	}
