@@ -36,7 +36,7 @@ namespace Massive.Unity
 
 #if UNITY_EDITOR
 		[ContextMenu("Find Behaviours and Components")]
-		private void FindBehavioursAndComponents()
+		public void CollectViewBehaviours()
 		{
 			UnityEditor.Undo.RecordObject(this, "Find behaviours");
 			var behaviours = GetComponentsInChildren<EntityBehaviour>(true);

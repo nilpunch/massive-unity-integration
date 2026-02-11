@@ -4,8 +4,17 @@ using UnityEngine;
 
 namespace Massive.Unity
 {
+	public abstract class ScriptableConfig : ScriptableObject
+	{
+#if UNITY_EDITOR
+		public abstract bool IsMainInstance { get; }
+
+		public abstract void SetAsMainInstance();
+#endif
+	}
+
 	// Credits go to this guy: https://github.com/blackbone.
-	public class ScriptableConfig<T> : ScriptableObject where T : ScriptableConfig<T>
+	public class ScriptableConfig<T> : ScriptableConfig where T : ScriptableConfig<T>
 	{
 		private static T _instance;
 
@@ -43,15 +52,13 @@ namespace Massive.Unity
 			}
 
 			var preloads = UnityEditor.PlayerSettings.GetPreloadedAssets();
-			if (Enumerable.Contains(preloads, this))
+			if (preloads.Contains(this))
 			{
 				return;
 			}
+
 			if (preloads.Any(p => p is T))
 			{
-				var path = UnityEditor.AssetDatabase.GetAssetPath(this);
-				UnityEditor.AssetDatabase.DeleteAsset(path);
-				DestroyImmediate(this);
 				return;
 			}
 
@@ -67,6 +74,27 @@ namespace Massive.Unity
 				return;
 			}
 			_instance = UnityEditor.PlayerSettings.GetPreloadedAssets().FirstOrDefault(p => p is T) as T;
+		}
+
+		public override bool IsMainInstance => Instance == this;
+
+		public override void SetAsMainInstance()
+		{
+			if (Application.isPlaying)
+			{
+				return;
+			}
+
+			if (IsMainInstance)
+			{
+				return;
+			}
+
+			_instance = null;
+
+			var preloads = UnityEditor.PlayerSettings.GetPreloadedAssets();
+			preloads[Array.FindIndex(preloads, p => p is T)] = this;
+			UnityEditor.PlayerSettings.SetPreloadedAssets(preloads);
 		}
 #endif
 	}
