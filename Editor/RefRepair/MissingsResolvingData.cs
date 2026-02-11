@@ -1,5 +1,4 @@
 ﻿#if UNITY_EDITOR
-using Massive.Unity.Editor;
 using System;
 
 namespace Massive.Unity.Editor
