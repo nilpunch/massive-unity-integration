@@ -320,6 +320,76 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &488441126
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 488441128}
+  - component: {fileID: 488441127}
+  m_Layer: 0
+  m_Name: Entity (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &488441127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488441126}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Visual
+  _components:
+  - rid: 2073587177716187136
+  - rid: 2073587216941318150
+  - rid: 1861220552919744553
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220552919744553
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 2
+    - rid: 2073587177716187136
+      type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        GrowTime: 0.29
+        TimePerFruit: 0.45
+    - rid: 2073587216941318150
+      type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        _seed:
+          ElapsedTime: 0
+        FruitElapsedTime: 0.48
+        Fruits: 20
+--- !u!4 &488441128
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 488441126}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.49, y: 0, z: 1.69}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &938545823
 GameObject:
   m_ObjectHideFlags: 0
@@ -353,14 +423,16 @@ MonoBehaviour:
   _components:
   - rid: 2073587191488970753
   - rid: 2073587191488970785
-  - rid: -2
+  - rid: 1861220552919744551
   _create: 0
   _whenCreated: 0
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 1861220552919744551
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 1
     - rid: 2073587191488970753
       type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
@@ -379,7 +451,7 @@ Transform:
   m_GameObject: {fileID: 938545823}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.69, y: 0, z: 2.69}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -588,6 +660,76 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1596145809
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1596145811}
+  - component: {fileID: 1596145810}
+  m_Layer: 0
+  m_Name: Entity (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1596145810
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596145809}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Visual
+  _components:
+  - rid: 2073587177716187136
+  - rid: 2073587216941318150
+  - rid: 1861220552919744552
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220552919744552
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 1
+    - rid: 2073587177716187136
+      type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        GrowTime: 0.29
+        TimePerFruit: 0.45
+    - rid: 2073587216941318150
+      type: {class: Mature, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
+      data:
+        _seed:
+          ElapsedTime: 0
+        FruitElapsedTime: 0.48
+        Fruits: 20
+--- !u!4 &1596145811
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1596145809}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.44, y: 0, z: -1.76}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1835460053
 GameObject:
   m_ObjectHideFlags: 0
@@ -621,11 +763,16 @@ MonoBehaviour:
   _components:
   - rid: 2073587177716187136
   - rid: 2073587216941318150
+  - rid: 1861220552919744547
   _create: 0
   _whenCreated: 0
   references:
     version: 2
     RefIds:
+    - rid: 1861220552919744547
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 2
     - rid: 2073587177716187136
       type: {class: Plant, ns: Massive.Unity.Samples.Farm, asm: Massive.Unity.Samples}
       data:
@@ -647,7 +794,7 @@ Transform:
   m_GameObject: {fileID: 1835460053}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -1.43, y: 0, z: -0.33}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -747,63 +894,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1001 &1998640718
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7952599162567213084, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 9135355905069458297, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
-      propertyPath: m_Name
-      value: Plant A
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -812,7 +902,8 @@ SceneRoots:
   - {fileID: 1987551791}
   - {fileID: 438797377}
   - {fileID: 1835460055}
+  - {fileID: 1596145811}
+  - {fileID: 488441128}
   - {fileID: 938545825}
   - {fileID: 1283868391}
   - {fileID: 1021016996}
-  - {fileID: 1998640718}

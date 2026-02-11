@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Massive.QoL;
 using UnityEngine;
 
@@ -46,6 +45,8 @@ namespace Massive.Unity
 		}
 
 		public Entity Entity { get; private set; }
+
+		public List<object> Components => _components;
 
 		protected virtual void Reset()
 		{
