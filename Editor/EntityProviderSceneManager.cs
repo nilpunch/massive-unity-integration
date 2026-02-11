@@ -31,6 +31,7 @@ namespace Massive.Unity.Editor
 		}
 
 		private static bool _isRedirectingSelection;
+		private static ViewDataBase _viewDataBase;
 
 		private static void OnSelectionChanged()
 		{
@@ -78,6 +79,13 @@ namespace Massive.Unity.Editor
 				return;
 			}
 
+			if (_viewDataBase != ViewDataBase.Instance)
+			{
+				RefreshAll();
+			}
+
+			_viewDataBase = ViewDataBase.Instance;
+
 			foreach (var provider in _trackedProviders)
 			{
 				if (provider == null)
@@ -91,6 +99,24 @@ namespace Massive.Unity.Editor
 				_previewAssets.TryGetValue(provider, out var cachedAsset);
 
 				if (currentAsset.Id < 0)
+				{
+					if (preview != null)
+					{
+						RemovePreview(provider);
+					}
+
+					continue;
+				}
+
+				if (preview == null)
+				{
+					CreatePreview(provider, currentAsset);
+					continue;
+				}
+
+				var prefab = ViewDataBase.Instance.GetViewPrefabOrNull(currentAsset);
+
+				if (prefab == null)
 				{
 					if (preview != null)
 					{
