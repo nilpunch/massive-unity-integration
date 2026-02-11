@@ -93,7 +93,7 @@ namespace Massive.Unity
 			_instance = null;
 
 			var preloads = UnityEditor.PlayerSettings.GetPreloadedAssets();
-			preloads[Array.FindIndex(preloads, p => p is T)] = this;
+			preloads[Array.FindIndex(preloads, p => p is T || p == null)] = this;
 			UnityEditor.PlayerSettings.SetPreloadedAssets(preloads);
 		}
 #endif

@@ -12,5 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b0077854f2045e5bb97be88531a0119, type: 3}
   m_Name: View DB
   m_EditorClassIdentifier: 
-  <ViewPrefabs>k__BackingField:
-  - {fileID: 8025289586002965156, guid: 262a91e649a640a4e96ebe128b9f812e, type: 3}
+  <ViewPrefabs>k__BackingField: []
