@@ -6,8 +6,7 @@ namespace Massive.Unity
 {
 	public enum EntityCreation
 	{
-		OnStart,
-		OnAwake,
+		Automatic,
 		Manually,
 	}
 
@@ -55,38 +54,41 @@ namespace Massive.Unity
 
 		protected virtual void Awake()
 		{
-			if (_create == EntityCreation.OnAwake)
+			if (_create == EntityCreation.Automatic)
 			{
-				CreateEntity();
+				Entity = World.CreateEntity();
 			}
 		}
 
 		protected virtual void Start()
 		{
-			if (_create == EntityCreation.OnStart)
+			if (_create == EntityCreation.Automatic)
 			{
-				CreateEntity();
+				SetComponents(Entity);
+				TriggerOnCreate();
 			}
 		}
 
-		public void CreateEntity()
+		public void SetComponents(Entity entity)
 		{
-			Entity = World.CreateEntity();
-
 			foreach (var component in _components)
 			{
-				var sparseSet = World.Sets.GetReflected(component.GetType());
-				sparseSet.Add(Entity.Id);
-				if (sparseSet is IDataSet dataSet)
+				if (component is IComponentConverter componentProvider)
 				{
-					dataSet.SetRaw(Entity.Id, component);
+					componentProvider.ApplyComponent(entity, transform);
+					continue;
+				}
+
+				var set = World.Sets.GetReflected(component.GetType());
+				set.Add(entity.Id);
+				if (set is IDataSet dataSet)
+				{
+					dataSet.SetRaw(entity.Id, component);
 				}
 			}
-
-			OnCreate();
 		}
 
-		private void OnCreate()
+		public void TriggerOnCreate()
 		{
 			switch (_whenCreated)
 			{
