@@ -98,7 +98,7 @@ namespace Massive.Unity.Editor
 				_previews.TryGetValue(provider, out var preview);
 				_previewAssets.TryGetValue(provider, out var cachedAsset);
 
-				if (currentAsset.Id < 0)
+				if (!currentAsset.IsValid)
 				{
 					if (preview != null)
 					{

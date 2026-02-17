@@ -21,12 +21,12 @@ namespace Massive.Unity
 
 		public EntityView GetViewPrefabOrNull(ViewAsset viewAsset)
 		{
-			return viewAsset.Id < 0 || viewAsset.Id >= ViewPrefabs.Count ? null : ViewPrefabs[viewAsset.Id];
+			return !viewAsset.IsValid || viewAsset.Id >= ViewPrefabs.Count ? null : ViewPrefabs[viewAsset.Id];
 		}
 
 		public bool IsRegistered(ViewAsset viewAsset)
 		{
-			return viewAsset.Id >= 0 && viewAsset.Id < ViewPrefabs.Count && ViewPrefabs[viewAsset.Id] != null;
+			return viewAsset.IsValid && viewAsset.Id < ViewPrefabs.Count && ViewPrefabs[viewAsset.Id] != null;
 		}
 
 		public bool IsRegistered(EntityView prefab)

@@ -48,7 +48,7 @@ namespace Massive.Unity.Editor
 					else
 					{
 						var newAsset = ViewDataBase.Instance.GetViewAsset((EntityView)newObject);
-						if (newAsset.Id >= 0)
+						if (newAsset.IsValid)
 						{
 							property.managedReferenceValue = newAsset;
 						}
