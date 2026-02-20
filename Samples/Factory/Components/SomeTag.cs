@@ -1,6 +1,6 @@
 using System;
 
-namespace Massive.Unity.Samples.Farm
+namespace Massive.Unity.Samples
 {
 	[Serializable, Component]
 	public struct SomeTag

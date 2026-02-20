@@ -11,10 +11,10 @@ namespace Massive.Unity.Editor
 	[InitializeOnLoad]
 	internal static class EntityProviderPreviewSystem
 	{
-		private static readonly Dictionary<EntityProvider, EntityView> _previews = new();
+		private static readonly Dictionary<EntityProvider, GameObject> _previews = new();
 		private static readonly Dictionary<EntityProvider, ViewAsset> _previewAssets = new();
 		private static readonly HashSet<EntityProvider> _trackedProviders = new();
-		private static readonly Dictionary<EntityView, EntityProvider> _reverseLookup = new();
+		private static readonly Dictionary<GameObject, EntityProvider> _reverseLookup = new();
 
 		static EntityProviderPreviewSystem()
 		{
@@ -52,7 +52,7 @@ namespace Massive.Unity.Editor
 				return;
 			}
 
-			if (!_reverseLookup.TryGetValue(view, out var provider))
+			if (!_reverseLookup.TryGetValue(view.gameObject, out var provider))
 			{
 				return;
 			}
@@ -243,9 +243,9 @@ namespace Massive.Unity.Editor
 			preview.gameObject.tag = "EditorOnly";
 			preview.gameObject.hideFlags = HideFlags.HideAndDontSave | HideFlags.NotEditable;
 
-			_previews[provider] = preview;
+			_previews[provider] = preview.gameObject;
 			_previewAssets[provider] = viewAsset;
-			_reverseLookup[preview] = provider;
+			_reverseLookup[preview.gameObject] = provider;
 		}
 
 		private static void RemovePreview(EntityProvider provider)

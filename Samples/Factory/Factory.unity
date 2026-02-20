@@ -122,6 +122,62 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &187342041
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 187342043}
+  - component: {fileID: 187342042}
+  m_Layer: 0
+  m_Name: Entity (2)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &187342042
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187342041}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Default
+  _components:
+  - rid: 1861220767758811163
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220767758811163
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 2
+--- !u!4 &187342043
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 187342041}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.5200002, y: 0, z: -1.22}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &431694350
 GameObject:
   m_ObjectHideFlags: 0
@@ -275,7 +331,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 5c3be74818acb8c45bd63a956d653ba3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -320,7 +376,7 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1835460053
+--- !u!1 &735607585
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -328,7 +384,64 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1835460055}
+  - component: {fileID: 735607587}
+  - component: {fileID: 735607586}
+  m_Layer: 0
+  m_Name: Entity (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &735607586
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735607585}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Default
+  _components:
+  - rid: 1861220767758811161
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220767758811161
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 1
+--- !u!4 &735607587
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 735607585}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.14, y: 0, z: 2.27}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1173271190
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1173271191}
+  - component: {fileID: 1173271192}
   m_Layer: 0
   m_Name: Entity
   m_TagString: Untagged
@@ -336,16 +449,116 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1835460055
+--- !u!4 &1173271191
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1835460053}
+  m_GameObject: {fileID: 1173271190}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.43, y: 0, z: -0.33}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1173271192
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1173271190}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Default
+  _components:
+  - rid: 1861220767758811161
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220767758811161
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 1
+--- !u!1 &1514284227
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1514284229}
+  - component: {fileID: 1514284228}
+  m_Layer: 0
+  m_Name: Entity (3)
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1514284228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514284227}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 11f1c5d8063f4e66897dbe783996310e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _world: Massive.Unity.Samples.Default
+  _components:
+  - rid: 1861220767758811162
+  - rid: 1861220767758811164
+  - rid: 1861220767758811165
+  _create: 0
+  _whenCreated: 0
+  references:
+    version: 2
+    RefIds:
+    - rid: 1861220767758811162
+      type: {class: ViewAsset, ns: Massive.QoL, asm: Massive.QoL}
+      data:
+        IdPlusOne: 2
+    - rid: 1861220767758811164
+      type: {class: Position, ns: Massive.Unity.Samples, asm: Massive.Unity.Samples}
+      data:
+        Value:
+          X:
+            RawValue: 45219
+          Y:
+            RawValue: -53739
+          Z:
+            RawValue: 0
+    - rid: 1861220767758811165
+      type: {class: Factory, ns: Massive.Unity.Samples, asm: Massive.Unity.Samples}
+      data:
+        ProductionProgress:
+          RawValue: 0
+        ProductionUnit:
+          Health:
+            RawValue: 13107
+--- !u!4 &1514284229
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1514284227}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 2.38, y: 0, z: 1.05}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -380,7 +593,7 @@ Light:
   m_Type: 1
   m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
-  m_Intensity: 1
+  m_Intensity: 0.5
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -452,4 +665,7 @@ SceneRoots:
   - {fileID: 431694353}
   - {fileID: 1987551791}
   - {fileID: 438797377}
-  - {fileID: 1835460055}
+  - {fileID: 1173271191}
+  - {fileID: 735607587}
+  - {fileID: 187342043}
+  - {fileID: 1514284229}

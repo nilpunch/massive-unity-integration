@@ -1,9 +1,9 @@
-﻿using Massive.QoL;
+using Massive.QoL;
 
 namespace Massive.Unity.Samples
 {
 	[StaticWorldType]
-	public struct Visual
+	public struct Default
 	{
 	}
 }

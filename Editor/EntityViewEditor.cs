@@ -37,13 +37,16 @@ namespace Massive.Unity.Editor
 					entityView.CollectViewBehaviours();
 					EditorUtility.SetDirty(entityView);
 				}
-
-				Debug.Log($"Collected behaviours for {targets.Length} view(s)");
 			}
 		}
 
 		private bool DrawRegisterViewButton()
 		{
+			if (ViewDataBase.Instance == null)
+			{
+				return false;
+			}
+
 			var unregisteredCount = 0;
 
 			foreach (var obj in targets)

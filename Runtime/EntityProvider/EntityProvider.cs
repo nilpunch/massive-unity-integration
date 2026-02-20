@@ -6,7 +6,7 @@ namespace Massive.Unity
 {
 	public enum EntityCreation
 	{
-		Automatic,
+		Automatically,
 		Manually,
 	}
 
@@ -54,7 +54,7 @@ namespace Massive.Unity
 
 		protected virtual void Awake()
 		{
-			if (_create == EntityCreation.Automatic)
+			if (_create == EntityCreation.Automatically)
 			{
 				Entity = World.CreateEntity();
 			}
@@ -62,7 +62,7 @@ namespace Massive.Unity
 
 		protected virtual void Start()
 		{
-			if (_create == EntityCreation.Automatic)
+			if (_create == EntityCreation.Automatically)
 			{
 				SetComponents(Entity);
 				TriggerOnCreate();
