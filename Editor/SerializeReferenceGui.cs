@@ -340,6 +340,7 @@ namespace Massive.Unity.Editor
 						hover = { textColor = Color.white },
 						active = { textColor = new Color(0.85f, 0.85f, 0.85f) },
 						focused = { textColor = Color.white },
+						clipping = TextClipping.Overflow,
 					};
 
 					var namespaceStyle = UnityStyles.LineFaint;
