@@ -139,6 +139,7 @@ namespace Massive.Unity.Editor
 					continue;
 				}
 
+				preview.gameObject.hideFlags = HideFlags.HideAndDontSave | HideFlags.NotEditable;
 				preview.transform.SetPositionAndRotation(provider.transform.position, provider.transform.rotation);
 			}
 		}
