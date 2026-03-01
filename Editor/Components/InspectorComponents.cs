@@ -9,18 +9,34 @@ namespace Massive.Unity.Editor
 	/// </summary>
 	public static class InspectorComponents
 	{
-		private static readonly HashSet<Type> _types = new HashSet<Type>();
+		private static readonly HashSet<Type> _typesToShow = new HashSet<Type>();
+		private static readonly HashSet<Type> _typesToHide = new HashSet<Type>();
 
-		public static bool Has(Type type)
+		public static bool MustShow(Type type)
 		{
-			return type != null && _types.Contains(type);
+			return type != null && _typesToShow.Contains(type);
 		}
 
-		public static void Add(Type type)
+		public static bool MustHide(Type type)
+		{
+			return type != null && _typesToHide.Contains(type);
+		}
+
+		public static void Show(Type type)
 		{
 			if (type != null)
 			{
-				_types.Add(type);
+				_typesToHide.Remove(type);
+				_typesToShow.Add(type);
+			}
+		}
+
+		public static void Hide(Type type)
+		{
+			if (type != null)
+			{
+				_typesToHide.Add(type);
+				_typesToShow.Remove(type);
 			}
 		}
 	}

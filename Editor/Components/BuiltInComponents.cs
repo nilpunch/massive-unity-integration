@@ -18,7 +18,7 @@ namespace Massive.Unity.Editor
 
 			if (type != null)
 			{
-				InspectorComponents.Add(type);
+				InspectorComponents.Show(type);
 			}
 		}
 	}

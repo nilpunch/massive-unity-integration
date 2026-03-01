@@ -35,7 +35,7 @@ namespace Massive.Unity.Editor
 
 			bool ComponentTypeFilter(Type type)
 			{
-				return (InspectorComponents.Has(type) || type.IsDefined(typeof(ComponentAttribute), false)) && !SerializedPropertyUtils.PresentTypesBuffer.Contains(type);
+				return (InspectorComponents.MustShow(type) || type.IsDefined(typeof(ComponentAttribute), false)) && !InspectorComponents.MustHide(type) && !SerializedPropertyUtils.PresentTypesBuffer.Contains(type);
 			}
 		}
 
