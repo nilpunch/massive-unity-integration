@@ -11,10 +11,10 @@ namespace Massive.Unity.Editor
 	[InitializeOnLoad]
 	internal static class EntityProviderPreviewSystem
 	{
-		private static readonly Dictionary<EntityProvider, GameObject> _previews = new();
-		private static readonly Dictionary<EntityProvider, ViewAsset> _previewAssets = new();
-		private static readonly HashSet<EntityProvider> _trackedProviders = new();
-		private static readonly Dictionary<GameObject, EntityProvider> _reverseLookup = new();
+		private static readonly Dictionary<EntityProviderBase, GameObject> _previews = new();
+		private static readonly Dictionary<EntityProviderBase, ViewAsset> _previewAssets = new();
+		private static readonly HashSet<EntityProviderBase> _trackedProviders = new();
+		private static readonly Dictionary<GameObject, EntityProviderBase> _reverseLookup = new();
 
 		static EntityProviderPreviewSystem()
 		{
@@ -164,7 +164,7 @@ namespace Massive.Unity.Editor
 		{
 			var providers = GetAllProviders();
 
-			var toRemove = new List<EntityProvider>();
+			var toRemove = new List<EntityProviderBase>();
 
 			foreach (var existing in _trackedProviders)
 			{
@@ -186,9 +186,9 @@ namespace Massive.Unity.Editor
 			}
 		}
 
-		private static HashSet<EntityProvider> GetAllProviders()
+		private static HashSet<EntityProviderBase> GetAllProviders()
 		{
-			var result = new HashSet<EntityProvider>();
+			var result = new HashSet<EntityProviderBase>();
 
 			for (var i = 0; i < SceneManager.sceneCount; i++)
 			{
@@ -200,7 +200,7 @@ namespace Massive.Unity.Editor
 
 				foreach (var root in scene.GetRootGameObjects())
 				{
-					var providers = root.GetComponentsInChildren<EntityProvider>(true);
+					var providers = root.GetComponentsInChildren<EntityProviderBase>(true);
 					foreach (var provider in providers)
 					{
 						result.Add(provider);
@@ -211,7 +211,7 @@ namespace Massive.Unity.Editor
 			var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
 			if (prefabStage != null)
 			{
-				var providers = prefabStage.prefabContentsRoot.GetComponentsInChildren<EntityProvider>(true);
+				var providers = prefabStage.prefabContentsRoot.GetComponentsInChildren<EntityProviderBase>(true);
 
 				foreach (var provider in providers)
 				{
@@ -222,7 +222,7 @@ namespace Massive.Unity.Editor
 			return result;
 		}
 
-		private static void CreatePreview(EntityProvider provider, ViewAsset viewAsset)
+		private static void CreatePreview(EntityProviderBase provider, ViewAsset viewAsset)
 		{
 			if (provider == null)
 			{
@@ -248,7 +248,7 @@ namespace Massive.Unity.Editor
 			_reverseLookup[preview.gameObject] = provider;
 		}
 
-		private static void RemovePreview(EntityProvider provider)
+		private static void RemovePreview(EntityProviderBase provider)
 		{
 			if (_previews.TryGetValue(provider, out var preview) && preview != null)
 			{
@@ -274,7 +274,7 @@ namespace Massive.Unity.Editor
 			_previewAssets.Clear();
 		}
 
-		private static ViewAsset GetViewAsset(EntityProvider entityProvider)
+		private static ViewAsset GetViewAsset(EntityProviderBase entityProvider)
 		{
 			foreach (var component in entityProvider.Components)
 			{
