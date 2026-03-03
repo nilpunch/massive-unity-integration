@@ -39,7 +39,7 @@ namespace Massive.Unity
 		{
 			if (EntityCreation == EntityCreation.Automatically)
 			{
-				Entity = World.CreateEntity();
+				CreateEntity(World);
 			}
 		}
 
@@ -52,6 +52,12 @@ namespace Massive.Unity
 			}
 		}
 
+		public Entity CreateEntity(World world)
+		{
+			Entity = world.CreateEntity();
+			return Entity;
+		}
+		
 		public void SetComponents(Entity entity)
 		{
 			foreach (var component in Components)
