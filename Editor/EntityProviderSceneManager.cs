@@ -22,6 +22,7 @@ namespace Massive.Unity.Editor
 
 			Selection.selectionChanged += OnSelectionChanged;
 			SceneView.duringSceneGui += Update;
+			EditorApplication.update += () => Update(null);
 			Undo.undoRedoPerformed += SyncProviders;
 			EditorApplication.hierarchyChanged += OnHierarchyChanged;
 			PrefabStage.prefabStageOpened += _ => RefreshAll();
@@ -191,6 +192,22 @@ namespace Massive.Unity.Editor
 		{
 			var result = new HashSet<EntityProviderBase>();
 
+			var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
+			if (prefabStage != null)
+			{
+				var providers = prefabStage.prefabContentsRoot.GetComponentsInChildren<EntityProviderBase>(false);
+
+				foreach (var provider in providers)
+				{
+					if (provider.isActiveAndEnabled)
+					{
+						result.Add(provider);
+					}
+				}
+
+				return result;
+			}
+
 			for (var i = 0; i < SceneManager.sceneCount; i++)
 			{
 				var scene = SceneManager.GetSceneAt(i);
@@ -201,22 +218,14 @@ namespace Massive.Unity.Editor
 
 				foreach (var root in scene.GetRootGameObjects())
 				{
-					var providers = root.GetComponentsInChildren<EntityProviderBase>(true);
+					var providers = root.GetComponentsInChildren<EntityProviderBase>(false);
 					foreach (var provider in providers)
 					{
-						result.Add(provider);
+						if (provider.isActiveAndEnabled)
+						{
+							result.Add(provider);
+						}
 					}
-				}
-			}
-
-			var prefabStage = PrefabStageUtility.GetCurrentPrefabStage();
-			if (prefabStage != null)
-			{
-				var providers = prefabStage.prefabContentsRoot.GetComponentsInChildren<EntityProviderBase>(true);
-
-				foreach (var provider in providers)
-				{
-					result.Add(provider);
 				}
 			}
 
