@@ -60,6 +60,7 @@ namespace Massive.Unity
 		
 		public void SetComponents(Entity entity)
 		{
+			var entityWorld = entity.World;
 			foreach (var component in Components)
 			{
 				if (component is IComponentConverter componentProvider)
@@ -68,7 +69,7 @@ namespace Massive.Unity
 					continue;
 				}
 
-				var set = World.Sets.GetReflected(component.GetType());
+				var set = entityWorld.Sets.GetReflected(component.GetType());
 				set.Add(entity.Id);
 				if (set is IDataSet dataSet)
 				{
