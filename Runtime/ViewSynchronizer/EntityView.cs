@@ -18,7 +18,7 @@ namespace Massive.Unity
 
 			foreach (var viewBehaviour in _entityBehaviours)
 			{
-				viewBehaviour.OnEntityAssigned(Entity);
+				viewBehaviour.AssignEntity(entity);
 			}
 		}
 
@@ -26,7 +26,7 @@ namespace Massive.Unity
 		{
 			foreach (var viewBehaviour in _entityBehaviours)
 			{
-				viewBehaviour.OnEntityRemoved();
+				viewBehaviour.RemoveEntity();
 			}
 
 			gameObject.SetActive(false);

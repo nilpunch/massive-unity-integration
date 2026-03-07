@@ -4,7 +4,21 @@ namespace Massive.Unity
 {
 	public abstract class EntityBehaviour : MonoBehaviour
 	{
-		public abstract void OnEntityAssigned(Entity entity);
-		public abstract void OnEntityRemoved();
+		public Entity Entity { get; private set; }
+
+		public void AssignEntity(Entity entity)
+		{
+			Entity = entity;
+			OnEntityAssigned();
+		}
+
+		public void RemoveEntity()
+		{
+			OnEntityRemoved();
+			Entity = Entity.Dead;
+		}
+
+		protected virtual void OnEntityAssigned() { }
+		protected virtual void OnEntityRemoved() { }
 	}
 }
