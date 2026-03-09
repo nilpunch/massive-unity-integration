@@ -32,6 +32,7 @@ namespace Massive.Unity.Editor
 		}
 
 		private static bool _isRedirectingSelection;
+		private static List<Object> _objectsToSelect = new List<Object>();
 		private static ViewDataBase _viewDataBase;
 
 		private static void OnSelectionChanged()
@@ -41,19 +42,31 @@ namespace Massive.Unity.Editor
 				return;
 			}
 
-			var active = Selection.activeGameObject;
-			if (active == null)
+			
+			
+			if (Selection.count == 0)
 			{
 				return;
 			}
 
-			var view = active.GetComponentInParent<EntityView>();
-			if (view == null)
+			_objectsToSelect.Clear();
+			foreach (var gameObject in Selection.gameObjects)
 			{
-				return;
+				var view = gameObject.GetComponentInParent<EntityView>();
+				if (view == null)
+				{
+					continue;
+				}
+				
+				if (!_reverseLookup.TryGetValue(view.gameObject, out var provider))
+				{
+					continue;
+				}
+
+				_objectsToSelect.Add(provider.gameObject);
 			}
 
-			if (!_reverseLookup.TryGetValue(view.gameObject, out var provider))
+			if (_objectsToSelect.Count == 0)
 			{
 				return;
 			}
@@ -64,7 +77,7 @@ namespace Massive.Unity.Editor
 
 			void OnDelayCall()
 			{
-				Selection.activeObject = provider.gameObject;
+				Selection.objects = _objectsToSelect.ToArray();
 				_isRedirectingSelection = false;
 
 				EditorApplication.delayCall -= OnDelayCall;
